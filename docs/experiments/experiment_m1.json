@@ -1,5 +1,5 @@
 {
-  "protocol": "Compare M0 (current model) with M1 (education composition re-estimates municipal income) on the held-out city tables.\n\nProtocol (fixed before looking at results; see docs/EXPERIMENT_M12.md):\n  * Parameters: M0 selects beta (tax tilt); M1 selects (gamma, beta). Selection minimises population-weighted\n    cross entropy on the training folds only. Folds = prefecture code mod 5, identical to refine_tax.py.\n  * Evaluation: TV distance on the test folds (out-of-fold), reported weighted and unweighted, with median, p90,\n    max, the fraction of cells improved, and the worst per-city / per-prefecture change.\n  * Adoption rule (pre-registered): M1 replaces M0 only if the out-of-fold weighted TV improves by at least 1%\n    relative AND the unweighted median does not worsen AND no city worsens by more than 0.02 TV on average.\n    Otherwise M0 stays the production default.\nOutputs: validation/experiment_m1.json, experiment_m1_grid.csv, experiment_m1_cells.csv.\n",
+  "protocol": "Compare M0 (current model) with M1 (education composition), M2 (industry composition) and M1+M2 on the held-out city tables.\n\nProtocol (fixed before looking at results; see docs/EXPERIMENT_M12.md):\n  * Parameters: M0 selects beta (tax tilt); M1 selects (gamma_edu, beta); M2 selects (gamma_ind, beta); M12 selects all three.\n    Selection minimises population-weighted\n    cross entropy on the training folds only. Folds = prefecture code mod 5, identical to refine_tax.py.\n  * Evaluation: TV distance on the test folds (out-of-fold), reported weighted and unweighted, with median, p90,\n    max, the fraction of cells improved, and the worst per-city / per-prefecture change.\n  * Adoption rule (pre-registered): M1 replaces M0 only if the out-of-fold weighted TV improves by at least 1%\n    relative AND the unweighted median does not worsen AND no city worsens by more than 0.02 TV on average.\n    Otherwise M0 stays the production default.\nOutputs: validation/experiment_m1.json, experiment_m1_grid.csv, experiment_m1_cells.csv.\n",
   "adoption_rule": {
     "min_relative_tv_improvement": 0.01,
     "median_must_not_worsen": true,
@@ -9,15 +9,22 @@
   "cities": 86,
   "folds": 5,
   "grid": {
-    "gamma": [
+    "gamma_edu": [
       0.0,
-      0.25,
       0.5,
-      0.75,
       1.0,
       1.5,
       2.0,
       2.5,
+      3.0,
+      4.0
+    ],
+    "gamma_ind": [
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
       3.0,
       4.0
     ],
@@ -37,12 +44,7 @@
       1.2,
       1.3,
       1.4,
-      1.5,
-      1.6,
-      1.7,
-      1.8,
-      1.9,
-      2.0
+      1.5
     ]
   },
   "models": {
@@ -58,37 +60,43 @@
       "fold_selection": [
         {
           "fold": 0,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.6,
           "test_cells": 195
         },
         {
           "fold": 1,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.5,
           "test_cells": 299
         },
         {
           "fold": 2,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.5,
           "test_cells": 273
         },
         {
           "fold": 3,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.5,
           "test_cells": 195
         },
         {
           "fold": 4,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.6,
           "test_cells": 156
         }
       ],
       "full_fit": {
-        "gamma": 0.0,
+        "gamma_edu": 0.0,
+        "gamma_ind": 0.0,
         "beta": 0.5,
         "in_sample": {
           "weighted_mean": 0.09324528636330558,
@@ -112,37 +120,43 @@
       "fold_selection": [
         {
           "fold": 0,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 195
         },
         {
           "fold": 1,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 299
         },
         {
           "fold": 2,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 273
         },
         {
           "fold": 3,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 195
         },
         {
           "fold": 4,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 156
         }
       ],
       "full_fit": {
-        "gamma": 2.0,
+        "gamma_edu": 2.0,
+        "gamma_ind": 0.0,
         "beta": 0.0,
         "in_sample": {
           "weighted_mean": 0.0900015036690568,
@@ -151,6 +165,126 @@
           "p90": 0.22435609732297856,
           "max": 0.42916013269619413,
           "city_mean_max": 0.24042059255649173
+        }
+      }
+    },
+    "M2": {
+      "out_of_fold": {
+        "weighted_mean": 0.0913232511871136,
+        "unweighted_mean": 0.13291447182667454,
+        "median": 0.1189496218999413,
+        "p90": 0.2226108433281119,
+        "max": 0.43949108749054766,
+        "city_mean_max": 0.2349049134422349
+      },
+      "fold_selection": [
+        {
+          "fold": 0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 2.0,
+          "beta": 0.3,
+          "test_cells": 195
+        },
+        {
+          "fold": 1,
+          "gamma_edu": 0.0,
+          "gamma_ind": 2.0,
+          "beta": 0.3,
+          "test_cells": 299
+        },
+        {
+          "fold": 2,
+          "gamma_edu": 0.0,
+          "gamma_ind": 2.0,
+          "beta": 0.3,
+          "test_cells": 273
+        },
+        {
+          "fold": 3,
+          "gamma_edu": 0.0,
+          "gamma_ind": 2.0,
+          "beta": 0.3,
+          "test_cells": 195
+        },
+        {
+          "fold": 4,
+          "gamma_edu": 0.0,
+          "gamma_ind": 2.0,
+          "beta": 0.3,
+          "test_cells": 156
+        }
+      ],
+      "full_fit": {
+        "gamma_edu": 0.0,
+        "gamma_ind": 2.0,
+        "beta": 0.3,
+        "in_sample": {
+          "weighted_mean": 0.0913232511871136,
+          "unweighted_mean": 0.13291447182667454,
+          "median": 0.1189496218999413,
+          "p90": 0.2226108433281119,
+          "max": 0.43949108749054766,
+          "city_mean_max": 0.2349049134422349
+        }
+      }
+    },
+    "M12": {
+      "out_of_fold": {
+        "weighted_mean": 0.08987449861370037,
+        "unweighted_mean": 0.13062597232742962,
+        "median": 0.11519764333506291,
+        "p90": 0.22377591649734255,
+        "max": 0.42615885244698976,
+        "city_mean_max": 0.24011570651623942
+      },
+      "fold_selection": [
+        {
+          "fold": 0,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 195
+        },
+        {
+          "fold": 1,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 299
+        },
+        {
+          "fold": 2,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.5,
+          "beta": 0.0,
+          "test_cells": 273
+        },
+        {
+          "fold": 3,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 195
+        },
+        {
+          "fold": 4,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 156
+        }
+      ],
+      "full_fit": {
+        "gamma_edu": 1.5,
+        "gamma_ind": 1.0,
+        "beta": 0.0,
+        "in_sample": {
+          "weighted_mean": 0.0896656420893785,
+          "unweighted_mean": 0.13046584998159566,
+          "median": 0.11488134521597718,
+          "p90": 0.22278637804504078,
+          "max": 0.42615885244698976,
+          "city_mean_max": 0.2389449283623662
         }
       }
     },
@@ -166,37 +300,43 @@
       "fold_selection": [
         {
           "fold": 0,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 195
         },
         {
           "fold": 1,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 299
         },
         {
           "fold": 2,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 273
         },
         {
           "fold": 3,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 195
         },
         {
           "fold": 4,
-          "gamma": 0.0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 156
         }
       ],
       "full_fit": {
-        "gamma": 0.0,
+        "gamma_edu": 0.0,
+        "gamma_ind": 0.0,
         "beta": 0.0,
         "in_sample": {
           "weighted_mean": 0.09395151165303622,
@@ -220,37 +360,43 @@
       "fold_selection": [
         {
           "fold": 0,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 195
         },
         {
           "fold": 1,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 299
         },
         {
           "fold": 2,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 273
         },
         {
           "fold": 3,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 195
         },
         {
           "fold": 4,
-          "gamma": 2.0,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.0,
           "beta": 0.0,
           "test_cells": 156
         }
       ],
       "full_fit": {
-        "gamma": 2.0,
+        "gamma_edu": 2.0,
+        "gamma_ind": 0.0,
         "beta": 0.0,
         "in_sample": {
           "weighted_mean": 0.0900015036690568,
@@ -261,10 +407,218 @@
           "city_mean_max": 0.24042059255649173
         }
       }
+    },
+    "M2_notax": {
+      "out_of_fold": {
+        "weighted_mean": 0.09165940436656186,
+        "unweighted_mean": 0.13312751610760612,
+        "median": 0.12001090434347336,
+        "p90": 0.22316549171974004,
+        "max": 0.43750558504717024,
+        "city_mean_max": 0.2375569605979321
+      },
+      "fold_selection": [
+        {
+          "fold": 0,
+          "gamma_edu": 0.0,
+          "gamma_ind": 3.0,
+          "beta": 0.0,
+          "test_cells": 195
+        },
+        {
+          "fold": 1,
+          "gamma_edu": 0.0,
+          "gamma_ind": 3.0,
+          "beta": 0.0,
+          "test_cells": 299
+        },
+        {
+          "fold": 2,
+          "gamma_edu": 0.0,
+          "gamma_ind": 2.0,
+          "beta": 0.0,
+          "test_cells": 273
+        },
+        {
+          "fold": 3,
+          "gamma_edu": 0.0,
+          "gamma_ind": 3.0,
+          "beta": 0.0,
+          "test_cells": 195
+        },
+        {
+          "fold": 4,
+          "gamma_edu": 0.0,
+          "gamma_ind": 3.0,
+          "beta": 0.0,
+          "test_cells": 156
+        }
+      ],
+      "full_fit": {
+        "gamma_edu": 0.0,
+        "gamma_ind": 3.0,
+        "beta": 0.0,
+        "in_sample": {
+          "weighted_mean": 0.09157606643718437,
+          "unweighted_mean": 0.1333424154977512,
+          "median": 0.12048724472529838,
+          "p90": 0.22444184081806767,
+          "max": 0.43750558504717024,
+          "city_mean_max": 0.2360966880141495
+        }
+      }
+    },
+    "M12_notax": {
+      "out_of_fold": {
+        "weighted_mean": 0.08987449861370037,
+        "unweighted_mean": 0.13062597232742962,
+        "median": 0.11519764333506291,
+        "p90": 0.22377591649734255,
+        "max": 0.42615885244698976,
+        "city_mean_max": 0.24011570651623942
+      },
+      "fold_selection": [
+        {
+          "fold": 0,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 195
+        },
+        {
+          "fold": 1,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 299
+        },
+        {
+          "fold": 2,
+          "gamma_edu": 2.0,
+          "gamma_ind": 0.5,
+          "beta": 0.0,
+          "test_cells": 273
+        },
+        {
+          "fold": 3,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 195
+        },
+        {
+          "fold": 4,
+          "gamma_edu": 1.5,
+          "gamma_ind": 1.0,
+          "beta": 0.0,
+          "test_cells": 156
+        }
+      ],
+      "full_fit": {
+        "gamma_edu": 1.5,
+        "gamma_ind": 1.0,
+        "beta": 0.0,
+        "in_sample": {
+          "weighted_mean": 0.0896656420893785,
+          "unweighted_mean": 0.13046584998159566,
+          "median": 0.11488134521597718,
+          "p90": 0.22278637804504078,
+          "max": 0.42615885244698976,
+          "city_mean_max": 0.2389449283623662
+        }
+      }
     }
+  },
+  "comparison_vs_M0": {
+    "M1": {
+      "weighted_mean_change": -0.003275964735771587,
+      "relative_weighted_tv_improvement": 0.03512064372881296,
+      "fraction_cells_improved": 0.59391771019678,
+      "max_cell_worsening": 0.077156429238033,
+      "max_city_mean_worsening": 0.009089864811583774,
+      "worst_city": "28201",
+      "max_prefecture_mean_worsening": 0.0010910707555688106,
+      "worst_prefecture": "38",
+      "by_age_mean_change": {
+        "1": -0.014024204918050093,
+        "2": -0.012294616210828226,
+        "3": -0.001518315907772216,
+        "4": -0.0024807881483812208,
+        "5": -0.0046088640981895345,
+        "6": -0.004511652955615977,
+        "7": -0.00451406070956563,
+        "8": -0.007955355679378892,
+        "9": -0.004043746253868278,
+        "10": -0.00298442841011842,
+        "11": -0.0009861272187073335,
+        "12": 0.0017056763164764817,
+        "13": 0.0012765793377980806
+      },
+      "meets_rule": true,
+      "adopt_M1": true,
+      "decision": "M1 meets the pre-registered rule"
+    },
+    "M2": {
+      "weighted_mean_change": -0.0019542172177148096,
+      "relative_weighted_tv_improvement": 0.020950581647793065,
+      "fraction_cells_improved": 0.5885509838998211,
+      "max_cell_worsening": 0.07343571201544952,
+      "max_city_mean_worsening": 0.011241283405371017,
+      "worst_city": "30201",
+      "max_prefecture_mean_worsening": 0.011241283405371017,
+      "worst_prefecture": "30",
+      "by_age_mean_change": {
+        "1": -0.012893302000460323,
+        "2": -0.0122104038175248,
+        "3": -0.00015781152175203591,
+        "4": 0.00043542809478891377,
+        "5": -0.0018579706444653771,
+        "6": -0.0027765315424258625,
+        "7": -0.001950951837876054,
+        "8": -0.0041970503942501776,
+        "9": -0.003573461553078933,
+        "10": -0.0013324945083095301,
+        "11": 0.0021089632869965374,
+        "12": 0.0031138155632357096,
+        "13": 0.005858256934591725
+      },
+      "meets_rule": true
+    },
+    "M12": {
+      "weighted_mean_change": -0.003402969791128026,
+      "relative_weighted_tv_improvement": 0.036482227158642355,
+      "fraction_cells_improved": 0.6234347048300537,
+      "max_cell_worsening": 0.08418160811361547,
+      "max_city_mean_worsening": 0.00958738559365024,
+      "worst_city": "28201",
+      "max_prefecture_mean_worsening": 0.003951880200028887,
+      "worst_prefecture": "45",
+      "by_age_mean_change": {
+        "1": -0.014989669985583012,
+        "2": -0.012232848176128337,
+        "3": -0.0015176511568735862,
+        "4": -0.0020760993332253146,
+        "5": -0.004735471975726436,
+        "6": -0.004971719872229922,
+        "7": -0.004339557482273189,
+        "8": -0.008049354426963121,
+        "9": -0.004484886328988452,
+        "10": -0.0029163622334975243,
+        "11": -0.0004914036351401984,
+        "12": 0.0006263793537233931,
+        "13": 0.0009946378221912231
+      },
+      "meets_rule": true
+    }
+  },
+  "comparison_M12_vs_M1": {
+    "weighted_mean_change": -0.00012700505535643953,
+    "relative": 0.0014111437051479436,
+    "fraction_cells_improved": 0.5286225402504472
   },
   "comparison_M1_vs_M0": {
     "weighted_mean_change": -0.003275964735771587,
+    "relative_weighted_tv_improvement": 0.03512064372881296,
     "fraction_cells_improved": 0.59391771019678,
     "max_cell_worsening": 0.077156429238033,
     "max_city_mean_worsening": 0.009089864811583774,
@@ -286,7 +640,7 @@
       "12": 0.0017056763164764817,
       "13": 0.0012765793377980806
     },
-    "relative_weighted_tv_improvement": 0.03512064372881296,
+    "meets_rule": true,
     "adopt_M1": true,
     "decision": "M1 meets the pre-registered rule"
   },
@@ -308,5 +662,5 @@
     "Weights are survey-expanded known-income counts, not sample sizes; unweighted statistics are reported alongside.",
     "TV is half the L1 distance between 16-bin income shares of known-income workers by age; sex- and education-specific accuracy is not measured here."
   ],
-  "elapsed_seconds": 36.9
+  "elapsed_seconds": 75.9
 }
