@@ -1,0 +1,24 @@
+{
+  "baseline": "employment_a.npz",
+  "variants": {
+    "national_kg": "P(g|k,s,a) from the national 10-1 rows instead of the prefecture rows",
+    "k6_independent": "the split of non-earners into family workers and non-employed ignores education (common employment rate)"
+  },
+  "results": {
+    "national_kg": {
+      "tv_status_industry": 0.05320789758345657,
+      "tv_education_status": 0.000532076718973774,
+      "tv_industry_income": 0.05031585679657103,
+      "tv_education_industry": 0.009677221699706697,
+      "p90_status_industry": 0.10039648678820844
+    },
+    "k6_independent": {
+      "tv_status_industry": 0.00014983798775572177,
+      "tv_education_status": 0.0022632542565820726,
+      "tv_industry_income": 0.00015418213105311383,
+      "tv_education_industry": 0.0022674480949215485,
+      "p90_status_industry": 0.000590480352785735
+    }
+  },
+  "note": "Population-weighted TV of the joint P(.|m,s,a) between variant and baseline. Margins are identical by construction."
+}

@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "model_version": "3.0-M12",
+  "variant": "base",
+  "checks": {
+    "nonnegative": true,
+    "population_margin_max_error_persons": 2.09641370929603e-09,
+    "status_margin_max_error_persons": 0.03924783631198636,
+    "production_income_margin_max_error_persons": 0.022581790607318908,
+    "industry_margin_tv_weighted_mean": 0.0009375873987378866,
+    "industry_margin_tv_max": 0.6339266176729234,
+    "industry_margin_note": "Family workers take the prefecture self-employed industry profile; where that exceeds the census count in a tiny cell, the paid margin is clipped, so small cells can deviate."
+  },
+  "heldout_10_1_status_x_industry": {
+    "cities": 85,
+    "cells": 2179,
+    "tv_model": {
+      "weighted_mean": 0.2644767143579254,
+      "median": 0.3159556535276153,
+      "p90": 0.5201405115940024
+    },
+    "tv_prefecture": {
+      "weighted_mean": 0.2631574967861796,
+      "median": 0.31144667603904175,
+      "p90": 0.5153032062284174
+    },
+    "tv_independent": {
+      "weighted_mean": 0.3250976515870518,
+      "median": 0.37550744024623983,
+      "p90": 0.5878653146194853
+    },
+    "tv_industry_margin_model": {
+      "weighted_mean": 0.17748336199049305,
+      "median": 0.20466963431967408,
+      "p90": 0.3685267571590543
+    },
+    "tv_status_margin_model": {
+      "weighted_mean": 0.07530530825609044,
+      "median": 0.08075227159859419,
+      "p90": 0.2063090944297052
+    },
+    "tv_status_given_industry_model": {
+      "weighted_mean": 0.16712022101344803,
+      "median": 0.18809783049142342,
+      "p90": 0.34706858532756224
+    },
+    "tv_status_given_industry_prefecture": {
+      "weighted_mean": 0.1629466811252564,
+      "median": 0.18387250548834172,
+      "p90": 0.33759523672862196
+    },
+    "tv_status_given_industry_independent": {
+      "weighted_mean": 0.25248980315798203,
+      "median": 0.2829100248630263,
+      "p90": 0.45582701115486174
+    },
+    "note": "City rows of ESS regional 10-1 (status x industry x age by sex) were not used; prefecture rows were the seed. Own-account and family workers are compared together. The industry margin comes from the 2020 census (residence-based employed persons) while the ESS is a 2022 sample survey; their city compositions differ by TV ~0.2 on average, so the joint TV is bounded by source disagreement. tv_status_given_industry compares the conditional P(k|g) only."
+  },
+  "heldout_24_industry_x_income": {
+    "cities": 85,
+    "cells": 2666,
+    "tv_model": {
+      "weighted_mean": 0.17622052280871134,
+      "median": 0.23475246138945202,
+      "p90": 0.4635666253106854
+    },
+    "tv_national": {
+      "weighted_mean": 0.19066021676115685,
+      "median": 0.24657576715178814,
+      "p90": 0.466974819193242
+    },
+    "tv_status_only": {
+      "weighted_mean": 0.23815559044365703,
+      "median": 0.3028095037936095,
+      "p90": 0.5283150363363845
+    },
+    "note": "City rows of ESS regional 24 (industry x income by sex, all ages) were not used; the national rows shaped the income tilt."
+  },
+  "association_tv_joint_vs_independent": {
+    "weighted_mean": 0.35618501978079115
+  }
+}

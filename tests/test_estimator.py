@@ -44,3 +44,41 @@ class EstimatorTests(unittest.TestCase):
     def test_m2_hook_requires_inputs(self):
         with self.assertRaises(NotImplementedError):es.industry_tilt(self.inp,1.)
 if __name__=='__main__':unittest.main()
+
+class EmploymentIpfTests(unittest.TestCase):
+    def test_ipf3_matches_margins(self):
+        import build_employment as bm
+        rng=np.random.default_rng(3);n=4
+        seed=rng.random((n,8,4,20,16))+0.05
+        A=rng.random((n,8,16))*100;B=rng.random((n,4));C=rng.random((n,20))
+        tot=A.sum((1,2));B=B/B.sum(1,keepdims=True)*tot[:,None];C=C/C.sum(1,keepdims=True)*tot[:,None]
+        z,it,err=bm.ipf3(seed,A,B,C,tol=1e-9,iters=2000)
+        self.assertLess(np.abs(z.sum((2,3))-A).max(),1e-3);self.assertLess(np.abs(z.sum((1,3,4))-B).max(),1e-3);self.assertLess(np.abs(z.sum((1,2,4))-C).max(),1e-3)
+        self.assertTrue((z>=0).all())
+
+class StageAContractTests(unittest.TestCase):
+    def test_manifest_dispatch_skips_response_entries(self):
+        import download_industry as di
+        m={'sources':[{'title':'wb','raw_file':'raw/x.xlsx','raw_sha256':'0'},{'title':'resp','raw_responses':['raw/a.json.gz']}]}
+        self.assertEqual([e['title'] for e in di.workbook_entries(m)],['wb'])
+        with self.assertRaises(ValueError):di.workbook_entries({'sources':[{'title':'bad'}]})
+    def test_age_and_sex_validation(self):
+        import persona_v3 as pv
+        self.assertEqual(pv.age_index(15),0);self.assertEqual(pv.age_index(35),4);self.assertEqual(pv.age_index(99),12)
+        with self.assertRaises(ValueError):pv.age_index(14)
+        with self.assertRaises(ValueError):pv.sex_index('x')
+    def test_verification_checks_detect_corruption_and_exit_code(self):
+        import verify_employment as ve
+        from unittest.mock import patch
+        rng=np.random.default_rng(1);M=3
+        kg=rng.random((M,2,13,6,21));kg[...,5,1:]=0;kg[...,:5,0]=0
+        N=kg.sum((3,4));W=kg[...,:5,:].sum(-1);ke=np.zeros((M,2,13,8,6));ke[...,0,:]=kg.sum(-1)
+        ky=rng.random((M,2,13,4,16));fin=np.zeros((M,2,13,17));fin[...,1:]=ky.sum(3)
+        cnt=kg[...,:5,1:].sum(3);gy=rng.random((M,2,13,20,16))
+        d={'status_industry':kg,'education_status':ke,'status_income':ky,'industry_income':gy}
+        res,ok=ve.checks(d,fin,W,N,cnt);self.assertTrue(ok,res)
+        bad=dict(d);bad['status_income']=ky.copy();bad['status_income'][0,0,0,0,0]+=100
+        res,ok=ve.checks(bad,fin,W,N,cnt);self.assertFalse(ok);self.assertGreater(res['production_income_margin_max_error_persons'],99)
+        with patch.object(ve,'evaluate',return_value={'passed':False}):
+            with self.assertRaises(SystemExit) as cm:ve.main()
+            self.assertEqual(cm.exception.code,1)

@@ -1,0 +1,61 @@
+{
+  "variant": "base",
+  "model_base": "3.0-M12",
+  "areas": 1896,
+  "status_codes": [
+    "K1",
+    "K2",
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+  ],
+  "industry_codes": [
+    "G00",
+    "G01",
+    "G02",
+    "G03",
+    "G04",
+    "G05",
+    "G06",
+    "G07",
+    "G08",
+    "G09",
+    "G10",
+    "G11",
+    "G12",
+    "G13",
+    "G14",
+    "G15",
+    "G16",
+    "G17",
+    "G18",
+    "G19",
+    "G20"
+  ],
+  "margins": {
+    "education_x_income": "production counts, preserved exactly",
+    "status": "employment-status table of build.py (K6 = N - employed)",
+    "industry": "census 6-3 employed persons scaled to model employed persons"
+  },
+  "shrink_kg_pseudopopulation": 300.0,
+  "ipf": {
+    "max_iterations": 600,
+    "max_absolute_margin_error_persons": 0.03924783631198636,
+    "max_education_income_margin_error_persons": 0.018564796054306498,
+    "max_status_margin_error_persons": 0.03924783631198636
+  },
+  "association_tv_joint_vs_independent": {
+    "weighted_mean": 0.35618501978079115,
+    "median": 0.3558160404174027,
+    "p90": 0.44727156168324633
+  },
+  "nonworker_share": 0.39371869427905737,
+  "family_share": 0.015918088207481234,
+  "elapsed_seconds": 155.5,
+  "notes": [
+    "Education x status x industry association is transported from national (04000) and prefecture (10-1) tables; municipal cross tables do not exist.",
+    "Industry x income shapes have no age dimension (table 24).",
+    "Preserving the production education x income margins means this stage does not change any published 5-attribute probability."
+  ]
+}
