@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "geographies": 1916,
+  "csv_rows": 398528,
+  "final_prefecture_sex_age_max_probability_error": 3.3306690738754696e-16,
+  "checked": [
+    "nonnegative counts",
+    "municipality totals",
+    "conditional probabilities",
+    "no duplicate cells",
+    "parent/ward aggregation",
+    "prefecture income constraints",
+    "sampler conditioning and reproducibility",
+    "zero-population handling",
+    "under-15 handling"
+  ]
+}

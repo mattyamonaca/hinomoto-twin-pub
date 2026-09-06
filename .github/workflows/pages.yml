@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Import the pinned data snapshot separately from UI code
-        run: python src/dataset.py fetch-baseline
+        run: python src/dataset.py fetch-production
       - name: Assemble the site
         run: python src/build_site.py
       - uses: actions/configure-pages@v5

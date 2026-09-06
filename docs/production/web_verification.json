@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "model": {
+    "model": "M12",
+    "model_version": "3.0-M12",
+    "gamma_education": 1.5,
+    "gamma_industry": 1.0,
+    "beta_tax": 0.0,
+    "population_year": 2020,
+    "income_year": 2022,
+    "validation": "Development-set cross-validation; no independent validation of municipality sex/education-specific income or small towns."
+  },
+  "geographies": 1916,
+  "encoding": "float64",
+  "checked": [
+    "serialized arrays exactly match model",
+    "nonoverlapping population",
+    "prefecture education-income aggregation"
+  ]
+}
