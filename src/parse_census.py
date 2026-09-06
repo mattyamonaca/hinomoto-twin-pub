@@ -1,12 +1,13 @@
+from paths import SOURCES,RAW
 from pathlib import Path
 import openpyxl,pandas as pd
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
-BASE=Path(__file__).resolve().parents[1]
-R=BASE/'raw'
+R=RAW
 
 def run(kind):
- out=BASE/'sources'/(kind+'_tidy.csv.gz')
+ SOURCES.mkdir(parents=True,exist_ok=True)
+ out=SOURCES/(kind+'_tidy.csv.gz')
  rows=[];p=R/(kind+'.xlsx');w=openpyxl.load_workbook(p,read_only=True,data_only=True);s=w.active
  for r in s.iter_rows(min_row=11,values_only=True):
   if kind=='census_population':

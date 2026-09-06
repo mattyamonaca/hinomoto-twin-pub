@@ -1,0 +1,154 @@
+{
+  "format_version": 1,
+  "dataset_version": "2020-2022-v2-20260906",
+  "archive_url": "https://codeload.github.com/mattyamonaca/hinomoto-twin-pub/tar.gz/dcbdf88db0edc2c7172412b77407db0a36b73572",
+  "archive_prefix": "hinomoto-twin-pub-dcbdf88db0edc2c7172412b77407db0a36b73572/",
+  "files": [
+    {
+      "path": "sources/census_age_status_tidy.csv.gz",
+      "sha256": "4336f67e7271b2a4e9d94b40d445e1f388437dc398649e7c691c84e935ea05ee"
+    },
+    {
+      "path": "sources/census_imputed_age_tidy.csv.gz",
+      "sha256": "d9087ade45765de1f2129021db0b50798d8d81c708bf8b04a75a920f1ca218bb"
+    },
+    {
+      "path": "sources/census_imputed_detailed_status_tidy.csv.gz",
+      "sha256": "7ff6825536284c77edba7f953b6347a34f9dd862b91be25330d1329f330bf854"
+    },
+    {
+      "path": "sources/census_population_tidy.csv.gz",
+      "sha256": "3c0ab9c4e454764d44b6dad53f183f2a5b1e9a998af7ff59bf358acefea999a2"
+    },
+    {
+      "path": "sources/education/census_education_labor_tidy.csv.gz",
+      "sha256": "c581e5b6d156786827ede01c3434024832443cc80514fccd4945c7f81d778341"
+    },
+    {
+      "path": "sources/education/census_education_tidy.csv.gz",
+      "sha256": "c44652e6d21b524ba54b150d17d4d61bf2464bcf4400cf7c09edf37ce002a954"
+    },
+    {
+      "path": "sources/education/education_bins.csv",
+      "sha256": "fecc9e99c3fdcf9acdab8be18357f927ffbd6b21e9ef0a8d1a23e733420c9a10"
+    },
+    {
+      "path": "sources/education/income_education_tidy.csv.gz",
+      "sha256": "aff0c362bf7655801e07fb84d207e1db13e8733bea552f629a3f5f94daee5d9e"
+    },
+    {
+      "path": "sources/education/income_model.json",
+      "sha256": "950ae7c723577a9c3ec595293b67f88bd370c24b3f0443aa0a95183a7de83bf5"
+    },
+    {
+      "path": "sources/education/manifest.json",
+      "sha256": "78a67a4ceead57347c50af46f91411a886890d982b1ea0c75ea682efbb04bc06"
+    },
+    {
+      "path": "sources/income_model.json",
+      "sha256": "4454a8e32cd3e7b292aa7099b264e359bd76891d3e27afe8f884f36ac4dfe2a8"
+    },
+    {
+      "path": "sources/income_tidy.csv.gz",
+      "sha256": "3f2d990581ad8a3aa9a10dfbd4f6c5b4ba7fc881962376407015562c770d9470"
+    },
+    {
+      "path": "sources/manifest.json",
+      "sha256": "abd15120e3c2f2a49eda08f297f44afc9173350723ebfbfca06f25582ee685d9"
+    },
+    {
+      "path": "sources/tax_tidy.csv",
+      "sha256": "917c6e39d3bfeef88da03c7b7983a3b9ac4771270f6418adaf02cecfb6ae8016"
+    },
+    {
+      "path": "validation/city_validation_with_tax.csv",
+      "sha256": "84fd3fc53586623aedc565fddd170201eeaf2b2d6d5490a7736851af480f12ac"
+    },
+    {
+      "path": "validation/education_build.json",
+      "sha256": "430b875e2887dc3dfc79b49a9a61c54cb9bf53f960c43315768a888ec937e66b"
+    },
+    {
+      "path": "validation/education_export.json",
+      "sha256": "cef27bf28b3f416c6383c1d8712a925e7b1979a10d6b2bb7fb58233ad7993255"
+    },
+    {
+      "path": "validation/education_income_quality.csv",
+      "sha256": "b1b2cf8bc3acc53ad9aedf3c18e54a44cb679bbc9a9b9a1648d16c4a8eabb25c"
+    },
+    {
+      "path": "validation/education_ipf.csv",
+      "sha256": "db5aeded8341b4f49f2192bcfd343ecf7884853cc23ecfa0afd23a6f03a3095d"
+    },
+    {
+      "path": "validation/education_sensitivity.csv",
+      "sha256": "58f80fcabf992edaac5ed6926f5bc193f493427a9e18b4d93dd7d42862a45c1a"
+    },
+    {
+      "path": "validation/education_sensitivity.json",
+      "sha256": "00700a786b1659edb55eea5bcb6a1613107a7e75c96e6ee15aa944b479bf1ae8"
+    },
+    {
+      "path": "validation/education_source_quality.csv.gz",
+      "sha256": "4315435714bbc9e64cf6c8ff8b542a544d2814e027c96d3e2767242fcb931f53"
+    },
+    {
+      "path": "validation/education_verification.json",
+      "sha256": "c684eaa3528765064ac52c8df973784b301fad3ac570d174f1618ac24d6fd6cd"
+    },
+    {
+      "path": "validation/export_checks.json",
+      "sha256": "53fd20cefc35c2e626da2cabb268115c22ab55a0c1a7754466e2c60be597bcc2"
+    },
+    {
+      "path": "validation/heldout_cities.csv",
+      "sha256": "232068a9671244ec657d005d92e3ca85afb8221f005cefc4640f3aeed9ab11dd"
+    },
+    {
+      "path": "validation/income_calibration.csv",
+      "sha256": "ebb4ae5be63add012c1a5790372ecf59165f84626390c6ebcf0198bd70f7760b"
+    },
+    {
+      "path": "validation/income_source_quality.csv",
+      "sha256": "afe37006a28c429323f2981d0dd84939926019a70b0bbd86726f928c9ecd81bf"
+    },
+    {
+      "path": "validation/residual_clipping.csv",
+      "sha256": "618e4172f70b859b3db891a2f3893e7f61ea9b33829f7101f5a075865eefa65e"
+    },
+    {
+      "path": "validation/source_replay.json",
+      "sha256": "0f39c85a4d69aaa49049cb7e5070d93cc8a149572619a9fb3de6ae3415ca5791"
+    },
+    {
+      "path": "validation/status_ipf.csv",
+      "sha256": "22a7adfc93f668950bae77c973da68b8fb8d7aec06ceacdf4086fd8121ac39c4"
+    },
+    {
+      "path": "validation/summary.json",
+      "sha256": "01528b0540ee1dd610f9026d51093d16081966a0ba683124746e1d7dd85d2c18"
+    },
+    {
+      "path": "validation/tax_parameter_search.csv",
+      "sha256": "7e91f0d949b1d273c2a44e8129b5d009ab0e1a631f7fddfd1a9f93b1a21959f1"
+    },
+    {
+      "path": "validation/tax_proxy_quality.csv",
+      "sha256": "e2d9c944e593ae2eb4d3a6b14523a0b0cba258efdc357ed537ef62ffad7a0dbc"
+    },
+    {
+      "path": "validation/tax_summary.json",
+      "sha256": "a0b37934fce360b1e84bd5c28ffeb8e689ad1f20e05f9b5eb8af5a157f161f8b"
+    },
+    {
+      "path": "validation/verification.json",
+      "sha256": "5dd66fb67f00fd801fca969f90d6406f2618df380dad6a4fede5d2195cf68d17"
+    },
+    {
+      "path": "site/index.html",
+      "sha256": "6a1500afcc80ebeb6466e319124647965e84030fb378ec983e0f8c31a667e53e",
+      "target": "web/graph.json",
+      "transform": "embedded_graph"
+    }
+  ]
+}

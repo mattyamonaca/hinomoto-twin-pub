@@ -286,7 +286,7 @@ footer{padding:32px 0 0;border-top:1px solid var(--line);font-size:12.5px;color:
 <section id="pipeline">
   <p class="eyebrow">2 / パイプライン全体図</p>
   <h2>原表から出力まで</h2>
-  <div class="prose"><p>処理は2段に分かれます。前段は原表を縦持ちCSVに正規化する「取得・加工」（ネット接続が必要、結果は <code>sources/</code> に同梱済み）、後段は正規化済み表だけから分布を再計算する「推定・出力」（オフラインで再実行可能）です。</p></div>
+  <div class="prose"><p>処理は2段に分かれます。前段は原表を縦持ちCSVに正規化する「取得・加工」（ネット接続が必要、結果はデータルートの <code>sources/</code> に別途配置）、後段は正規化済み表だけから分布を再計算する「推定・出力」（オフラインで再実行可能）です。</p></div>
   <div class="legend-row"><span><span class="sw" style="background:var(--census)"></span>2020年国勢調査（S1–S4）</span><span><span class="sw" style="background:var(--ess)"></span>2022年就業構造基本調査（S5）</span><span><span class="sw" style="background:var(--tax)"></span>市区町村のすがた2024・税務指標（S6）</span></div>
 
   <figure class="wide">
@@ -295,7 +295,7 @@ footer{padding:32px 0 0;border-top:1px solid var(--line);font-size:12.5px;color:
       <defs><marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
       <g style="color:var(--ink-2)">
       <text x="20" y="22" class="svg-t2">原表（e-Stat から取得、raw/ に保存・Git管理外）</text>
-      <text x="700" y="22" class="svg-t2">正規化済み表（sources/ に同梱・Git管理）</text>
+      <text x="700" y="22" class="svg-t2">正規化済み表（外部データの sources/）</text>
       <rect x="388" y="6" width="244" height="396" rx="6" class="svg-dash"/>
       <text x="510" y="24" text-anchor="middle" class="svg-mono2">download_sources.py が順に実行・SHA-256を照合</text>
 
@@ -368,7 +368,7 @@ footer{padding:32px 0 0;border-top:1px solid var(--line);font-size:12.5px;color:
       </g>
     </svg>
     </div>
-    <figcaption>図1　取得・加工段。国勢調査4表は1本のパーサーで、就業構造基本調査は15回のレスポンス取得と1本のパーサーで、税務指標は1本のパーサーで正規化されます。sources/manifest.json に原表と加工済み表のSHA-256が記録されています。</figcaption>
+    <figcaption>図1　取得・加工段。国勢調査4表は1本のパーサーで、就業構造基本調査は15回のレスポンス取得と1本のパーサーで、税務指標は1本のパーサーで正規化されます。catalog/manifest.json に原表と加工済み表のSHA-256が記録されています。</figcaption>
   </figure>
 
   <figure class="wide">
@@ -562,7 +562,7 @@ footer{padding:32px 0 0;border-top:1px solid var(--line);font-size:12.5px;color:
       <p class="desc">地域 × 性別 × 従業上の地位・雇用形態 × 年齢 × 所得。全国・47都道府県・86都市の134地域。配偶関係は総数。</p>
       <dl>
         <dt>原表</dt><dd><a href="https://www.e-stat.go.jp/dbview?sid=0004008500">e-Stat 統計表 sid=0004008500</a>。閲覧画面の読取端点（APIキー不要）から、性別3 × 地位5 の15レスポンスを取得</dd>
-        <dt>パーサー</dt><dd><code>fetch_income.py</code>（表定義は <code>sources/income_model.json</code>）→ <code>parse_income.py</code>　HTML表の <code>data-unique</code> と値を正規表現で抽出、「-」→ 0</dd>
+        <dt>パーサー</dt><dd><code>fetch_income.py</code>（表定義は <code>catalog/income_model.json</code>）→ <code>parse_income.py</code>　HTML表の <code>data-unique</code> と値を正規表現で抽出、「-」→ 0</dd>
         <dt>加工後</dt><dd><code>income_tidy.csv.gz</code>　478,380行（総数行を含む）</dd>
         <dt>地位コード</dt><dd><code>0</code> 総数、<code>1</code> 自営業主、<code>2</code> 雇用者、<code>22</code> 正規、<code>23</code> 非正規</dd>
       </dl>
@@ -878,8 +878,8 @@ IPF：行合計 R(e)、列合計 B(z)。所得階級間の学歴別オッズ比�
     <table class="files">
       <thead><tr><th>スクリプト</th><th>読む</th><th>書く</th><th>役割</th></tr></thead>
       <tbody>
-        <tr><td>download_sources.py</td><td>sources/manifest.json</td><td>raw/*.xlsx</td><td>原表の取得とSHA-256照合。以下4本を順に実行</td></tr>
-        <tr><td>fetch_income.py</td><td>sources/income_model.json</td><td>raw/income_{s}_{k}.json.gz ×15</td><td>e-Stat閲覧画面の読取端点から所得表を取得</td></tr>
+        <tr><td>download_sources.py</td><td>catalog/manifest.json</td><td>raw/*.xlsx</td><td>原表の取得とSHA-256照合。以下4本を順に実行</td></tr>
+        <tr><td>fetch_income.py</td><td>catalog/income_model.json</td><td>raw/income_{s}_{k}.json.gz ×15</td><td>e-Stat閲覧画面の読取端点から所得表を取得</td></tr>
         <tr><td>parse_census.py</td><td>raw/census_*.xlsx ×4</td><td>sources/census_*_tidy.csv.gz ×4</td><td>国勢調査4表の正規化</td></tr>
         <tr><td>parse_income.py</td><td>raw/income_*.json.gz</td><td>sources/income_tidy.csv.gz</td><td>HTML表の縦持ち化（478,380セル）</td></tr>
         <tr><td>parse_tax.py</td><td>raw/economic.xlsx</td><td>sources/tax_tidy.csv</td><td>課税所得・納税義務者数の抽出</td></tr>
@@ -916,11 +916,11 @@ python src/download_sources.py</code></pre>
       <li>住民集団の分布であり、実在する個人の所得を特定するものではない。人口が正の1,915地域で分布が定義される。</li>
       <li>税補助なしの列は構造的な感度比較の一つで、信頼区間ではない。復元人口を標本数とみなした区間推定は作成していない。</li>
     </ol>
-    <p>推計値を公表する際は「国勢調査・就業構造基本調査・市区町村のすがたを加工したモデル推定」と明記し、基準年と所得定義を併記してください。詳細は <code>METHOD.md</code>、出典は <code>SOURCES.md</code> と <code>sources/manifest.json</code> を参照。</p>
+    <p>推計値を公表する際は「国勢調査・就業構造基本調査・市区町村のすがたを加工したモデル推定」と明記し、基準年と所得定義を併記してください。詳細は <code>METHOD.md</code>、出典は <code>SOURCES.md</code> と <code>catalog/manifest.json</code> を参照。</p>
   </div>
 </section>
 
-<footer>Hinomoto Twin Pub　モデル v1.1　原統計：総務省統計局・e-Stat（2020年国勢調査、2022年就業構造基本調査、市区町村のすがた2024）。本ページの数値はリポジトリ内の validation/ と examples.csv から転記したものです。</footer>
+<footer>Hinomoto Twin Pub　モデル v1.1　原統計：総務省統計局・e-Stat（2020年国勢調査、2022年就業構造基本調査、市区町村のすがた2024）。本ページの数値は公開版データの validation/ と data/examples.csv から転記したものです。</footer>
 </main>
 </div>
 <div class="tip" id="tip" role="status" aria-live="polite"></div>

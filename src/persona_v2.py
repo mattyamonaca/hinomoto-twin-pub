@@ -1,12 +1,12 @@
 """Query and sample age/sex/education/income bands within a municipality."""
+from paths import Paths
 import argparse,json
 from pathlib import Path
 import numpy as np
-BASE=Path(__file__).resolve().parents[1]
 
 class PersonaDistributionV2:
  def __init__(self,data_dir=None):
-  self.directory=Path(data_dir or BASE/'data')
+  self.directory=Path(data_dir).expanduser().resolve() if data_dir is not None else Paths.from_env().output
   d=np.load(self.directory/'municipality_model_v2.npz');self.codes=d['municipality_codes'].tolist();self.counts=d['counts'];self.index={m:i for i,m in enumerate(self.codes)}
   self.schema=json.loads((self.directory/'schema_v2.json').read_text())
  def _selection(self,municipality_code,age=None,sex=None,education=None):
@@ -41,7 +41,8 @@ class PersonaDistributionV2:
 
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('--municipality',required=True);parser.add_argument('--age',type=int);parser.add_argument('--sex');parser.add_argument('--education');parser.add_argument('--sample',type=int);parser.add_argument('--seed',type=int,default=20260905);parser.add_argument('--income-only',action='store_true');parser.add_argument('--output',type=Path)
- args=parser.parse_args();model=PersonaDistributionV2();conditions=dict(age=args.age,sex=args.sex,education=args.education)
+ parser.add_argument('--data-dir',type=Path)
+ args=parser.parse_args();model=PersonaDistributionV2(args.data_dir);conditions=dict(age=args.age,sex=args.sex,education=args.education)
  if args.sample is not None:result=model.sample(args.municipality,args.sample,seed=args.seed,**conditions)
  elif args.income_only:result={'income_codes':model.schema['income_codes'],'probabilities':model.income_distribution(args.municipality,**conditions).tolist()}
  else:

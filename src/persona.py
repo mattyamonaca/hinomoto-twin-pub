@@ -1,12 +1,12 @@
 """Load P(age,income | municipality), condition by age, and sample synthetic persona bands."""
+from paths import Paths
 import argparse,csv,json
 from pathlib import Path
 import numpy as np
-BASE=Path(__file__).resolve().parents[1]
 
 class PersonaDistribution:
  def __init__(self,data_dir=None):
-  self.directory=Path(data_dir or BASE/'data')
+  self.directory=Path(data_dir).expanduser().resolve() if data_dir is not None else Paths.from_env().output
   d=np.load(self.directory/'municipality_model.npz');self.codes=d['municipality_codes'].tolist();self.counts=d['counts'];self.population=d['population'];self.index={c:i for i,c in enumerate(self.codes)}
   self.ages=list(csv.DictReader(open(self.directory/'age_bins.csv',encoding='utf-8')))
   self.incomes=list(csv.DictReader(open(self.directory/'income_bins.csv',encoding='utf-8')))
@@ -30,7 +30,8 @@ class PersonaDistribution:
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--municipality',required=True);p.add_argument('--age',type=int);p.add_argument('--sample',type=int);p.add_argument('--seed',type=int,default=20260905);p.add_argument('--output',type=Path)
- args=p.parse_args();model=PersonaDistribution()
+ p.add_argument('--data-dir',type=Path)
+ args=p.parse_args();model=PersonaDistribution(args.data_dir)
  result=model.sample(args.municipality,args.sample,args.age,args.seed) if args.sample else model.distribution(args.municipality,args.age).tolist()
  text=json.dumps(result,ensure_ascii=False,indent=2)
  if args.output:args.output.write_text(text)

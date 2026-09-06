@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "tables": {
+    "census_age_status_tidy.csv.gz": [
+      "area",
+      "name",
+      "type",
+      "sex",
+      "age",
+      "employed",
+      "employee",
+      "regular",
+      "dispatch",
+      "part_other",
+      "executive",
+      "self_with",
+      "self_without",
+      "family",
+      "homework",
+      "unknown"
+    ],
+    "census_imputed_age_tidy.csv.gz": [
+      "area",
+      "name",
+      "type",
+      "sex",
+      "age",
+      "population",
+      "labor",
+      "employed",
+      "main",
+      "house_work",
+      "school_work",
+      "absent",
+      "unemployed",
+      "inactive",
+      "house",
+      "school",
+      "other"
+    ],
+    "census_imputed_detailed_status_tidy.csv.gz": [
+      "area",
+      "name",
+      "type",
+      "sex",
+      "employed",
+      "employee",
+      "regular",
+      "dispatch",
+      "part_other",
+      "executive",
+      "self_with",
+      "self_without",
+      "family",
+      "homework"
+    ],
+    "census_population_tidy.csv.gz": [
+      "area",
+      "name",
+      "type",
+      "sex",
+      "age",
+      "population"
+    ],
+    "education/census_education_labor_tidy.csv.gz": [
+      "area",
+      "name",
+      "sex",
+      "age",
+      "labor_status",
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08"
+    ],
+    "education/census_education_tidy.csv.gz": [
+      "area",
+      "name",
+      "sex",
+      "age",
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08"
+    ],
+    "education/education_bins.csv": [
+      "education_code",
+      "education_label",
+      "note"
+    ],
+    "education/income_education_tidy.csv.gz": [
+      "sex",
+      "age",
+      "education",
+      "income",
+      "count",
+      "raw_value"
+    ],
+    "income_tidy.csv.gz": [
+      "area",
+      "sex",
+      "status",
+      "age",
+      "income",
+      "count",
+      "raw_value"
+    ],
+    "tax_tidy.csv": [
+      "area",
+      "name",
+      "taxable_income_million_yen",
+      "income_taxpayers",
+      "fiscal_year"
+    ]
+  }
+}

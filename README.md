@@ -17,7 +17,7 @@
 - 2020年人口が0の双葉町は確率が未定義です。人口のある1,915地域で分布を提供します。
 - 性別・学歴を集約すると従来の市区町村別年齢・年収分布を再現します。
 
-主なファイルは以下のとおりです。
+主なファイルは以下のとおりです。`data/`・`validation/` は設定したデータルート内の相対パスです。コードリポジトリとは別に保存します。
 
 | パス | 内容 |
 |---|---|
@@ -27,7 +27,7 @@
 | `data/schema_v2.json` | 行列の軸、区分コード・名称、確率の定義 |
 | `data/education_bins.csv`, `data/sex_bins.csv` | 追加属性の区分と注意点 |
 | `data/geography.csv`, `data/age_bins.csv`, `data/income_bins.csv` | 地域・年齢・年収の定義 |
-| `examples_v2.csv` | 5都市での性別・学歴を指定した推定例 |
+| `data/examples_v2.csv` | 5都市での性別・学歴を指定した推定例 |
 | `validation/education_verification.json` | 5属性版の検証結果 |
 | `validation/education_sensitivity.json` | 学歴×所得の移植仮定・平滑化・不詳の扱いに対する感度分析 |
 | `site/index.html` | 公開ページ（[GitHub Pages](https://mattyamonaca.github.io/hinomoto-twin-pub/)）。導出ステップ・参照データ・検証の範囲を表示 |
@@ -55,12 +55,18 @@ CSVの `p_age_sex_education_income_given_municipality` が主出力、`p_income_
 
 ## 条件付き分布とペルソナ抽出
 
-Python 3.11以上で実行します。収録済みのデータを使う場合、再取得・再計算は不要です。
+Python 3.11以上で実行します。コードとデータを別々に取得します。既存の計算済みデータがあれば再計算は不要です。初回の配置方法は [データの管理](DATA.md) を参照してください。
 
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
+
+# データルートを指定（省略時はコードの隣の hinomoto-twin-data）
+export HINOMOTO_DATA_ROOT="../hinomoto-twin-data"
+# 初回のみ：固定版の入力データを取得して計算
+make dataset
+make build
 
 # 港区の全4軸の同時分布（市区町村は条件）
 python src/persona_v2.py --municipality 13103
@@ -101,15 +107,18 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 
 ## 元データと再実行
 
-| ディレクトリ | 内容 | 通常のGit管理 |
+| 場所 | 内容 | コード側のGit管理 |
 |---|---|---|
 | `src/` | 取得・加工・推定・出力・検証・抽出 | 対象 |
-| `sources/` | 全加工済み入力、表定義、出典・ハッシュ | 対象 |
-| `raw/` | 使用した元Excel・所得表レスポンス | 除外。ローカル保存と再取得に対応 |
-| `data/` | 全分布と計算用配列 | 除外。再計算可能 |
-| `validation/` | 検証結果・処理品質 | 対象 |
+| `catalog/` | 出典・固定版ハッシュ・取得用表定義・入力形式 | 対象 |
+| `site/` | 分布を埋め込まない画面コード | 対象 |
+| `$HINOMOTO_DATA_ROOT/raw/` | 元Excel・所得表レスポンス | 対象外 |
+| `$HINOMOTO_DATA_ROOT/sources/` | 正規化済み入力 | 対象外 |
+| `$HINOMOTO_DATA_ROOT/data/` | 全分布・計算用配列・推定例 | 対象外 |
+| `$HINOMOTO_DATA_ROOT/validation/` | 検証結果・処理品質 | 対象外 |
+| `$HINOMOTO_DATA_ROOT/web/` | 公開ページ用データ | 対象外 |
 
-Gitから取得した場合でも、同梱の `sources/` からオフラインで推定できます。
+`make dataset` で固定版の正規化済み入力を別途取得できます。取得後の推定はオフラインで実行できます。`make paths` で実際の参照先を確認してください。入力と出力の置き場所は個別にも変更できます。移行、アーカイブ、設定の詳細は [DATA.md](DATA.md) を参照してください。
 
 ```sh
 make build          # v1の基礎推定 → v2の性別・学歴追加

@@ -6,10 +6,11 @@ not an accuracy evaluation against observed municipal education x income tables 
 The lambda variants change only the paid-income initial shape; education-specific employment rates are kept
 unless the variant also uses a common rate.
 """
+from paths import REPORTS
 import json
 import numpy as np
 import pandas as pd
-from build import BASE,AGES,norm
+from model_math import AGES,norm
 from build_education import EDU,INCOME_MAP,read,prepare,allocate,income_shapes
 
 EXAMPLES=['13103','13121','02201','47201']  # 港区, 足立区, 青森市, 那覇市
@@ -65,6 +66,7 @@ def odds_ratio(p,mi,si,ai):
  return float((a[8]/a[6])/(b[8]/b[6])) if np.isfinite(a[8]) and np.isfinite(b[8]) and a[6]>0 and b[6]>0 and b[8]>0 else float('nan')
 
 def main():
+ REPORTS.mkdir(parents=True,exist_ok=True)
  inputs=prepare();areas=inputs['areas'];idx={a:i for i,a in enumerate(areas)};R=inputs['edu_counts']
  base_counts=allocate(inputs)[0];base=cond(base_counts);ge_base=np.nansum(base[...,GE500],-1)
  # Common employment rate across education classes (weighted by education counts) for the fully-independent comparison.
@@ -96,7 +98,7 @@ def main():
   entry['max_income_margin_error']=float(np.max(abs(counts.sum(-2)-base_counts.sum(-2))));entry['max_education_margin_error']=float(np.max(abs(counts.sum(-1)-R)))
   summary['variants'][key]=entry;print(key,round(entry['weighted_mean_tv'],5),round(entry['weighted_mean_abs_change_p_ge500'],5),flush=True)
  summary['notes']=['Weights are model education populations R(m,s,a,e), not survey sample sizes.','TV is half the L1 distance between the variant and baseline P(income | area, sex, age, education).','All variants keep the v1 income margins and the census education margins; they change only how the fixed margins are split.','lambda variants temper only the paid-income initial shape q(y|s,a,e); education-specific employment rates stay unless the variant name says common_rate, so lambda_0.0 alone does not remove the education-income association from the final distribution that includes non-workers.','This is a sensitivity analysis of transported assumptions, not a validation against observed municipal education x income data.']
- (BASE/'validation/education_sensitivity.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
- pd.DataFrame(rows,columns=['variant','education','weighted_mean_tv','weighted_mean_abs_change_p_ge500']).to_csv(BASE/'validation/education_sensitivity.csv',index=False)
+ (REPORTS/'education_sensitivity.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
+ pd.DataFrame(rows,columns=['variant','education','weighted_mean_tv','weighted_mean_abs_change_p_ge500']).to_csv(REPORTS/'education_sensitivity.csv',index=False)
  print(json.dumps({k:{'tv':round(v['weighted_mean_tv'],5),'ge500':round(v['weighted_mean_abs_change_p_ge500'],5)} for k,v in summary['variants'].items()},ensure_ascii=False,indent=1))
 if __name__=='__main__':main()

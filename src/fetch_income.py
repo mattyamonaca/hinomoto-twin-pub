@@ -1,10 +1,9 @@
+from paths import CATALOG,SOURCES,RAW
 import json,gzip,base64,urllib.request,urllib.parse,re,time,csv,html
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
-BASE=Path(__file__).resolve().parents[1]
-ROOT=BASE/'raw'
-ROOT.mkdir(exist_ok=True)
-m=json.load(open(BASE/'sources/income_model.json'))
+ROOT=RAW
+m=json.load(open(CATALOG/'income_model.json'))
 def fetch(sex,status):
  name=f'income_{sex}_{status}.json.gz'; dest=ROOT/name
  if dest.exists(): return name
@@ -36,6 +35,7 @@ def fetch(sex,status):
    if attempt==2: raise
    time.sleep(2)
 if __name__=='__main__':
+ ROOT.mkdir(parents=True,exist_ok=True)
  import sys
  tasks=[('0','0')] if '--probe' in sys.argv else [(s,k) for s in ['0','1','2'] for k in ['0','1','2','22','23']]
  with ThreadPoolExecutor(max_workers=2) as ex:list(ex.map(lambda t:fetch(*t),tasks))

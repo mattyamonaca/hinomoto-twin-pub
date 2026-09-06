@@ -1,14 +1,14 @@
 """Download the raw public inputs for sex/education extension; no API key required."""
+from paths import CATALOG,SOURCES,RAW
 import base64,gzip,hashlib,json,re,time,urllib.parse,urllib.request
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1]
 WORKBOOKS={
  'census_education.xlsx':'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201217&fileKind=0',
  'census_education_labor.xlsx':'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&fileKind=0',
 }
 SID='0004008157'
 def fetch_income(sex,model):
- dest=BASE/'raw/education'/f'income_education_{sex}.json.gz'
+ dest=RAW/'education'/f'income_education_{sex}.json.gz'
  if dest.exists():return
  p={k:v for k,v in model.items() if k not in ['matters','use_record']}
  p.update(rows=[],cols=[],tops=[],apiTops=[],currentRows=None,currentCols=None,mode='table',inputNumberOfRows=5000,inputNumberOfCols=100,movementId=0)
@@ -35,14 +35,12 @@ def fetch_income(sex,model):
    if attempt==2:raise
    time.sleep(2)
 def main():
- (BASE/'raw/education').mkdir(parents=True,exist_ok=True);(BASE/'sources/education').mkdir(parents=True,exist_ok=True)
+ (RAW/'education').mkdir(parents=True,exist_ok=True);(SOURCES/'education').mkdir(parents=True,exist_ok=True)
  for name,url in WORKBOOKS.items():
-  dest=BASE/'raw'/name
+  dest=RAW/name
   if not dest.exists():
    with urllib.request.urlopen(url,timeout=180) as r:dest.write_bytes(r.read())
- metadata=BASE/'sources/education/income_model.json'
- if not metadata.exists():
-  with urllib.request.urlopen(f'https://www.e-stat.go.jp/dbview/api_get_model?sid={SID}',timeout=120) as r:metadata.write_bytes(r.read())
+ metadata=CATALOG/'education/income_model.json'
  m=json.loads(metadata.read_text())
  for sex in ['0','1','2']:fetch_income(sex,m)
 if __name__=='__main__':main()

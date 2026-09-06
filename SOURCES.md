@@ -15,9 +15,9 @@
 
 ## 出典データの保存内容
 
-`sources/manifest.json` に使用した原表のダウンロードURL・ファイルサイズ・SHA-256、加工済み表のSHA-256、所得表の15件の取得レスポンスのSHA-256を保存しました。このフォルダでは元Excelとレスポンス本体を `raw/` に保存しています。通常のGit管理からは除外していますが、再取得用プログラムを含めています。計算に必要な加工済み表は全件 `sources/` に同梱しています。
+`catalog/manifest.json` に使用した原表のダウンロードURL・ファイルサイズ・SHA-256、加工済み表のSHA-256、所得表の15件の取得レスポンスのSHA-256を保存しました。元Excelとレスポンス本体は、外部データルートの `raw/` に保存します。通常のGit管理からは除外していますが、再取得用プログラムを含めています。計算に必要な加工済み表は外部データルートの `sources/` に配置します。取得は `make dataset`、設定・移行は [DATA.md](DATA.md) を参照してください。
 
-所得表はe-Statの公開閲覧画面が使う読み取り用エンドポイントから取得しました。APIキーを要するe-Stat外部提供APIとは別です。取得時の表定義を `sources/income_model.json` に保存しています。性別コード0,1,2、地位コード0,1,2,22,23の組合せ15件で、134地域 × 17所得区分 × 14年齢区分を各取得。HTML表からコード・値を読み、総数や男女計を保持した縦持ち表にしました。ダッシュは0として処理し、数値と原表の文字列を保存しています。実装は画面の構造変更に影響されるため、将来の再取得時は確認が必要です。
+所得表はe-Statの公開閲覧画面が使う読み取り用エンドポイントから取得しました。APIキーを要するe-Stat外部提供APIとは別です。取得時の表定義を `catalog/income_model.json` に保存しています。性別コード0,1,2、地位コード0,1,2,22,23の組合せ15件で、134地域 × 17所得区分 × 14年齢区分を各取得。HTML表からコード・値を読み、総数や男女計を保持した縦持ち表にしました。ダッシュは0として処理し、数値と原表の文字列を保存しています。実装は画面の構造変更に影響されるため、将来の再取得時は確認が必要です。
 
 ## 再現する
 
@@ -57,6 +57,6 @@ python src/verify.py
 8. **同12-1**：男女、年齢、労働力状態・産業、在学状態・最終卒業学校別人口。全国・都道府県・主要都市等。[原Excel](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&fileKind=0)。`raw/census_education_labor.xlsx` に保存。加工時に総数、就業者、完全失業者、非労働力人口、労働力状態不詳を選択。加工後は `sources/education/census_education_labor_tidy.csv.gz`。
 9. **2022就業構造基本調査・全国編04000**：男女、配偶関係、年齢、従業上の地位等、所得、教育別人口（有業者）。[統計表](https://www.e-stat.go.jp/dbview?sid=0004008157)。配偶関係総数・従業地位総数を選択し、男女・年齢・所得・教育の表を取得。`raw/education/income_education_{0,1,2}.json.gz`、加工後 `sources/education/income_education_tidy.csv.gz` に保存。
 
-表定義・原ファイル・加工済みファイルのSHA-256は `sources/education/manifest.json` に記録しています。再取得は `src/fetch_education.py`、加工は `src/parse_education.py`、モデルは `src/build_education.py`、出力は `src/export_education.py`、検証は `src/verify_education.py` です。
+表定義・原ファイル・加工済みファイルのSHA-256は `catalog/education/manifest.json` に記録しています。再取得は `src/fetch_education.py`、加工は `src/parse_education.py`、モデルは `src/build_education.py`、出力は `src/export_education.py`、検証は `src/verify_education.py` です。
 
 学歴の対応付けは[国勢調査公式ユーザーズガイド](https://www.stat.go.jp/data/kokusei/2020/kekka/pdf/u_guide_2020.pdf)と[就業構造基本調査用語解説](https://www.stat.go.jp/data/shugyou/2022/pdf/yougo.pdf)を参照しました。専門学校の修業年数・卒業時期等の対応に近似があることはMETHOD_V2.mdに記載しています。調査結果を加工・推定したもので、政府による市区町村別学歴・所得推計ではありません。

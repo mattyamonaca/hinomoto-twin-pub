@@ -1,12 +1,12 @@
 """Normalize the education census cross-tabs and ESS 04000 without imputing unknowns."""
+from paths import SOURCES,RAW
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import gzip,html,json,re
 import numpy as np
 import pandas as pd
 import openpyxl
-BASE=Path(__file__).resolve().parents[1]
-DEST=BASE/'sources/education'
+DEST=SOURCES/'education'
 EDUCATION=[
  ('E01','小学校・中学校','小学校と中学校を統合'),
  ('E02','高校・旧中相当','国勢調査の高校・旧中区分。専門学校2年未満を接続時に含む'),
@@ -29,7 +29,7 @@ def grouped(vals):
  return out
 
 def census(kind):
- w=openpyxl.load_workbook(BASE/'raw'/(kind+'.xlsx'),read_only=True,data_only=True);s=w.active;rows=[]
+ w=openpyxl.load_workbook(RAW/(kind+'.xlsx'),read_only=True,data_only=True);s=w.active;rows=[]
  for r in s.iter_rows(min_row=11,values_only=True):
   if kind=='census_education':geo,sex,age=r[2],r[3],r[4];status=None;vals=r[5:17]
   else:
@@ -50,7 +50,7 @@ def census(kind):
 def income():
  rows=[]
  for sex in ['0','1','2']:
-  d=json.load(gzip.open(BASE/'raw/education'/f'income_education_{sex}.json.gz','rt'))
+  d=json.load(gzip.open(RAW/'education'/f'income_education_{sex}.json.gz','rt'))
   body=d['table'].split('<tbody')[1].split('</tbody>')[0]
   for tr in re.findall(r'<tr>(.*?)</tr>',body,re.S):
    keys=re.findall(r'data-unique="([^"]+)"',tr);vals=re.findall(r'<td class="stat-dbview-value">(.*?)</td>',tr,re.S)

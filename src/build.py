@@ -1,36 +1,18 @@
 """Reproducible small-area main-job annual income synthesis; Python 3.11+, numpy, pandas."""
+from paths import REPORTS,OUTPUT as OUT,SOURCES as DATA
 import json,sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
-BASE=Path(__file__).resolve().parents[1]
-DATA=BASE/'sources'
-OUT=BASE/'data'
-AGES=[f'{i:02d}' for i in range(1,14)]
-STATUS=['regular','nonregular','executive','self','family']
+from model_math import AGES,STATUS,norm,ipf
 
 def read(n):return pd.read_csv(DATA/n,dtype={'area':str,'age':str,'sex':str,'type':str,'status':str,'income':str})
-def norm(x):
- x=np.asarray(x,dtype=float);return x/np.maximum(x.sum(axis=-1,keepdims=True),1e-300)
-def ipf(seed,rows,cols,tol=1e-10):
- """KL projection with nonnegative, equal-total margins; zeros in margins stay zero."""
- rows=np.asarray(rows,float);cols=np.asarray(cols,float)
- assert np.isclose(rows.sum(),cols.sum(),rtol=1e-8,atol=1e-6)
- if rows.sum()==0:return np.zeros_like(seed,dtype=float),0,0.
- z=np.maximum(np.asarray(seed,float),1e-14)
- z[rows==0,:]=0;z[:,cols==0]=0
- for it in range(2000):
-  z*=np.divide(rows,z.sum(1),out=np.zeros_like(rows),where=z.sum(1)>0)[:,None]
-  z*=np.divide(cols,z.sum(0),out=np.zeros_like(cols),where=z.sum(0)>0)[None,:]
-  err=max(np.max(np.abs(z.sum(1)-rows)/np.maximum(rows,1)),np.max(np.abs(z.sum(0)-cols)/np.maximum(cols,1)))
-  if err<tol:return z,it+1,float(err)
- raise RuntimeError(f'IPF did not converge: {err}')
 def categories(f):
  return np.column_stack([f.regular,f.dispatch+f.part_other,f.executive,f.self_with+f.self_without+f.homework,f.family])
 
 def main(shrink=1000.):
  OUT.mkdir(parents=True,exist_ok=True)
- (BASE/'validation').mkdir(parents=True,exist_ok=True)
+ (REPORTS).mkdir(parents=True,exist_ok=True)
  pop=read('census_population_tidy.csv.gz');labor=read('census_imputed_age_tidy.csv.gz');status=read('census_imputed_detailed_status_tidy.csv.gz');seed=read('census_age_status_tidy.csv.gz');inc=read('income_tidy.csv.gz')
  geos=pop[['area','name','type']].drop_duplicates().sort_values('area')
  # Nonoverlapping geography: all wards (Tokyo special wards included), cities except designated-city parents, towns/villages.
@@ -116,10 +98,10 @@ def main(shrink=1000.):
   child=leaf[leaf.area.str.startswith('131')] if r.area=='13100' else leaf[(leaf.type=='0')&leaf.name.str.startswith(r['name'])]
   for _,ch in child.iterrows():mapping.append((r.area,r['name'],ch.area,ch['name']))
  pd.DataFrame(mapping,columns=['parent_code','parent_name','area','name']).to_csv(OUT/'parent_mapping.csv',index=False)
- pd.DataFrame(fitrows,columns=['area','sex','seed_area','iterations','relative_error']).to_csv(BASE/'validation/status_ipf.csv',index=False)
- pd.DataFrame(calibration,columns=['prefecture','sex','age','iterations','relative_error','max_income_share_error']).to_csv(BASE/'validation/income_calibration.csv',index=False)
- pd.DataFrame(smoothing,columns=['prefecture','sex','age','status','source_total','known_income_total','national_shrinkage_weight']).to_csv(BASE/'validation/income_source_quality.csv',index=False)
- pd.DataFrame(negatives,columns=['prefecture','sex','age','income_index','negative_residual']).to_csv(BASE/'validation/residual_clipping.csv',index=False)
+ pd.DataFrame(fitrows,columns=['area','sex','seed_area','iterations','relative_error']).to_csv(REPORTS/'status_ipf.csv',index=False)
+ pd.DataFrame(calibration,columns=['prefecture','sex','age','iterations','relative_error','max_income_share_error']).to_csv(REPORTS/'income_calibration.csv',index=False)
+ pd.DataFrame(smoothing,columns=['prefecture','sex','age','status','source_total','known_income_total','national_shrinkage_weight']).to_csv(REPORTS/'income_source_quality.csv',index=False)
+ pd.DataFrame(negatives,columns=['prefecture','sex','age','income_index','negative_residual']).to_csv(REPORTS/'residual_clipping.csv',index=False)
  # Held-out city-age distributions: city ESS income is never used to construct X.
  cmap={m:[i] for i,m in enumerate(areas)}
  for parent,_,ch,_ in mapping:cmap.setdefault(parent,[]).append(areas.index(ch))
@@ -133,8 +115,8 @@ def main(shrink=1000.):
    obs=norm(obs);pred=norm(X[ids,:,ai].sum((0,1)));base=norm(raw(pref,'0',a,'0')[1:]);national=norm(raw('00000','0',a,'0')[1:])
    evalrows.append((city,geos.set_index('area').loc[city,'name'],pref,a,total,.5*np.abs(pred-obs).sum(),.5*np.abs(base-obs).sum(),.5*np.abs(national-obs).sum(),pred[8:].sum(),obs[8:].sum()))
  ev=pd.DataFrame(evalrows,columns=['area','name','prefecture','age','survey_expanded_known_income_count','tv_model','tv_prefecture_only','tv_national_age','p_ge500_model','p_ge500_observed'])
- ev.to_csv(BASE/'validation/heldout_cities.csv',index=False)
+ ev.to_csv(REPORTS/'heldout_cities.csv',index=False)
  summary={'model_version':'1.0','population_year':2020,'income_year':2022,'geography_year':2020,'age_definition':'15-19,...,70-74,75+','income_definition':'primary-job usual annual gross wages / net business revenue before personal tax; excludes secondary jobs, pensions, assets','leaf_regions':M,'age_groups':A,'income_bins':17,'cells':int(M*A*17),'population_15plus':float(N.sum()),'estimated_paid_workers':float(E.sum()),'structural_zero_probability':float(Z.sum()/N.sum()),'joint_sum':float(joint.sum()),'max_conditional_sum_error':float(np.nanmax(abs(P.sum(-1)-1))),'zero_population_municipality_age_cells':int((n==0).sum()),'status_ipf_max_relative_error':float(max(r[-1] for r in fitrows)),'income_calibration_max_share_error':float(max(r[-1] for r in calibration)),'income_national_pseudopopulation':shrink,'heldout_city_count':ev.area.nunique(),'heldout_city_age_cells':len(ev),'tv_model_weighted':float(np.average(ev.tv_model,weights=ev.survey_expanded_known_income_count)),'tv_prefecture_only_weighted':float(np.average(ev.tv_prefecture_only,weights=ev.survey_expanded_known_income_count)),'tv_national_age_weighted':float(np.average(ev.tv_national_age,weights=ev.survey_expanded_known_income_count)),'city_age_fraction_improved':float((ev.tv_model<ev.tv_prefecture_only).mean()),'negative_executive_residual_cells':len(negatives)}
- (BASE/'validation/summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
+ (REPORTS/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
  print(json.dumps(summary,ensure_ascii=False,indent=2),flush=True)
 if __name__=='__main__':main(float(sys.argv[1]) if len(sys.argv)>1 else 1000.)
