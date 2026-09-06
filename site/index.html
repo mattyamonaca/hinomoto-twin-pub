@@ -73,9 +73,26 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 @media (max-width:900px){.top{grid-template-columns:1fr}.search{min-width:0}}
 
 /* board */
-.board-wrap{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
+.board-wrap{display:grid;grid-template-columns:150px minmax(0,1fr) 350px;gap:20px;align-items:start}
+.palette{position:sticky;top:16px;display:flex;flex-direction:column;gap:8px;padding:12px 10px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.palette .eyebrow{margin:0 0 4px 4px}
+.pnode{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);text-align:left;color:var(--ink-2);transition:border-color .12s,background .12s}
+.pnode .c{width:30px;height:30px;border-radius:50%;border:2px solid var(--sw);background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+.pnode .t{font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--ink);line-height:1.2}
+.pnode .s{display:block;font-size:10.5px;color:var(--muted);font-weight:400;font-family:var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.pnode:hover{border-color:var(--sw)}
+.pnode.on{border-color:var(--sw);background:var(--soft)}
+.pnode.on .c{background:var(--sw);color:#fff;border-color:var(--sw)}
+.pnode.pref{--sw:var(--d-pref);--soft:var(--d-pref-soft)}.pnode.muni{--sw:var(--d-muni);--soft:var(--d-muni-soft)}.pnode.age{--sw:var(--d-age);--soft:var(--d-age-soft)}.pnode.sex{--sw:var(--d-sex);--soft:var(--d-sex-soft)}.pnode.edu{--sw:var(--d-edu);--soft:var(--d-edu-soft)}.pnode.inc{--sw:var(--d-inc);--soft:var(--d-inc-soft)}
+.palette .hint{font-size:11px;color:var(--muted);line-height:1.5;margin:6px 4px 0}
+.board-empty{display:flex;align-items:center;justify-content:center;min-height:260px;border:1px dashed var(--line-strong);border-radius:8px;color:var(--muted);font-size:13px;text-align:center;padding:20px;line-height:1.7}
+.board-empty[hidden]{display:none}
+.hubx{position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--line-strong);color:var(--muted);font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center}
+.hubx:hover{color:var(--ink);border-color:var(--ink)}
 .board-scroll{overflow-x:auto;padding-bottom:6px}
-.board{position:relative;display:grid;grid-template-columns:184px 214px 176px 136px 190px 220px;column-gap:30px;min-width:1270px;padding:6px 4px}
+.board{position:relative;display:flex;gap:30px;align-items:flex-start;padding:6px 4px;min-height:280px}
+.col{flex:0 0 auto}.col.pref{width:184px}.col.muni{width:214px}.col.age{width:176px}.col.sex{width:136px}.col.edu{width:190px}.col.inc{width:220px}
+.col[hidden]{display:none}
 .edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .edges path{fill:none;stroke:var(--edge);stroke-linecap:round;transition:opacity .15s,stroke-width .15s}
 .edges path.fan{stroke:var(--sw);opacity:.42}
@@ -95,7 +112,7 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .col.edu{--sw:var(--d-edu);--soft:var(--d-edu-soft)}
 .stage.sex{--st:var(--d-sex)}.stage.edu{--st:var(--d-edu)}
 .bars.n8{grid-template-columns:repeat(8,1fr)}.axis.n8{grid-template-columns:repeat(8,1fr)}
-.hubwrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
+.hubwrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px;position:relative}
 .hub{width:78px;height:78px;border-radius:50%;border:2.5px solid var(--sw);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-family:var(--font-display);font-weight:700;font-size:14px;line-height:1.15;color:var(--ink);transition:transform .12s,box-shadow .12s;position:relative}
 .hub small{font-family:var(--font-mono);font-weight:500;font-size:11px;color:var(--muted)}
 .hub:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.12)}
@@ -223,7 +240,7 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .panel .mini .n{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
 .panel .action{display:inline-block;margin-top:4px;font-size:12.5px;padding:5px 10px;border:1px solid var(--line-strong);border-radius:4px;color:var(--ink)}
 .panel .action:hover{background:var(--surface-2)}
-@media (max-width:1100px){.board-wrap{grid-template-columns:1fr}.panel{position:static}}
+@media (max-width:1100px){.board-wrap{grid-template-columns:1fr}.panel{position:static}.palette{position:static;flex-direction:row;flex-wrap:wrap}.pnode{grid-template-columns:auto 1fr}}
 
 footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:var(--ink-2)}
@@ -239,33 +256,44 @@ footer a{color:var(--ink-2)}
   <div class="search"><input id="q" type="search" placeholder="市区町村を検索（名称・5桁コード）" autocomplete="off" aria-label="市区町村を検索"><div class="res" id="q-res" role="listbox"></div></div>
 </header>
 
-<p class="edgehint">ノードをクリックすると所属要素が展開されます。各列の先頭の「…でまとめる」を選ぶと、その次元を選ばずに合算のまま次の列へ進めます。各項目をクリックすると、その値がどう導出されたかが右に段階的に表示されます。</p>
+<p class="edgehint">左のパレットからノードを選ぶと中央に配置され、配置したノードが左から順に連なります。各列の先頭の「…でまとめる」を選ぶと、その次元を選ばずに合算のまま次の列へ進めます。各項目をクリックすると、その値がどう導出されたかが右に段階的に表示されます。</p>
 <div class="board-wrap">
+  <aside class="palette" id="palette" aria-label="次元ノード">
+    <span class="eyebrow">ノード</span>
+    <button class="pnode pref" data-dim="pref"><span class="c">47</span><span class="t">都道府県<span class="s" id="pn-pref">未配置</span></span></button>
+    <button class="pnode muni" data-dim="muni"><span class="c">1916</span><span class="t">市区町村<span class="s" id="pn-muni">未配置</span></span></button>
+    <button class="pnode age" data-dim="age"><span class="c">13</span><span class="t">年齢<span class="s" id="pn-age">未配置</span></span></button>
+    <button class="pnode sex" data-dim="sex"><span class="c">2</span><span class="t">性別<span class="s" id="pn-sex">未配置</span></span></button>
+    <button class="pnode edu" data-dim="edu"><span class="c">8</span><span class="t">学歴<span class="s" id="pn-edu">未配置</span></span></button>
+    <button class="pnode inc" data-dim="inc"><span class="c">16</span><span class="t">年収帯<span class="s" id="pn-inc">未配置</span></span></button>
+    <p class="hint">クリックで中央に配置／解除。配置していない次元は合算されます。</p>
+  </aside>
   <div class="board-scroll">
+    <div class="board-empty" id="board-empty">左のノードをクリックすると、ここに展開されます。<br>複数のノードを配置すると左から順に連なり、選んだ条件での確率を表示します。</div>
     <div class="board" id="board">
       <svg class="edges" id="edges" aria-hidden="true"></svg>
-      <div class="col pref" data-dim="pref">
-        <div class="hubwrap"><button class="hub" data-hub="pref" aria-expanded="false">都道府県<small>47</small></button><div class="hubcap" id="cap-pref">全国</div></div>
+      <div class="col pref" data-dim="pref" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="pref" title="中央から外す" aria-label="pref を外す">×</button><button class="hub" data-hub="pref" aria-expanded="false">都道府県<small>47</small></button><div class="hubcap" id="cap-pref">全国</div></div>
         <div class="list" id="list-pref" hidden></div>
       </div>
-      <div class="col muni" data-dim="muni">
-        <div class="hubwrap"><button class="hub" data-hub="muni" aria-expanded="false">市区町村<small>1,916</small></button><div class="hubcap" id="cap-muni">未選択</div></div>
+      <div class="col muni" data-dim="muni" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="muni" title="中央から外す" aria-label="muni を外す">×</button><button class="hub" data-hub="muni" aria-expanded="false">市区町村<small>1,916</small></button><div class="hubcap" id="cap-muni">未選択</div></div>
         <div class="list" id="list-muni" hidden></div>
       </div>
-      <div class="col age" data-dim="age">
-        <div class="hubwrap"><button class="hub" data-hub="age" aria-expanded="false">年齢<small>13</small></button><div class="hubcap" id="cap-age">全年齢</div></div>
+      <div class="col age" data-dim="age" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="age" title="中央から外す" aria-label="age を外す">×</button><button class="hub" data-hub="age" aria-expanded="false">年齢<small>13</small></button><div class="hubcap" id="cap-age">全年齢</div></div>
         <div class="list" id="list-age" hidden></div>
       </div>
-      <div class="col sex" data-dim="sex">
-        <div class="hubwrap"><button class="hub" data-hub="sex" aria-expanded="false">性別<small>2</small></button><div class="hubcap" id="cap-sex">男女計</div></div>
+      <div class="col sex" data-dim="sex" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="sex" title="中央から外す" aria-label="sex を外す">×</button><button class="hub" data-hub="sex" aria-expanded="false">性別<small>2</small></button><div class="hubcap" id="cap-sex">男女計</div></div>
         <div class="list" id="list-sex" hidden></div>
       </div>
-      <div class="col edu" data-dim="edu">
-        <div class="hubwrap"><button class="hub" data-hub="edu" aria-expanded="false">学歴<small>8</small></button><div class="hubcap" id="cap-edu">全学歴</div></div>
+      <div class="col edu" data-dim="edu" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="edu" title="中央から外す" aria-label="edu を外す">×</button><button class="hub" data-hub="edu" aria-expanded="false">学歴<small>8</small></button><div class="hubcap" id="cap-edu">全学歴</div></div>
         <div class="list" id="list-edu" hidden></div>
       </div>
-      <div class="col inc" data-dim="inc">
-        <div class="hubwrap"><button class="hub" data-hub="inc" aria-expanded="false">年収帯<small>16</small></button><div class="hubcap" id="cap-inc">全体</div></div>
+      <div class="col inc" data-dim="inc" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="inc" title="中央から外す" aria-label="inc を外す">×</button><button class="hub" data-hub="inc" aria-expanded="false">年収帯<small>16</small></button><div class="hubcap" id="cap-inc">全体</div></div>
         <div class="list" id="list-inc" hidden></div>
       </div>
     </div>
@@ -604,7 +632,7 @@ function renderPanel(){
   P.style.setProperty('--sw', f.dim ? DIM_VAR[f.dim] : 'var(--line-strong)');
   P.style.setProperty('--soft', f.dim ? DIM_SOFT[f.dim] : 'var(--accent-soft)');
   if (!f.dim){
-    h = '<span class="eyebrow">属性パネル</span><h2>ノードを選んでください</h2><p class="sub">P(年齢, 性別, 学歴, 年収帯｜市区町村)</p><p>6つの次元ノードは左から右へ「都道府県に属する市区町村」「地域の年齢構成」「年齢ごとの男女比」「性別・年齢ごとの学歴構成」「その条件での年収帯の分布」という包含関係で繋がっています。</p><p>丸いノードをクリックすると所属要素の一覧が開きます。一覧の要素をクリックすると選択され、右隣の列がその要素の内訳に切り替わり、ここに属性が表示されます。各列の先頭にある「…でまとめる」を選ぶと、その次元を飛ばして合算のまま右へ進めます（例：都道府県を選び、市区町村をまとめて都道府県全体の年齢構成を見る）。</p><p>項目をクリックすると、その値（人口の割合、学歴の割合、年収帯の確率など）がどの統計から出発してどう計算されたかが、段階ごとにここに表示されます。年収帯では途中の分布の形も並べます。各ステップには参照したデータ（統計表・ファイル・列）を示し、チップを押すとデータソース一覧で確認できます。ハブ間の点線をクリックすると、次元同士のつながりの説明が出ます。</p><p class="note">2020年国勢調査・2022年就業構造基本調査・市区町村のすがた2024 を組み合わせたモデル推定です。</p>';
+    h = '<span class="eyebrow">属性パネル</span><h2>ノードを選んでください</h2><p class="sub">P(年齢, 性別, 学歴, 年収帯｜市区町村)</p><p>6つの次元ノードは左から右へ「都道府県に属する市区町村」「地域の年齢構成」「年齢ごとの男女比」「性別・年齢ごとの学歴構成」「その条件での年収帯の分布」という包含関係で繋がっています。</p><p>左のパレットでノードをクリックすると中央に配置され、所属要素の一覧が開きます。もう一度クリック（または列の ×）で外れ、その次元は合算されます。一覧の要素をクリックすると選択され、右隣の列がその要素の内訳に切り替わり、ここに属性が表示されます。各列の先頭にある「…でまとめる」を選ぶと、その次元を飛ばして合算のまま右へ進めます（例：都道府県を選び、市区町村をまとめて都道府県全体の年齢構成を見る）。</p><p>項目をクリックすると、その値（人口の割合、学歴の割合、年収帯の確率など）がどの統計から出発してどう計算されたかが、段階ごとにここに表示されます。年収帯では途中の分布の形も並べます。各ステップには参照したデータ（統計表・ファイル・列）を示し、チップを押すとデータソース一覧で確認できます。ハブ間の点線をクリックすると、次元同士のつながりの説明が出ます。</p><p class="note">2020年国勢調査・2022年就業構造基本調査・市区町村のすがた2024 を組み合わせたモデル推定です。</p>';
   }
   else if (f.id === 'all'){
     var dsk = dist(scope()), lbl = f.dim === 'muni' && S.pref ? esc(PI[S.pref].n) + '全体' : AGG_LABEL[f.dim];
@@ -704,7 +732,7 @@ function renderPanel(){
 /* ---------- panel: edges (derivation) ---------- */
 function parseEdge(key){
   var p = key.split(':');
-  if (p[0] === 'chain'){ var t = p[1].split('-'); return { kind: 'chain', from: t[0], to: t[1] }; }
+  if (p[0] === 'chain'){ var t = p[1].split('-'); return { kind: 'chain', from: DIMS[DIMS.indexOf(t[1]) - 1], to: t[1], skipped: DIMS.indexOf(t[1]) - DIMS.indexOf(t[0]) - 1 }; }
   var e = { kind: 'fan', to: p[1], id: p[2], from: DIMS[DIMS.indexOf(p[1]) - 1] };
   if (e.id === 'all') return { kind: 'chain', from: e.from, to: e.to };
   if (e.to === 'muni' && (!S.pref || !MI.hasOwnProperty(e.id) || e.id.slice(0,2) !== S.pref)) return { kind: 'chain', from: 'pref', to: 'muni' };
@@ -832,11 +860,12 @@ function drawEdges(){
   function rel(r){ return { l: r.left - br.left, r: r.right - br.left, t: r.top - br.top, b: r.bottom - br.top, cy: (r.top + r.bottom)/2 - br.top }; }
   function hubRect(d){ return rel(document.querySelector('.hub[data-hub="' + d + '"]').getBoundingClientRect()); }
   function curve(x1, y1, x2, y2){ var dx = (x2 - x1)*0.5; return 'M' + x1.toFixed(1) + ',' + y1.toFixed(1) + ' C' + (x1 + dx).toFixed(1) + ',' + y1.toFixed(1) + ' ' + (x2 - dx).toFixed(1) + ',' + y2.toFixed(1) + ' ' + x2.toFixed(1) + ',' + y2.toFixed(1); }
-  for (i = 0; i < DIMS.length - 1; i++){ var A = hubRect(DIMS[i]), B = hubRect(DIMS[i+1]), ck = 'chain:' + DIMS[i] + '-' + DIMS[i+1], cd = curve(A.r, A.cy, B.l, B.cy); out.push('<path class="chain' + (selKey === ck ? ' sel' : '') + '" data-e="' + ck + '" d="' + cd + '"/>'); hits.push('<path class="hit" data-e="' + ck + '" d="' + cd + '"><title>' + DIM_LABEL[DIMS[i]] + ' → ' + DIM_LABEL[DIMS[i+1]] + ' の由来を見る</title></path>'); }
-  var sourceId = { muni: S.skip.pref ? 'all' : S.pref, age: S.skip.muni ? 'all' : S.muni, sex: S.skip.age ? 'all' : S.age, edu: S.skip.sex ? 'all' : S.sex, inc: S.skip.edu ? 'all' : S.edu };
-  for (i = 1; i < DIMS.length; i++){
-    var d = DIMS[i]; if (!S.open[d]) continue;
-    var list = $('list-' + d), lr = rel(list.getBoundingClientRect()), srcDim = DIMS[i-1], sid = sourceId[d], src = null;
+  var PL = placed(); if (!PL.length){ svg.innerHTML = ''; return; }
+  for (i = 0; i < PL.length - 1; i++){ var A = hubRect(PL[i]), B = hubRect(PL[i+1]), ck = 'chain:' + PL[i] + '-' + PL[i+1], cd = curve(A.r, A.cy, B.l, B.cy); out.push('<path class="chain' + (selKey === ck ? ' sel' : '') + '" data-e="' + ck + '" d="' + cd + '"/>'); hits.push('<path class="hit" data-e="' + ck + '" d="' + cd + '"><title>' + DIM_LABEL[PL[i]] + ' → ' + DIM_LABEL[PL[i+1]] + ' のつながりを見る</title></path>'); }
+  function sourceIdFrom(sd){ return sd === 'pref' ? (S.skip.pref ? 'all' : S.pref) : sd === 'muni' ? (S.skip.muni ? 'all' : S.muni) : sd === 'inc' ? S.inc : (S.skip[sd] ? 'all' : S[sd]); }
+  for (i = 1; i < PL.length; i++){
+    var d = PL[i];
+    var list = $('list-' + d), lr = rel(list.getBoundingClientRect()), srcDim = PL[i-1], sid = sourceIdFrom(srcDim), src = null;
     if (sid !== null && sid !== undefined && S.open[srcDim]){ var el = document.querySelector('#list-' + srcDim + ' .row[data-id="' + sid + '"]'); if (el){ var er = rel(el.getBoundingClientRect()), lr0 = rel($('list-' + srcDim).getBoundingClientRect()); src = (er.cy >= lr0.t && er.cy <= lr0.b) ? { x: er.r - 4, y: er.cy } : { x: lr0.r, y: Math.max(lr0.t, Math.min(lr0.b, er.cy)) }; } }
     if (!src){ var hr = hubRect(srcDim); src = { x: hr.r, y: hr.cy }; }
     var rows = list.querySelectorAll('.row'), shares = [], maxW = 0;
@@ -860,9 +889,22 @@ function drawEdges(){
 })();
 
 /* ---------- state changes ---------- */
-function setOpen(dim, v){ S.open[dim] = v; $('list-' + dim).hidden = !v; document.querySelector('.hub[data-hub="' + dim + '"]').setAttribute('aria-expanded', v ? 'true' : 'false'); }
+function setOpen(dim, v){ S.open[dim] = v; $('list-' + dim).hidden = !v; document.querySelector('.col[data-dim="' + dim + '"]').hidden = !v; document.querySelector('.hub[data-hub="' + dim + '"]').setAttribute('aria-expanded', v ? 'true' : 'false'); }
+function placed(){ return DIMS.filter(function(d){ return S.open[d]; }); }
+function unplace(dim){
+  if (dim === 'pref'){ S.pref = null; S.muni = null; S.skip.pref = false; S.skip.muni = false; }
+  else if (dim === 'muni'){ S.muni = null; S.skip.muni = false; }
+  else if (dim === 'inc'){ S.inc = null; }
+  else { S[dim] = null; S.skip[dim] = false; }
+  setOpen(dim, false);
+  if (S.focus.dim === dim || (S.focus.dim === 'edge')) S.focus = { dim: null, id: null };
+}
+function renderPalette(){
+  DIMS.forEach(function(d){ var b = document.querySelector('.pnode[data-dim="' + d + '"]'); b.classList.toggle('on', S.open[d]); var v = d === 'pref' ? (S.pref ? PI[S.pref].n : null) : d === 'muni' ? (S.muni ? G.munis[MI[S.muni]].n : null) : d === 'age' ? (S.age !== null ? AGE[S.age] : null) : d === 'sex' ? (S.sex !== null ? SEX[S.sex] : null) : d === 'edu' ? (S.edu !== null ? EDU[S.edu] : null) : (S.inc !== null ? INC[S.inc] : null); $('pn-' + d).textContent = !S.open[d] ? (d === 'inc' ? '未配置' : '未配置（合算）') : v ? v : (d === 'inc' ? '配置中' : (d === 'pref' ? '全国' : d === 'muni' ? (S.pref ? PI[S.pref].n + '全体' : '全国') : AGG_LABEL[d])); });
+  $('board-empty').hidden = placed().length > 0;
+}
 function renderAll(){
-  renderPref(); renderMuni(); renderAge(); renderSex(); renderEdu(); renderInc(); renderCrumb(); renderPanel();
+  renderPref(); renderMuni(); renderAge(); renderSex(); renderEdu(); renderInc(); renderCrumb(); renderPalette(); renderPanel();
   document.querySelectorAll('.hub').forEach(function(hb){ hb.classList.toggle('focus', S.focus.dim === hb.dataset.hub && S.focus.id === 'hub'); });
   requestAnimationFrame(drawEdges);
 }
@@ -870,19 +912,17 @@ function skip(dim){
   if (dim === 'pref'){ S.pref = null; S.muni = null; S.skip.muni = false; }
   else if (dim === 'muni') S.muni = null; else S[dim] = null;
   S.skip[dim] = true;
-  var nxt = dim === 'pref' ? 'age' : DIMS[DIMS.indexOf(dim) + 1];
-  if (dim === 'pref') setOpen('muni', true);
-  setOpen(nxt, true); S.focus = { dim: dim, id: 'all' }; renderAll();
+  S.focus = { dim: dim, id: 'all' }; renderAll();
 }
 function select(dim, id){
   if (id === 'all'){ skip(dim); return; }
   if (dim !== 'inc') S.skip[dim] = false;
   if (dim === 'muni') S.skip.pref = false;
-  if (dim === 'pref'){ if (S.pref !== id){ S.pref = id; S.muni = null; } setOpen('muni', true); S.focus = { dim: 'pref', id: id }; }
-  else if (dim === 'muni'){ S.muni = id; S.pref = id.slice(0,2); setOpen('age', true); S.focus = { dim: 'muni', id: id }; }
-  else if (dim === 'age'){ S.age = +id; setOpen('sex', true); S.focus = { dim: 'age', id: +id }; }
-  else if (dim === 'sex'){ S.sex = +id; setOpen('edu', true); S.focus = { dim: 'sex', id: +id }; }
-  else if (dim === 'edu'){ S.edu = +id; setOpen('inc', true); S.focus = { dim: 'edu', id: +id }; }
+  if (dim === 'pref'){ if (S.pref !== id){ S.pref = id; S.muni = null; } S.focus = { dim: 'pref', id: id }; }
+  else if (dim === 'muni'){ S.muni = id; S.pref = id.slice(0,2); if (!S.open.pref) setOpen('pref', true); S.focus = { dim: 'muni', id: id }; }
+  else if (dim === 'age'){ S.age = +id; S.focus = { dim: 'age', id: +id }; }
+  else if (dim === 'sex'){ S.sex = +id; S.focus = { dim: 'sex', id: +id }; }
+  else if (dim === 'edu'){ S.edu = +id; S.focus = { dim: 'edu', id: +id }; }
   else if (dim === 'inc'){ S.inc = +id; S.focus = { dim: 'inc', id: +id }; }
   renderAll();
 }
@@ -893,7 +933,11 @@ function resetTo(level){
   renderAll();
 }
 document.querySelectorAll('.hub').forEach(function(hb){
-  hb.addEventListener('click', function(){ var d = hb.dataset.hub, wasOpen = S.open[d], focused = S.focus.dim === d && S.focus.id === 'hub'; setOpen(d, !(wasOpen && focused)); S.focus = { dim: d, id: 'hub' }; renderAll(); });
+  hb.addEventListener('click', function(){ S.focus = { dim: hb.dataset.hub, id: 'hub' }; renderAll(); });
+});
+document.querySelectorAll('.hubx').forEach(function(b){ b.addEventListener('click', function(ev){ ev.stopPropagation(); unplace(b.dataset.remove); renderAll(); }); });
+document.querySelectorAll('.pnode').forEach(function(b){
+  b.addEventListener('click', function(){ var d = b.dataset.dim; if (S.open[d]) unplace(d); else { setOpen(d, true); S.focus = { dim: d, id: 'hub' }; } renderAll(); });
 });
 DIMS.forEach(function(d){
   var L = $('list-' + d);
@@ -908,8 +952,9 @@ $('panel').addEventListener('click', function(ev){ var b = ev.target.closest('.s
 $('crumb').addEventListener('click', function(ev){ var b = ev.target.closest('button'); if (b) resetTo(+b.dataset.lv); });
 $('panel').addEventListener('click', function(ev){
   var b = ev.target.closest('.action'); if (!b) return; var d = b.dataset.go, id = b.dataset.id;
-  if (d === 'pref'){ setOpen('pref', true); select('pref', id); scrollTo('pref', id); }
-  else if (d === 'muni'){ setOpen('pref', true); setOpen('muni', true); select('muni', id); scrollTo('muni', id); }
+  if (d === 'pref'){ setOpen('pref', true); setOpen('muni', true); select('pref', id); scrollTo('pref', id); }
+  else if (d === 'muni'){ setOpen('pref', true); setOpen('muni', true); setOpen('age', true); select('muni', id); scrollTo('muni', id); }
+  else if (d === 'age' || d === 'sex' || d === 'edu'){ var nx = DIMS[DIMS.indexOf(d) + 1]; setOpen(d, true); setOpen(nx, true); select(d, id); }
   else if (d === 'open'){ setOpen(id, true); renderAll(); }
   else if (d === 'skipdim'){ var keep = S.focus; skip(id); if (keep.dim === 'inc' && incDist().defined){ S.focus = keep; renderAll(); } else if (keep.dim && keep.dim !== 'edge' && keep.id !== 'hub' && keep.id !== 'all'){ S.focus = keep; renderAll(); } }
   else { setOpen(d, true); select(d, id); }
@@ -933,7 +978,7 @@ q.addEventListener('keydown', function(ev){
   if (ev.key === 'ArrowDown'){ qi = Math.min(bs.length - 1, qi + 1); } else if (ev.key === 'ArrowUp'){ qi = Math.max(0, qi - 1); } else if (ev.key === 'Enter'){ (bs[qi] || bs[0]).click(); return; } else if (ev.key === 'Escape'){ qr.classList.remove('on'); return; } else return;
   ev.preventDefault(); bs.forEach(function(b, i){ b.classList.toggle('hi', i === qi); });
 });
-qr.addEventListener('click', function(ev){ var b = ev.target.closest('button[data-c]'); if (!b) return; var c = b.dataset.c; qr.classList.remove('on'); q.value = ''; setOpen('pref', true); setOpen('muni', true); S.pref = c.slice(0,2); select('muni', c); scrollTo('pref', S.pref); scrollTo('muni', c); });
+qr.addEventListener('click', function(ev){ var b = ev.target.closest('button[data-c]'); if (!b) return; var c = b.dataset.c; qr.classList.remove('on'); q.value = ''; setOpen('pref', true); setOpen('muni', true); setOpen('age', true); S.pref = c.slice(0,2); select('muni', c); scrollTo('pref', S.pref); scrollTo('muni', c); });
 document.addEventListener('click', function(ev){ if (!ev.target.closest('.search')) qr.classList.remove('on'); });
 
 renderAll();
