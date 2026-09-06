@@ -10,7 +10,7 @@
   },
   "variants": {
     "lambda_0.0": {
-      "description": "全国の学歴×所得の関連を除く（全学歴が同じ所得形状）",
+      "description": "有業所得の初期形状にある学歴差を除く（λ=0。学歴別就業率は維持）",
       "weighted_mean_tv": 0.07132715161813612,
       "weighted_mean_abs_change_p_ge500": 0.04174055775788912,
       "max_abs_change_p_ge500_cells_ge100": 0.49473295699975045,
@@ -75,8 +75,74 @@
       "max_income_margin_error": 2.9103830456733704e-11,
       "max_education_margin_error": 2.894939825637266e-07
     },
+    "lambda_0.0_common_rate": {
+      "description": "有業所得の初期形状の学歴差と学歴別就業率の差の両方を除く（学歴と所得を初期値で独立にする）",
+      "weighted_mean_tv": 0.09173423434788443,
+      "weighted_mean_abs_change_p_ge500": 0.045160431908231005,
+      "max_abs_change_p_ge500_cells_ge100": 0.5195456161505534,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.0722475648445863,
+          "weighted_mean_abs_change_p_ge500": 0.04331243104593794
+        },
+        "E02": {
+          "weighted_mean_tv": 0.07233571821021458,
+          "weighted_mean_abs_change_p_ge500": 0.04012395286967071
+        },
+        "E03": {
+          "weighted_mean_tv": 0.07428584959822447,
+          "weighted_mean_abs_change_p_ge500": 0.023392195791950707
+        },
+        "E04": {
+          "weighted_mean_tv": 0.1359455234793379,
+          "weighted_mean_abs_change_p_ge500": 0.08625252020206202
+        },
+        "E05": {
+          "weighted_mean_tv": 0.3196659623792964,
+          "weighted_mean_abs_change_p_ge500": 0.26949657488367906
+        },
+        "E06": {
+          "weighted_mean_tv": 0.1740233053562264,
+          "weighted_mean_abs_change_p_ge500": 0.004975780176248421
+        },
+        "E07": {
+          "weighted_mean_tv": 0.16621348646798315,
+          "weighted_mean_abs_change_p_ge500": 0.03616223923446186
+        },
+        "E08": {
+          "weighted_mean_tv": 0.040899910626097054,
+          "weighted_mean_abs_change_p_ge500": 0.013945064323210443
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 1.0000000000000002,
+        "13121": 1.0,
+        "02201": 0.9999999999999998,
+        "47201": 1.0
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.6788811745176065
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.5598139785275209
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.20396246788785474
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.18141885874877367
+        ]
+      },
+      "max_income_margin_error": 2.1827872842550278e-11,
+      "max_education_margin_error": 2.894948920584284e-07
+    },
     "lambda_0.5": {
-      "description": "関連を半分に弱める",
+      "description": "有業所得の初期形状の学歴差を半分に弱める（λ=0.5）",
       "weighted_mean_tv": 0.03269184267868182,
       "weighted_mean_abs_change_p_ge500": 0.019493154033176054,
       "max_abs_change_p_ge500_cells_ge100": 0.27197626082166826,
@@ -142,7 +208,7 @@
       "max_education_margin_error": 3.117174856015481e-07
     },
     "lambda_1.5": {
-      "description": "関連を1.5倍に強める",
+      "description": "有業所得の初期形状の学歴差を1.5倍に強める（λ=1.5）",
       "weighted_mean_tv": 0.027435884643947916,
       "weighted_mean_abs_change_p_ge500": 0.015505576990639102,
       "max_abs_change_p_ge500_cells_ge100": 0.20264781172044172,
@@ -476,6 +542,7 @@
     "Weights are model education populations R(m,s,a,e), not survey sample sizes.",
     "TV is half the L1 distance between the variant and baseline P(income | area, sex, age, education).",
     "All variants keep the v1 income margins and the census education margins; they change only how the fixed margins are split.",
+    "lambda variants temper only the paid-income initial shape q(y|s,a,e); education-specific employment rates stay unless the variant name says common_rate, so lambda_0.0 alone does not remove the education-income association from the final distribution that includes non-workers.",
     "This is a sensitivity analysis of transported assumptions, not a validation against observed municipal education x income data."
   ]
 }
