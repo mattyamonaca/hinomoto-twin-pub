@@ -15,13 +15,13 @@
 | ディレクトリ | 内容 | 通常のGit管理 |
 |---|---|---|
 | `src/` | 取得、加工、モデル推定、出力、検証、抽出、図の作成 | 対象 |
-| `sources/` | 加工済み統計、取得時の表定義、出典・ハッシュ | 対象 |
+| データルートの `sources/` | 加工済み統計（出典・表定義はコード側 `catalog/`） | 対象外 |
 | `raw/` | 使用した元Excel 5件、所得表レスポンス15件 | 除外。ローカル保存・再取得可能 |
 | `raw/exploratory/` | 調査中に取得したが最終推定には使わなかった統計4件 | 除外 |
 | `data/` | 全国CSV、地域別JSON、モデル配列 | 除外。再計算可能 |
-| `validation/` | 検証結果と処理品質の記録 | 対象 |
+| データルートの `validation/` | 検証結果と処理品質の記録 | 対象外 |
 
-新しく取得したコードからも、同梱の `sources/` を使ってオフラインで推定を再実行できます。
+現在は `make dataset` で外部データルートへ正規化済み入力を取得し、その後オフラインで再計算します。[DATA.md](DATA.md) を参照してください。
 
 ```sh
 python3 -m venv .venv
@@ -64,7 +64,7 @@ Python 3.11以上が必要です。makeがない環境では、後述のPython�
 | `data/age_bins.csv`, `data/income_bins.csv` | 行列の区分と境界 |
 | `data/municipality_model.npz` | Pythonでの高速読み込み・条件付き抽出用 |
 | `METHOD.md` | 推定式・仮定・検証結果・限界 |
-| `SOURCES.md`, `sources/manifest.json` | 元統計のURL、取得・加工情報、ファイルのハッシュ |
+| `SOURCES.md`, `catalog/manifest.json` | 元統計のURL、取得・加工情報、ファイルのハッシュ |
 | `validation/verification.json` | 実行済み検証の結果 |
 
 同じ場所に圧縮していないCSVも保存しています。gzip版の内容は同じです。CSVの地域コード・年齢コード・所得コードは文字列として読み込んでください。例えば札幌市は `01100` です。
@@ -143,7 +143,7 @@ assert abs(matrix.to_numpy().sum() - 1) < 1e-8
 
 ## 再計算
 
-必要な加工済み公表データは `sources/` に同梱しており、モデルの再計算にはネット接続もAPIキーも不要です。
+必要な加工済み公表データは外部データルートの `sources/` に配置します。配置後の再計算にはネット接続もAPIキーも不要です。
 
 ```sh
 python src/build.py

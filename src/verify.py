@@ -1,11 +1,13 @@
 """Checks for data alignment, probability normalization, municipality aggregation and conditional sampling."""
+from paths import SOURCES,OUTPUT,REPORTS
 import json
 import numpy as np
 import pandas as pd
-from persona import PersonaDistribution,BASE
+from persona import PersonaDistribution
 
 def main():
- model=PersonaDistribution();D=BASE/'data';g=pd.read_csv(D/'geography.csv',dtype=str);parents=pd.read_csv(D/'parent_mapping.csv',dtype=str)
+ REPORTS.mkdir(parents=True,exist_ok=True)
+ model=PersonaDistribution();D=OUTPUT;g=pd.read_csv(D/'geography.csv',dtype=str);parents=pd.read_csv(D/'parent_mapping.csv',dtype=str)
  assert len(model.codes)==1916 and len(set(model.codes))==1916
  assert np.isfinite(model.counts).all() and (model.counts>=-1e-8).all()
  assert np.max(np.abs(model.counts.sum(2)-model.population))<.001
@@ -23,7 +25,7 @@ def main():
  assert np.max(abs(f[valid].p_age_income_given_municipality-f[valid].estimated_count/f[valid].population_15plus))<1e-10
  # Independently re-aggregate final SEX-SPECIFIC income counts and compare to ESS prefecture x age x sex target shares.
  arr=np.load(D/'final_arrays.npz');areas=arr['areas'];c=arr['counts_by_sex'][...,1:]
- inc=pd.read_csv(BASE/'sources/income_tidy.csv.gz',dtype={k:str for k in ['area','sex','age','status','income']})
+ inc=pd.read_csv(SOURCES/'income_tidy.csv.gz',dtype={k:str for k in ['area','sex','age','status','income']})
  max_error=0.
  for p in range(1,48):
   ids=np.where(np.char.startswith(areas,f'{p:02}'))[0]
@@ -43,5 +45,5 @@ def main():
  except ValueError:pass
  else:raise AssertionError('Age under 15 must be rejected')
  result={'passed':True,'geographies':len(model.codes),'csv_rows':len(f),'final_prefecture_sex_age_max_probability_error':max_error,'checked':['nonnegative counts','municipality totals','conditional probabilities','no duplicate cells','parent/ward aggregation','prefecture income constraints','sampler conditioning and reproducibility','zero-population handling','under-15 handling']}
- (BASE/'validation/verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False,indent=2))
+ (REPORTS/'verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False,indent=2))
 if __name__=='__main__':main()

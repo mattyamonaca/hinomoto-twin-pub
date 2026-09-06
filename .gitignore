@@ -14,4 +14,8 @@ __pycache__/
 /raw/
 /data/
 /dist/
+/sources/
+/validation/
+/examples_v2.csv
+/config.local.json
 *.zip

@@ -1,11 +1,13 @@
 """Soft municipal income-level adjustment. Taxable income is a proxy, never a wage mean target."""
+from paths import REPORTS,OUTPUT as OUT,SOURCES as DATA
 from pathlib import Path
 import json
 import numpy as np
 import pandas as pd
-from build import norm,BASE,DATA,OUT,AGES
+from model_math import norm,AGES
 
 def main():
+ REPORTS.mkdir(parents=True,exist_ok=True)
  d=np.load(OUT/'model_arrays.npz');areas=d['areas'].tolist();N=d['population'];C0=d['counts_by_sex'];X0=C0[...,1:];E=X0.sum(-1)
  tax=pd.read_csv(DATA/'tax_tidy.csv',dtype={'area':str}).set_index('area');geo=pd.read_csv(OUT/'municipalities.csv',dtype={'area':str});parents=pd.read_csv(OUT/'parent_mapping.csv',dtype={'parent_code':str,'area':str});parent=dict(zip(parents.area,parents.parent_code))
  ratios=[];sources=[]
@@ -37,7 +39,7 @@ def main():
  # Compare 86 city income tables not used by the base model. Fit one coefficient leaving prefecture groups out.
  inc=pd.read_csv(DATA/'income_tidy.csv.gz',dtype={k:str for k in ['area','sex','age','status','income']})
  obs=inc[(inc.sex=='0')&(inc.status=='0')&(inc.income!='00')&(inc.age!='00')].pivot(index=['area','age'],columns='income',values='count')
- checks=pd.read_csv(BASE/'validation/heldout_cities.csv',dtype={'area':str,'age':str,'prefecture':str})
+ checks=pd.read_csv(REPORTS/'heldout_cities.csv',dtype={'area':str,'age':str,'prefecture':str})
  cidx={m:[i] for i,m in enumerate(areas)}
  for p,f in parents.groupby('parent_code'):cidx[p]=[areas.index(a) for a in f.area]
  ob=np.array([norm(obs.loc[(r.area,r.age)].values) for r in checks.itertuples()]);weights=checks.survey_expanded_known_income_count.to_numpy()
@@ -55,9 +57,9 @@ def main():
  X=project(selected);C=np.concatenate([C0[...,:1],X],axis=-1);aggregate=C.sum(1);pop=N.sum(1)
  np.savez_compressed(OUT/'final_arrays.npz',areas=np.array(areas),population=N,counts_by_sex=C,counts=aggregate,probability=np.divide(aggregate,pop[...,None],out=np.full_like(aggregate,np.nan),where=pop[...,None]>0),p_age_income_given_municipality=np.divide(aggregate,pop.sum(-1)[:,None,None],out=np.full_like(aggregate,np.nan),where=pop.sum(-1)[:,None,None]>0),joint=aggregate/N.sum())
  quality=pd.DataFrame({'area':areas,'tax_source_area':sources,'log_tax_ratio':ratios,'clipped_log_tax_ratio':feature,'feature_clipped':np.abs(ratios)>.5})
- quality.to_csv(BASE/'validation/tax_proxy_quality.csv',index=False)
- checks['tv_tax_out_of_fold']=cv;checks['tv_tax_full_fit']=tv[best];checks.to_csv(BASE/'validation/city_validation_with_tax.csv',index=False)
- pd.DataFrame({'beta':betas,'weighted_cross_entropy':np.average(loss,axis=1,weights=weights),'weighted_tv':np.average(tv,axis=1,weights=weights)}).to_csv(BASE/'validation/tax_parameter_search.csv',index=False)
+ quality.to_csv(REPORTS/'tax_proxy_quality.csv',index=False)
+ checks['tv_tax_out_of_fold']=cv;checks['tv_tax_full_fit']=tv[best];checks.to_csv(REPORTS/'city_validation_with_tax.csv',index=False)
+ pd.DataFrame({'beta':betas,'weighted_cross_entropy':np.average(loss,axis=1,weights=weights),'weighted_tv':np.average(tv,axis=1,weights=weights)}).to_csv(REPORTS/'tax_parameter_search.csv',index=False)
  summary={'tax_fiscal_year':2022,'tax_income_reference_year':2021,'feature':'log(municipal taxable-income-per-taxpayer / prefectural value), clipped [-0.5,0.5]','income_tilt_score':'log(bin representative/3 million yen), representatives 0.25,...,17.5 million','fit_criterion':'population-weighted known-income cross entropy; weights are expanded population, not sample sizes','coefficient_grid':[0,4,.1],'beta_full_fit':beta,'beta_selected':selected,'five_fold_by_prefecture':cvbeta,'tv_base':base_tv,'tv_tax_out_of_fold':cv_tv,'tv_tax_in_sample':float(np.average(tv[best],weights=weights)),'relative_tv_improvement_out_of_fold':1-cv_tv/base_tv,'municipality_proxy_missing_uses_parent_or_prefecture':int(sum(a!=s for a,s in zip(areas,sources))),'feature_clipped_count':int((np.abs(ratios)>.5).sum()),'warning':'City income tables are not used in base model but city data contribute to prefecture totals. CV is not independent microdata validation; small towns and individual wards are not validated by city holdouts.'}
- (BASE/'validation/tax_summary.json').write_text(json.dumps(summary,indent=2,ensure_ascii=False));print(json.dumps(summary,indent=2,ensure_ascii=False),flush=True)
+ (REPORTS/'tax_summary.json').write_text(json.dumps(summary,indent=2,ensure_ascii=False));print(json.dumps(summary,indent=2,ensure_ascii=False),flush=True)
 if __name__=='__main__':main()

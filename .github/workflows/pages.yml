@@ -3,7 +3,7 @@ name: Deploy site to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['site/**', '.github/workflows/pages.yml']
+    paths: ['site/**', 'src/build_site.py', 'src/dataset.py', 'src/paths.py', 'catalog/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -23,9 +23,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Import the pinned data snapshot separately from UI code
+        run: python src/dataset.py fetch-baseline
+      - name: Assemble the site
+        run: python src/build_site.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: dist/site
       - id: deployment
         uses: actions/deploy-pages@v4

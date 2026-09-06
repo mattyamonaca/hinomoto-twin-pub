@@ -1,11 +1,13 @@
 """Export municipality-conditioned age x income tables, including designated-city parents."""
+from paths import REPORTS,OUTPUT as OUT
 from pathlib import Path
 import json,gzip
 import numpy as np
 import pandas as pd
-from build import BASE,OUT,AGES,norm
+from model_math import AGES,norm
 
 def main():
+ REPORTS.mkdir(parents=True,exist_ok=True)
  d=np.load(OUT/'final_arrays.npz');b=np.load(OUT/'model_arrays.npz');leaf=pd.read_csv(OUT/'municipalities.csv',dtype={'area':str,'type':str,'prefecture_code':str,'age_status_seed_area':str});mapping=pd.read_csv(OUT/'parent_mapping.csv',dtype=str)
  areas=d['areas'].tolist();cube=d['counts'];base=b['counts'];N=d['population'].sum(1)
  # Pure income bins: merge synthetic zero component into the published <500,000 yen bin.
@@ -52,7 +54,7 @@ def main():
  chosen=['13103','13121','14100','01100','47201','13382'];ex=frame[frame.municipality_code.isin(chosen)]
  ex.to_csv(OUT/'examples.csv',index=False,float_format='%.8g')
  check={'geographic_records':len(entries),'municipalities':int((meta.geography_level=='municipality').sum()),'designated_city_wards':int((meta.geography_level=='designated_city_ward').sum()),'age_groups':13,'income_groups':16,'probability_cells':len(frame),'nonempty_geographies':int((den>0).sum()),'zero_population_geographies':meta.loc[den==0,['municipality_code','municipality_name']].to_dict('records'),'max_sum_error_per_nonempty_municipality':float(np.nanmax(np.abs(by_m.sum((1,2))-1))),'max_sum_error_income_given_age':float(np.nanmax(np.abs(by_ma.sum(2)-1))),'nonoverlapping_15plus_population':float(d['population'].sum()),'caution':'Do not sum designated-city parents and their wards; all published boundaries are 2020. Tax source uses 2022 fiscal year.'}
- (BASE/'validation/export_checks.json').write_text(json.dumps(check,ensure_ascii=False,indent=2));print(json.dumps(check,ensure_ascii=False,indent=2))
+ (REPORTS/'export_checks.json').write_text(json.dumps(check,ensure_ascii=False,indent=2));print(json.dumps(check,ensure_ascii=False,indent=2))
  print('EXAMPLES: 35-39, income >=500万円')
  for m in chosen:
   i=allareas.index(m);ai=4;print(m,entries[i][1],'P(age,income>=500 | municipality)=',by_m[i,ai,8:].sum(),'P(income>=500 | municipality,35-39)=',by_ma[i,ai,8:].sum())

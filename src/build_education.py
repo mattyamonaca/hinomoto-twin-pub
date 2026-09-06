@@ -1,12 +1,13 @@
 """Split v1 age/sex/income counts by education using census margins and income associations."""
+from paths import SOURCES,REPORTS,OUTPUT as OUT
 from pathlib import Path
 import json
 import numpy as np
 import pandas as pd
-from build import BASE,OUT,AGES,norm
+from model_math import AGES,norm
 
 EDU=[f'E{i:02}' for i in range(1,9)]
-D=BASE/'sources/education'
+D=SOURCES/'education'
 INCOME_MAP=[['11'],['12','13'],['14','16','17'],['15','18'],['19'],['2'],['0'],['0']]
 
 def read(name):return pd.read_csv(D/name,dtype={k:str for k in ['area','sex','age','labor_status','education','income']})
@@ -86,16 +87,17 @@ def allocate(inputs,shapes=None):
  return final,fits
 
 def main(income_shrink=1000.,rate_shrink=100.):
- OUT.mkdir(exist_ok=True)
+ REPORTS.mkdir(parents=True,exist_ok=True)
+ OUT.mkdir(parents=True,exist_ok=True)
  inputs=prepare(income_shrink,rate_shrink);N=inputs['N'];edu_counts=inputs['edu_counts'];income_counts=inputs['income_counts']
  final,fits=allocate(inputs)
  old=np.concatenate([income_counts[...,:2].sum(-1,keepdims=True),income_counts[...,2:]],axis=-1)
  assert np.max(abs(final.sum(-2)-old))<1e-6
  assert np.max(abs(final.sum(-1)-edu_counts))<1e-4
  np.savez_compressed(OUT/'education_leaf_arrays.npz',areas=np.array(inputs['areas']),population=N,education_population=edu_counts,counts=final)
- pd.DataFrame(inputs['quality'],columns=['area','sex','age','observed_age_known_population','model_population','labor_seed_area','population_fallback_to_prefecture','education_unknown_share']).to_csv(BASE/'validation/education_source_quality.csv.gz',index=False)
- pd.DataFrame(inputs['income_quality'],columns=['sex','age','education','source_total','known_income_count','shrinkage_weight']).to_csv(BASE/'validation/education_income_quality.csv',index=False)
- pd.DataFrame(fits,columns=['sex','age','iterations','relative_error']).to_csv(BASE/'validation/education_ipf.csv',index=False)
+ pd.DataFrame(inputs['quality'],columns=['area','sex','age','observed_age_known_population','model_population','labor_seed_area','population_fallback_to_prefecture','education_unknown_share']).to_csv(REPORTS/'education_source_quality.csv.gz',index=False)
+ pd.DataFrame(inputs['income_quality'],columns=['sex','age','education','source_total','known_income_count','shrinkage_weight']).to_csv(REPORTS/'education_income_quality.csv',index=False)
+ pd.DataFrame(fits,columns=['sex','age','iterations','relative_error']).to_csv(REPORTS/'education_ipf.csv',index=False)
  result={'model_version':'2.0','leaf_geographies':len(inputs['areas']),'axes':['municipality','sex','age','education','income'],'shape':list(final.shape),'income_shrink_pseudopopulation':income_shrink,'labor_rate_shrink_pseudopopulation':rate_shrink,'population_15plus':float(N.sum()),'education_unknown_probability':float(edu_counts[...,7].sum()/N.sum()),'enrolled_probability':float(edu_counts[...,5].sum()/N.sum()),'raw_population_fallback_cells':int(sum(v[-2] for v in inputs['quality'])),'max_old_income_count_difference':float(np.max(abs(final.sum(-2)-old))),'max_education_count_error':float(np.max(abs(final.sum(-1)-edu_counts))),'warning':'Census education/labor association and national ESS education/income association are transported assumptions. No independent municipal education-income validation. Sex is the binary category published by these surveys.'}
- (BASE/'validation/education_build.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False,indent=2),flush=True)
+ (REPORTS/'education_build.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False,indent=2),flush=True)
 if __name__=='__main__':main()

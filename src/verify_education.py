@@ -1,11 +1,13 @@
 """Check v2 census constraints, v1 preservation, serialized files, and conditional sampling."""
+from paths import SOURCES,OUTPUT,REPORTS
 import gzip,json
 import numpy as np
 import pandas as pd
-from persona_v2 import BASE,PersonaDistributionV2
+from persona_v2 import PersonaDistributionV2
 
 def main():
- D=BASE/'data';model=PersonaDistributionV2();x=model.counts;shape=(1916,13,2,8,16)
+ REPORTS.mkdir(parents=True,exist_ok=True)
+ D=OUTPUT;model=PersonaDistributionV2();x=model.counts;shape=(1916,13,2,8,16)
  assert x.shape==shape and len(set(model.codes))==1916
  assert np.isfinite(x).all() and (x>=0).all()
  old=np.load(D/'municipality_model.npz');assert model.codes==old['municipality_codes'].tolist()
@@ -14,7 +16,7 @@ def main():
  expected=np.concatenate([z[...,:2].sum(-1,keepdims=True),z[...,2:]],axis=-1)
  sex_difference=float(np.max(abs(c.sum(-2)-expected)));assert sex_difference<1e-6
  # Independent reconstruction of education margins from the normalized census source.
- f=pd.read_csv(BASE/'sources/education/census_education_tidy.csv.gz',dtype={'area':str,'sex':str,'age':str}).set_index(['area','sex','age'])
+ f=pd.read_csv(SOURCES/'education/census_education_tidy.csv.gz',dtype={'area':str,'sex':str,'age':str}).set_index(['area','sex','age'])
  edu=[f'E{i:02}' for i in range(1,9)];ages=[f'{a:02}' for a in range(1,14)]
  ix=pd.MultiIndex.from_product([leaf['areas'],['1','2'],ages],names=['area','sex','age'])
  r=f.reindex(ix)[edu].to_numpy(float).reshape(1896,2,13,8);n=original['population']
@@ -52,5 +54,5 @@ def main():
   except ValueError:pass
   else:raise AssertionError(f'Invalid/empty condition did not fail: {m}, {kwargs}')
  result={'passed':True,'model_version':'2.0','shape':list(shape),'csv_rows_verified':offset,'max_old_age_income_count_difference':difference,'max_old_age_sex_income_count_difference':sex_difference,'max_census_education_target_count_error':max_edu_error,'checks':['nonnegative finite counts','all v1 municipal age/income margins','all sex-specific income margins','education targets independently reconstructed','parent/ward aggregation','all CSV coordinates and probabilities','representative JSON consistency','conditioned sample fields and reproducibility','zero population and invalid filters','income association differs by education'],'validation_scope':'Internal/source consistency. No independent municipal education-income accuracy validation.'}
- (BASE/'validation/education_verification.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2),flush=True)
+ (REPORTS/'education_verification.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2),flush=True)
 if __name__=='__main__':main()
