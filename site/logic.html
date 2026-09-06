@@ -231,6 +231,7 @@ footer{padding:32px 0 0;border-top:1px solid var(--line);font-size:12.5px;color:
     <li><a href="#pipeline"><span class="num">2</span>パイプライン全体図</a></li>
     <li><a href="#sources"><span class="num">3</span>データソース</a></li>
     <li><a href="#stages"><span class="num">4</span>加工・推定ステップ</a></li>
+    <li><a href="#v2"><span class="num">4b</span>v2：性別と学歴</a></li>
     <li><a href="#params"><span class="num">5</span>パラメータ一覧</a></li>
     <li><a href="#validation"><span class="num">6</span>検証結果</a></li>
     <li><a href="#example"><span class="num">7</span>出力の例</a></li>
@@ -241,7 +242,7 @@ footer{padding:32px 0 0;border-top:1px solid var(--line);font-size:12.5px;color:
 
 <main>
 <header class="hero">
-  <p class="eyebrow">Hinomoto Twin Pub / モデル v1.1 / 推定ロジック解説</p>
+  <p class="eyebrow">Hinomoto Twin Pub / モデル v2.0（v1.1 の基礎モデル + 性別・学歴）/ 推定ロジック解説</p>
   <h1>市区町村別・年齢 × 年収分布は、どの統計からどう作られているか</h1>
   <p class="lede">このページは、政府公表統計6表を組み合わせて <strong>P（年齢区分, 年収区分｜市区町村）</strong> を合成するロジックを、データソース → 加工 → 推定 → 検証の順に整理したものです。市区町村別の所得調査の実測値ではなく、集計値に整合する候補分布を一つ構成する推定モデルです。</p>
   <div class="specs" aria-label="出力の規模">
@@ -761,6 +762,38 @@ P(a,y|m) = C(m,a,y) / N(m)            構造的0成分の全国比率 = 40.96%</
 </section>
 
 <!-- 5 -->
+
+<!-- v2 -->
+<section id="v2">
+  <p class="eyebrow">4b / v2 の追加：性別と最終学歴</p>
+  <h2>性別・学歴の追加はどう行われているか</h2>
+  <div class="prose"><p>v2（2026-09-06）は、①〜⑧で得た地域 × 性別 × 年齢 × 年収の人数を固定したまま、その内訳を学歴8区分に配分します。性別は v1 の内部配列をそのまま出力に残したもので、公表統計の「男・女」区分です。学歴を合計すると v1 の分布に戻ります（差は最大 2.7 × 10<sup>-10</sup> 人）。</p></div>
+  <div class="src-grid">
+    <article class="src census"><div class="top"><h3>S7　就業状態等基本集計 表11-2</h3><span class="fam">2020 国勢調査</span></div><p class="desc">市区町村 × 性別 × 年齢 × 在学・最終卒業学校。</p><dl><dt>原表</dt><dd><a href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201217&amp;fileKind=0">e-Stat Excel</a></dd><dt>加工後</dt><dd><code>sources/education/census_education_tidy.csv.gz</code></dd><dt>使用列</dt><dd><code>E01–E08</code>（小中／高校・旧中／短大・高専等／大学等／大学院／在学中／未就学／不詳）</dd></dl><p class="role"><b>役割</b>⑨の学歴人数 R(m,s,a,e)。年齢不詳を補完した人口に、年齢既知者の学歴構成を当てはめる。不詳は他区分へ配分しない。</p></article>
+    <article class="src census"><div class="top"><h3>S8　就業状態等基本集計 表12-1</h3><span class="fam">2020 国勢調査</span></div><p class="desc">全国・都道府県・主要都市 × 性別 × 年齢 × 学歴 × 労働力状態。</p><dl><dt>原表</dt><dd><a href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&amp;fileKind=0">e-Stat Excel</a></dd><dt>加工後</dt><dd><code>sources/education/census_education_labor_tidy.csv.gz</code></dd><dt>使用列</dt><dd>労働力状態 11（就業者）、12、2 の <code>E01–E08</code></dd></dl><p class="role"><b>役割</b>⑩の学歴別就業率の初期値。自地域の表があれば自地域、なければ都道府県。人口100人分の事前分布で平滑化。</p></article>
+    <article class="src ess"><div class="top"><h3>S9　就業構造基本調査 全国編 04000</h3><span class="fam">2022 就業構造基本調査</span></div><p class="desc">全国 × 性別 × 年齢 × 学歴 × 所得（有業者）。都道府県別・市区町村別の学歴 × 所得は公表されていない。</p><dl><dt>原表</dt><dd><a href="https://www.e-stat.go.jp/dbview?sid=0004008157">e-Stat 統計表 sid=0004008157</a></dd><dt>加工後</dt><dd><code>sources/education/income_education_tidy.csv.gz</code></dd></dl><p class="role"><b>役割</b>⑪の学歴別所得形状 q(y|s,a,e)。所得不詳は除外し、小さな学歴区分は同性・同年齢の全学歴分布へ人口1000人分の重みで縮める。</p></article>
+  </div>
+  <article class="stage">
+    <p class="eyebrow"><span>⑨〜⑫</span><span class="chip script">build_education.py</span></p>
+    <h3>学歴 × 所得の配分</h3>
+    <div class="io">
+      <div class="box"><b>入力</b><span class="chip census">S7</span> 学歴人数 R、<span class="chip census">S8</span> 学歴別就業率 r、<span class="chip ess">S9</span> 所得形状 q、⑦の年収人数 B(m,s,a,z)</div><div class="arr">→</div>
+      <div class="box proc"><b>処理</b>地域・性別・年齢ごとに、初期表 Q(e,0)=R(e)(1−r(e))、Q(e,z)=R(e)·r(e)·q(z|s,a,e) を作り、行合計＝学歴人数 R、列合計＝v1 の年収人数 B に一致するまで IPF。</div><div class="arr">→</div>
+      <div class="box"><b>出力</b>P(a,s,e,y|m)　1,916 × 13 × 2 × 8 × 16　→ <code>municipality_model_v2.npz</code></div>
+    </div>
+    <div class="formula">R(m,s,a,e) = N(m,s,a) × C(m,s,a,e) / Σe C(m,s,a,e)            学歴人数（S7 の按分）
+r(e)       = (就業者(e) + 100·prior) / (労働力状態既知(e) + 100)   学歴別就業率（S8）
+q(y|s,a,e) = (C(s,a,e,y) + 1000·q0(y|s,a)) / (ΣC + 1000)        所得形状（S9）
+IPF：行合計 R(e)、列合計 B(z)。所得階級間の学歴別オッズ比は q の値のまま全地域で保存される</div>
+    <div class="assume"><b>仮定・注意</b><ul><li>学歴 × 所得の関連は全国の値を全地域に移植している。地域の年収分布と学歴人数には一致するが、地域ごとの学歴と所得の関係を学習しているわけではない。</li><li>学歴不詳（E08）は独立区分として保持し、所得形状の初期値には同性・同年齢の全学歴分布を使う。不詳率は地域・年齢・性別で大きく異なる（全国 13.98%、港区35～39歳男性 50.14%）。</li><li>市区町村 × 性別 × 学歴の所得精度は未検証。下の感度分析は仮定の影響の大きさを示すもので、精度検証ではない。</li></ul></div>
+  </article>
+  <h3>移植仮定の感度分析（validation/education_sensitivity.json）</h3>
+  <div class="tbl-wrap"><table><thead><tr><th>置き換えた仮定</th><th class="num">平均 TV</th><th class="num">500万円以上の平均変化（pt）</th><th class="num">同・大学等（pt）</th><th class="num">港区35～39歳男性のオッズ比</th></tr></thead><tbody>
+  <tr><td>全国の学歴×所得の関連を除く（λ=0）</td><td class="num">0.0713</td><td class="num">4.17</td><td class="num">7.90</td><td class="num">1.000</td></tr><tr><td>関連を半分に弱める（λ=0.5）</td><td class="num">0.0327</td><td class="num">1.95</td><td class="num">3.73</td><td class="num">1.523</td></tr><tr><td>関連を1.5倍に強める（λ=1.5）</td><td class="num">0.0274</td><td class="num">1.55</td><td class="num">3.09</td><td class="num">3.531</td></tr><tr><td>所得形状の平滑化を弱める（300）</td><td class="num">0.0002</td><td class="num">0.01</td><td class="num">0.01</td><td class="num">2.320</td></tr><tr><td>平滑化を強める（3000）</td><td class="num">0.0005</td><td class="num">0.02</td><td class="num">0.02</td><td class="num">2.315</td></tr><tr><td>所得不詳の有業者を全体形状に置く</td><td class="num">0.0018</td><td class="num">0.10</td><td class="num">0.18</td><td class="num">2.286</td></tr><tr><td>学歴不詳の形状を地域の既知学歴の混合にする</td><td class="num">0.0067</td><td class="num">0.36</td><td class="num">0.46</td><td class="num">2.319</td></tr>
+  </tbody></table></div>
+  <p class="small">公開値のオッズ比（大学等/高校等 × 500～600/300～400万円、35～39歳男性）は 2.3186 で全地域同一。重みは推定学歴人口で、標本数ではない。すべての条件で v1 の年収周辺分布と学歴人数への一致は保たれる。</p>
+</section>
+
 <section id="params">
   <p class="eyebrow">5 / パラメータ一覧</p>
   <h2>推定上の選択とその値</h2>

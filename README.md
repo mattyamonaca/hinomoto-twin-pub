@@ -29,6 +29,8 @@
 | `data/geography.csv`, `data/age_bins.csv`, `data/income_bins.csv` | 地域・年齢・年収の定義 |
 | `examples_v2.csv` | 5都市での性別・学歴を指定した推定例 |
 | `validation/education_verification.json` | 5属性版の検証結果 |
+| `validation/education_sensitivity.json` | 学歴×所得の移植仮定・平滑化・不詳の扱いに対する感度分析 |
+| `site/index.html` | 公開ページ（[GitHub Pages](https://mattyamonaca.github.io/hinomoto-twin-pub/)）。導出ステップ・参照データ・検証の範囲を表示 |
 
 CSVのコード列は文字列で読み込んでください。政令市は市全体と各区を含むため、全国集計では両方を同時に合計しないでください。`geography_level=municipality` の1,741地域を使うと重複を避けられます。
 
@@ -84,6 +86,17 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 **学歴と所得を独立に掛け合わせてはいません。** 一方、全国の学歴別所得の関連を地域に移植する仮定があり、実測された市区町村別学歴・所得の同時分布ではありません。内部整合性の検証と、小地域での精度保証は区別してください。
 
 [推定方法・制約・限界（v2）](METHOD_V2.md)／[基礎モデル（v1）](METHOD.md)／[全出典](SOURCES.md)
+
+### 検証の範囲と感度分析
+
+| 項目 | 内容 |
+|---|---|
+| 検証できた範囲 | 86都市 × 年齢13区分の就業者の所得構成（TV 0.09328、税係数の都道府県単位交差検証） |
+| 未検証の範囲 | 町村・行政区、性別別、学歴別の所得構成、非就業者を含む住民全体の分布 |
+| 感度分析 | `python src/sensitivity_education.py` → `validation/education_sensitivity.json`。全国の学歴×所得の関連を半分に弱めると学歴別の500万円以上の割合は平均1.9ポイント、関連を除くと4.2ポイント動く。平滑化・所得不詳・学歴不詳の扱いに対する感度は0.1〜0.4ポイント |
+| 学歴不詳 | 独立区分として保持。不詳率は地域・年齢・性別で大きく異なり（全国13.98%、港区35～39歳男性50.14%）、公開ページで選択中の条件の不詳率を表示 |
+
+詳細は [METHOD_V2.md](METHOD_V2.md) の「学歴不詳の扱いと補完モードの仕様」「移植仮定の感度分析」「検証の範囲」を参照してください。
 
 ## 元データと再実行
 

@@ -1,0 +1,481 @@
+{
+  "baseline": {
+    "description": "v2.0 as published",
+    "example_odds_ratio_E04_vs_E02_500_600_vs_300_400_age35_39_male": {
+      "13103": 2.3186018353993685,
+      "13121": 2.318601835399369,
+      "02201": 2.3186018353993694,
+      "47201": 2.318601835399369
+    }
+  },
+  "variants": {
+    "lambda_0.0": {
+      "description": "全国の学歴×所得の関連を除く（全学歴が同じ所得形状）",
+      "weighted_mean_tv": 0.07132715161813612,
+      "weighted_mean_abs_change_p_ge500": 0.04174055775788912,
+      "max_abs_change_p_ge500_cells_ge100": 0.49473295699975045,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.05162160791190255,
+          "weighted_mean_abs_change_p_ge500": 0.03485593475116608
+        },
+        "E02": {
+          "weighted_mean_tv": 0.06282852640188193,
+          "weighted_mean_abs_change_p_ge500": 0.03896767920271047
+        },
+        "E03": {
+          "weighted_mean_tv": 0.0587421432911537,
+          "weighted_mean_abs_change_p_ge500": 0.024035372273522117
+        },
+        "E04": {
+          "weighted_mean_tv": 0.11802983079315106,
+          "weighted_mean_abs_change_p_ge500": 0.07898820343049907
+        },
+        "E05": {
+          "weighted_mean_tv": 0.3048468456523151,
+          "weighted_mean_abs_change_p_ge500": 0.25059335801732285
+        },
+        "E06": {
+          "weighted_mean_tv": 0.08805244854504987,
+          "weighted_mean_abs_change_p_ge500": 0.003008925246648023
+        },
+        "E07": {
+          "weighted_mean_tv": 0.009427861463279372,
+          "weighted_mean_abs_change_p_ge500": 0.004904655832719333
+        },
+        "E08": {
+          "weighted_mean_tv": 0.01810657367873482,
+          "weighted_mean_abs_change_p_ge500": 0.011798851616080719
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 1.0,
+        "13121": 1.000000000000001,
+        "02201": 0.9999999999999996,
+        "47201": 0.9999999999999994
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.6911955840298432
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.583716093831673
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.21528816434759415
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.1919685639193758
+        ]
+      },
+      "max_income_margin_error": 2.9103830456733704e-11,
+      "max_education_margin_error": 2.894939825637266e-07
+    },
+    "lambda_0.5": {
+      "description": "関連を半分に弱める",
+      "weighted_mean_tv": 0.03269184267868182,
+      "weighted_mean_abs_change_p_ge500": 0.019493154033176054,
+      "max_abs_change_p_ge500_cells_ge100": 0.27197626082166826,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.023568298607915306,
+          "weighted_mean_abs_change_p_ge500": 0.014809820428408674
+        },
+        "E02": {
+          "weighted_mean_tv": 0.02892904677503577,
+          "weighted_mean_abs_change_p_ge500": 0.01795685122838062
+        },
+        "E03": {
+          "weighted_mean_tv": 0.02800186346843539,
+          "weighted_mean_abs_change_p_ge500": 0.01118886591541301
+        },
+        "E04": {
+          "weighted_mean_tv": 0.05496741131408768,
+          "weighted_mean_abs_change_p_ge500": 0.037341924747526484
+        },
+        "E05": {
+          "weighted_mean_tv": 0.1513316788386535,
+          "weighted_mean_abs_change_p_ge500": 0.12049448943322295
+        },
+        "E06": {
+          "weighted_mean_tv": 0.029262796162022427,
+          "weighted_mean_abs_change_p_ge500": 0.001390444334413464
+        },
+        "E07": {
+          "weighted_mean_tv": 0.004899013747634523,
+          "weighted_mean_abs_change_p_ge500": 0.0024217211859371176
+        },
+        "E08": {
+          "weighted_mean_tv": 0.009766774488311676,
+          "weighted_mean_abs_change_p_ge500": 0.00623768500182294
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 1.5226955819858985,
+        "13121": 1.522695581985898,
+        "02201": 1.5226955819858978,
+        "47201": 1.5226955819858978
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.7177981065882262
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.6516387198152763
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.28239838649301785
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.24188964778420233
+        ]
+      },
+      "max_income_margin_error": 1.4551915228366852e-11,
+      "max_education_margin_error": 3.117174856015481e-07
+    },
+    "lambda_1.5": {
+      "description": "関連を1.5倍に強める",
+      "weighted_mean_tv": 0.027435884643947916,
+      "weighted_mean_abs_change_p_ge500": 0.015505576990639102,
+      "max_abs_change_p_ge500_cells_ge100": 0.20264781172044172,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.018769764576285024,
+          "weighted_mean_abs_change_p_ge500": 0.010117398698253476
+        },
+        "E02": {
+          "weighted_mean_tv": 0.023624380726570336,
+          "weighted_mean_abs_change_p_ge500": 0.013808204922426591
+        },
+        "E03": {
+          "weighted_mean_tv": 0.026318414089131374,
+          "weighted_mean_abs_change_p_ge500": 0.009130356213548395
+        },
+        "E04": {
+          "weighted_mean_tv": 0.0474994853374531,
+          "weighted_mean_abs_change_p_ge500": 0.030929824924761498
+        },
+        "E05": {
+          "weighted_mean_tv": 0.12542536502745266,
+          "weighted_mean_abs_change_p_ge500": 0.08727296838567178
+        },
+        "E06": {
+          "weighted_mean_tv": 0.014220456797767051,
+          "weighted_mean_abs_change_p_ge500": 0.0010786404290271817
+        },
+        "E07": {
+          "weighted_mean_tv": 0.0053929485783153494,
+          "weighted_mean_abs_change_p_ge500": 0.002603370536537634
+        },
+        "E08": {
+          "weighted_mean_tv": 0.011531216317880247,
+          "weighted_mean_abs_change_p_ge500": 0.006821274160284979
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 3.530524771147008,
+        "13121": 3.530524771147015,
+        "02201": 3.53052477114701,
+        "47201": 3.5305247711470136
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.7790076169473293
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.7651706068479623
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.3967298843482224
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.3228275889061275
+        ]
+      },
+      "max_income_margin_error": 2.1827872842550278e-11,
+      "max_education_margin_error": 2.894948920584284e-07
+    },
+    "income_shrink_300": {
+      "description": "所得形状の平滑化を弱める（擬似人口300）",
+      "weighted_mean_tv": 0.0002155364936984854,
+      "weighted_mean_abs_change_p_ge500": 8.582257472899694e-05,
+      "max_abs_change_p_ge500_cells_ge100": 0.020184445188289157,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.00036126779078555696,
+          "weighted_mean_abs_change_p_ge500": 0.00018103462443487772
+        },
+        "E02": {
+          "weighted_mean_tv": 9.658118951013319e-05,
+          "weighted_mean_abs_change_p_ge500": 2.8506168888395894e-05
+        },
+        "E03": {
+          "weighted_mean_tv": 0.00014471091916339843,
+          "weighted_mean_abs_change_p_ge500": 4.821987227135387e-05
+        },
+        "E04": {
+          "weighted_mean_tv": 0.0001495890366829147,
+          "weighted_mean_abs_change_p_ge500": 6.196678594129655e-05
+        },
+        "E05": {
+          "weighted_mean_tv": 0.0018461098310776712,
+          "weighted_mean_abs_change_p_ge500": 0.001254583157926147
+        },
+        "E06": {
+          "weighted_mean_tv": 0.0006861547490499386,
+          "weighted_mean_abs_change_p_ge500": 0.00012933551917893873
+        },
+        "E07": {
+          "weighted_mean_tv": 4.902104454020879e-05,
+          "weighted_mean_abs_change_p_ge500": 1.5083022204564933e-05
+        },
+        "E08": {
+          "weighted_mean_tv": 9.383542036754337e-05,
+          "weighted_mean_abs_change_p_ge500": 3.761724183021832e-05
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 2.31975142895893,
+        "13121": 2.3197514289589285,
+        "02201": 2.319751428958932,
+        "47201": 2.319751428958932
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.7480873711620586
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.7132421239301855
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.34428379948751126
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.2857849581711684
+        ]
+      },
+      "max_income_margin_error": 1.4551915228366852e-11,
+      "max_education_margin_error": 2.894948920584284e-07
+    },
+    "income_shrink_3000": {
+      "description": "所得形状の平滑化を強める（擬似人口3000）",
+      "weighted_mean_tv": 0.000537707270623654,
+      "weighted_mean_abs_change_p_ge500": 0.00022761547397828218,
+      "max_abs_change_p_ge500_cells_ge100": 0.04325040474389408,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.0009760188530500964,
+          "weighted_mean_abs_change_p_ge500": 0.000505309061886339
+        },
+        "E02": {
+          "weighted_mean_tv": 0.0002409227008705012,
+          "weighted_mean_abs_change_p_ge500": 7.753927318287211e-05
+        },
+        "E03": {
+          "weighted_mean_tv": 0.0003824238699340962,
+          "weighted_mean_abs_change_p_ge500": 0.00012978034507843435
+        },
+        "E04": {
+          "weighted_mean_tv": 0.00039551007607986784,
+          "weighted_mean_abs_change_p_ge500": 0.0001718173930659699
+        },
+        "E05": {
+          "weighted_mean_tv": 0.004807559296043751,
+          "weighted_mean_abs_change_p_ge500": 0.003407327478561306
+        },
+        "E06": {
+          "weighted_mean_tv": 0.0014466055476044847,
+          "weighted_mean_abs_change_p_ge500": 0.0002483254090967881
+        },
+        "E07": {
+          "weighted_mean_tv": 0.00012348182194217499,
+          "weighted_mean_abs_change_p_ge500": 4.022633528489256e-05
+        },
+        "E08": {
+          "weighted_mean_tv": 0.00022868019814404296,
+          "weighted_mean_abs_change_p_ge500": 9.904708199594136e-05
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 2.3153279990324704,
+        "13121": 2.315327999032472,
+        "02201": 2.315327999032474,
+        "47201": 2.3153279990324718
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.7481468540399148
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.7127903047487089
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.3439428021895564
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.2856717794809748
+        ]
+      },
+      "max_income_margin_error": 1.4551915228366852e-11,
+      "max_education_margin_error": 2.894948920584284e-07
+    },
+    "income_unknown_to_reference": {
+      "description": "所得不詳の有業者を同性・同年齢の全体形状に置く",
+      "weighted_mean_tv": 0.0018437503613131143,
+      "weighted_mean_abs_change_p_ge500": 0.001033165337610241,
+      "max_abs_change_p_ge500_cells_ge100": 0.01409779551588003,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.002862193893323255,
+          "weighted_mean_abs_change_p_ge500": 0.0016218215150312415
+        },
+        "E02": {
+          "weighted_mean_tv": 0.0015972679286189073,
+          "weighted_mean_abs_change_p_ge500": 0.0008960350008939187
+        },
+        "E03": {
+          "weighted_mean_tv": 0.0016957476985954743,
+          "weighted_mean_abs_change_p_ge500": 0.0006056117721211541
+        },
+        "E04": {
+          "weighted_mean_tv": 0.002481007405887373,
+          "weighted_mean_abs_change_p_ge500": 0.0018332031879612623
+        },
+        "E05": {
+          "weighted_mean_tv": 0.0035452238060047167,
+          "weighted_mean_abs_change_p_ge500": 0.002877534375463057
+        },
+        "E06": {
+          "weighted_mean_tv": 0.0017320842637545658,
+          "weighted_mean_abs_change_p_ge500": 6.229401379594203e-05
+        },
+        "E07": {
+          "weighted_mean_tv": 0.0004923862715338567,
+          "weighted_mean_abs_change_p_ge500": 0.00026428778160716976
+        },
+        "E08": {
+          "weighted_mean_tv": 0.0007771885118521553,
+          "weighted_mean_abs_change_p_ge500": 0.0004754256563267527
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 2.2863782953723732,
+        "13121": 2.286378295372372,
+        "02201": 2.2863782953723732,
+        "47201": 2.2863782953723732
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.7469610784547418
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.7106070200868679
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.3416039672283265
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.28409411400145124
+        ]
+      },
+      "max_income_margin_error": 2.1827872842550278e-11,
+      "max_education_margin_error": 2.8949580155313015e-07
+    },
+    "education_unknown_as_known_mix": {
+      "description": "学歴不詳の所得形状を地域の既知学歴の混合にする",
+      "weighted_mean_tv": 0.00672119969216668,
+      "weighted_mean_abs_change_p_ge500": 0.003574568896836549,
+      "max_abs_change_p_ge500_cells_ge100": 0.10809343576608421,
+      "by_education": {
+        "E01": {
+          "weighted_mean_tv": 0.0013372178024443683,
+          "weighted_mean_abs_change_p_ge500": 0.0004961073436973379
+        },
+        "E02": {
+          "weighted_mean_tv": 0.0032288848171134546,
+          "weighted_mean_abs_change_p_ge500": 0.0013254765726191254
+        },
+        "E03": {
+          "weighted_mean_tv": 0.004352903394325157,
+          "weighted_mean_abs_change_p_ge500": 0.0021718917860178997
+        },
+        "E04": {
+          "weighted_mean_tv": 0.006735560816657874,
+          "weighted_mean_abs_change_p_ge500": 0.004627576490482976
+        },
+        "E05": {
+          "weighted_mean_tv": 0.008366393947708632,
+          "weighted_mean_abs_change_p_ge500": 0.0064314877772317525
+        },
+        "E06": {
+          "weighted_mean_tv": 0.005058693717667606,
+          "weighted_mean_abs_change_p_ge500": 0.0002262893552935434
+        },
+        "E07": {
+          "weighted_mean_tv": 0.0024509239020941514,
+          "weighted_mean_abs_change_p_ge500": 0.0011391061968736127
+        },
+        "E08": {
+          "weighted_mean_tv": 0.02245633499140892,
+          "weighted_mean_abs_change_p_ge500": 0.012783832973492063
+        }
+      },
+      "example_odds_ratio": {
+        "13103": 2.318601835399369,
+        "13121": 2.3186018353993707,
+        "02201": 2.31860183539937,
+        "47201": 2.31860183539937
+      },
+      "example_p_ge500_age35_39_male_E04": {
+        "13103": [
+          0.7481060468086235,
+          0.6874413047754481
+        ],
+        "13121": [
+          0.7131252687114444,
+          0.7144490227096549
+        ],
+        "02201": [
+          0.3441965017989982,
+          0.3477480660885297
+        ],
+        "47201": [
+          0.28575862415751374,
+          0.29434648743376746
+        ]
+      },
+      "max_income_margin_error": 1.4551915228366852e-11,
+      "max_education_margin_error": 2.894939825637266e-07
+    }
+  },
+  "notes": [
+    "Weights are model education populations R(m,s,a,e), not survey sample sizes.",
+    "TV is half the L1 distance between the variant and baseline P(income | area, sex, age, education).",
+    "All variants keep the v1 income margins and the census education margins; they change only how the fixed margins are split.",
+    "This is a sensitivity analysis of transported assumptions, not a validation against observed municipal education x income data."
+  ]
+}

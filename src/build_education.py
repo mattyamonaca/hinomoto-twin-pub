@@ -7,6 +7,7 @@ from build import BASE,OUT,AGES,norm
 
 EDU=[f'E{i:02}' for i in range(1,9)]
 D=BASE/'sources/education'
+INCOME_MAP=[['11'],['12','13'],['14','16','17'],['15','18'],['19'],['2'],['0'],['0']]
 
 def read(name):return pd.read_csv(D/name,dtype={k:str for k in ['area','sex','age','labor_status','education','income']})
 
@@ -22,25 +23,29 @@ def project(seed,rows,cols):
   if err<1e-10:return z,it+1,float(err)
  raise RuntimeError(f'Education IPF did not converge: {err}')
 
-def main(income_shrink=1000.,rate_shrink=100.):
- OUT.mkdir(exist_ok=True)
- original=np.load(OUT/'final_arrays.npz');areas=original['areas'].tolist();N=original['population'];income_counts=original['counts_by_sex']
- census=read('census_education_tidy.csv.gz').set_index(['area','sex','age'])
- labor=read('census_education_labor_tidy.csv.gz').set_index(['area','sex','age','labor_status'])
+def income_shapes(income_shrink=1000.):
+ """National education x income shapes q(y|s,a,e) and the all-education reference q0(y|s,a). Returns shapes, reference, quality rows."""
  ess=read('income_education_tidy.csv.gz')
  # Sum 75-79,80-84,85+ into the shared 75+ age class; omit all-age totals.
  ess=ess[ess.age!='00'].copy();ess['age']=ess.age.astype(int).clip(upper=13).map(lambda x:f'{x:02}')
  ess=ess.groupby(['sex','age','education','income'],as_index=False)['count'].sum()
  tab=ess.pivot(index=['sex','age','education'],columns='income',values='count').sort_index(axis=1)
- income_map=[['11'],['12','13'],['14','16','17'],['15','18'],['19'],['2'],['0'],['0']]
- shapes=np.zeros((2,13,8,16));income_quality=[]
+ shapes=np.zeros((2,13,8,16));reference=np.zeros((2,13,16));quality=[]
  for si,s in enumerate(['1','2']):
   for ai,a in enumerate(AGES):
-   reference=norm(tab.loc[(s,a,'0')].to_numpy()[1:]+1e-8)
-   for ei,parts in enumerate(income_map):
+   ref=norm(tab.loc[(s,a,'0')].to_numpy()[1:]+1e-8);reference[si,ai]=ref
+   for ei,parts in enumerate(INCOME_MAP):
     values=sum(tab.loc[(s,a,e)].to_numpy() for e in parts)
-    shapes[si,ai,ei]=norm(values[1:]+income_shrink*reference)
-    income_quality.append((s,a,EDU[ei],float(values[0]),float(values[1:].sum()),income_shrink/(values[1:].sum()+income_shrink)))
+    shapes[si,ai,ei]=norm(values[1:]+income_shrink*ref)
+    quality.append((s,a,EDU[ei],float(values[0]),float(values[1:].sum()),income_shrink/(values[1:].sum()+income_shrink)))
+ return shapes,reference,quality
+
+def prepare(income_shrink=1000.,rate_shrink=100.):
+ """Load v1 arrays and census education inputs. Returns a dict of everything allocate() needs."""
+ original=np.load(OUT/'final_arrays.npz');areas=original['areas'].tolist();N=original['population'];income_counts=original['counts_by_sex']
+ census=read('census_education_tidy.csv.gz').set_index(['area','sex','age'])
+ labor=read('census_education_labor_tidy.csv.gz').set_index(['area','sex','age','labor_status'])
+ shapes,reference,income_quality=income_shapes(income_shrink)
  # Labor-known denominators avoid treating labor nonresponse as nonemployment.
  cache={}
  available=set(labor.index.get_level_values('area'))
@@ -63,6 +68,12 @@ def main(income_shrink=1000.,rate_shrink=100.):
     edu_counts[mi,si,ai]=norm(values)*N[mi,si,ai]
     rate_array[mi,si,ai]=rates(labor_source,s,a)
     quality.append((m,s,a,observed_total,float(N[mi,si,ai]),labor_source,fallback,float(edu_counts[mi,si,ai,7]/N[mi,si,ai]) if N[mi,si,ai]>0 else None))
+ return {'areas':areas,'N':N,'income_counts':income_counts,'shapes':shapes,'reference':reference,'edu_counts':edu_counts,'rate_array':rate_array,'quality':quality,'income_quality':income_quality,'income_shrink':income_shrink,'rate_shrink':rate_shrink}
+
+def allocate(inputs,shapes=None):
+ """Allocate v1 income counts to education classes with IPF. Returns 16-bin counts (area, sex, age, education, income) and fit rows."""
+ shapes=inputs['shapes'] if shapes is None else shapes
+ N=inputs['N'];edu_counts=inputs['edu_counts'];rate_array=inputs['rate_array'];income_counts=inputs['income_counts']
  cube=np.zeros(N.shape+(8,17));fits=[]
  for si,s in enumerate(['1','2']):
   for ai,a in enumerate(AGES):
@@ -72,13 +83,19 @@ def main(income_shrink=1000.,rate_shrink=100.):
    fits.append((s,a,it,err))
  # The model's synthetic zero and earned <50万円 component merge only after allocation.
  final=np.concatenate([cube[...,:2].sum(-1,keepdims=True),cube[...,2:]],axis=-1)
+ return final,fits
+
+def main(income_shrink=1000.,rate_shrink=100.):
+ OUT.mkdir(exist_ok=True)
+ inputs=prepare(income_shrink,rate_shrink);N=inputs['N'];edu_counts=inputs['edu_counts'];income_counts=inputs['income_counts']
+ final,fits=allocate(inputs)
  old=np.concatenate([income_counts[...,:2].sum(-1,keepdims=True),income_counts[...,2:]],axis=-1)
  assert np.max(abs(final.sum(-2)-old))<1e-6
  assert np.max(abs(final.sum(-1)-edu_counts))<1e-4
- np.savez_compressed(OUT/'education_leaf_arrays.npz',areas=np.array(areas),population=N,education_population=edu_counts,counts=final)
- pd.DataFrame(quality,columns=['area','sex','age','observed_age_known_population','model_population','labor_seed_area','population_fallback_to_prefecture','education_unknown_share']).to_csv(BASE/'validation/education_source_quality.csv',index=False)
- pd.DataFrame(income_quality,columns=['sex','age','education','source_total','known_income_count','shrinkage_weight']).to_csv(BASE/'validation/education_income_quality.csv',index=False)
+ np.savez_compressed(OUT/'education_leaf_arrays.npz',areas=np.array(inputs['areas']),population=N,education_population=edu_counts,counts=final)
+ pd.DataFrame(inputs['quality'],columns=['area','sex','age','observed_age_known_population','model_population','labor_seed_area','population_fallback_to_prefecture','education_unknown_share']).to_csv(BASE/'validation/education_source_quality.csv.gz',index=False)
+ pd.DataFrame(inputs['income_quality'],columns=['sex','age','education','source_total','known_income_count','shrinkage_weight']).to_csv(BASE/'validation/education_income_quality.csv',index=False)
  pd.DataFrame(fits,columns=['sex','age','iterations','relative_error']).to_csv(BASE/'validation/education_ipf.csv',index=False)
- result={'model_version':'2.0','leaf_geographies':len(areas),'axes':['municipality','sex','age','education','income'],'shape':list(final.shape),'income_shrink_pseudopopulation':income_shrink,'labor_rate_shrink_pseudopopulation':rate_shrink,'population_15plus':float(N.sum()),'education_unknown_probability':float(edu_counts[...,7].sum()/N.sum()),'enrolled_probability':float(edu_counts[...,5].sum()/N.sum()),'raw_population_fallback_cells':int(sum(v[-2] for v in quality)),'max_old_income_count_difference':float(np.max(abs(final.sum(-2)-old))),'max_education_count_error':float(np.max(abs(final.sum(-1)-edu_counts))),'warning':'Census education/labor association and national ESS education/income association are transported assumptions. No independent municipal education-income validation. Sex is the binary category published by these surveys.'}
+ result={'model_version':'2.0','leaf_geographies':len(inputs['areas']),'axes':['municipality','sex','age','education','income'],'shape':list(final.shape),'income_shrink_pseudopopulation':income_shrink,'labor_rate_shrink_pseudopopulation':rate_shrink,'population_15plus':float(N.sum()),'education_unknown_probability':float(edu_counts[...,7].sum()/N.sum()),'enrolled_probability':float(edu_counts[...,5].sum()/N.sum()),'raw_population_fallback_cells':int(sum(v[-2] for v in inputs['quality'])),'max_old_income_count_difference':float(np.max(abs(final.sum(-2)-old))),'max_education_count_error':float(np.max(abs(final.sum(-1)-edu_counts))),'warning':'Census education/labor association and national ESS education/income association are transported assumptions. No independent municipal education-income validation. Sex is the binary category published by these surveys.'}
  (BASE/'validation/education_build.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False,indent=2),flush=True)
 if __name__=='__main__':main()
