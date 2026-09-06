@@ -29,6 +29,15 @@ class EstimatorTests(unittest.TestCase):
         self.assertTrue(np.allclose(e.sum(-1),R,atol=1e-4))
         old=np.concatenate([r['counts_by_sex'][...,:2].sum(-1,keepdims=True),r['counts_by_sex'][...,2:]],-1)
         self.assertTrue(np.allclose(e.sum(-2),old,atol=1e-6))
+    def test_virtual_population_contract(self):
+        w=self.world;inp=self.inp
+        self.assertTrue(np.allclose(w['edu_p'].sum(-1),1,atol=1e-9))                       # education shares sum to 1
+        self.assertTrue(np.allclose(w['T'].sum((3,4,5)),w['N'],atol=1e-6))                  # truth population equals census N
+        self.assertTrue(np.allclose(inp['edu_share'].sum(-1)[w['N']>0],1,atol=1e-9))
+        self.assertTrue(np.allclose(inp['edu_q'][:,:,6],inp['edu_q'][:,:,7]))                 # E07/E08 carry no education-specific shape
+        self.assertTrue(np.allclose(inp['edu_q'][:,:,7],inp['edu_reference'],atol=1e-9))     # ... they equal the all-education reference
+        t=sp.truth_income(w)
+        self.assertEqual(t['paid_by_edu'].shape,w['N'].shape+(8,16));self.assertEqual(t['paid_by_sa'].shape,w['N'].shape+(16,))
     def test_gamma_zero_has_no_tilt(self):
         self.assertIsNone(es.education_tilt(self.inp,0.))
         t=es.education_tilt(self.inp,1.);self.assertEqual(t.shape,self.inp['N'].shape+(16,));self.assertTrue((t>0).all())

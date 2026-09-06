@@ -6,11 +6,11 @@
         "unknown_corr": 0.0
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.07717690685264607,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08236596498461536,
-        "tv_small_areas": 0.08147987059655958,
-        "tv_large_areas": 0.08241440317068444,
-        "tv_income_given_area_sex_age_edu_weighted": 0.054351727361819174,
+        "tv_income_given_area_sex_age_weighted": 0.07744674589074362,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08178083612442406,
+        "tv_small_areas": 0.08079140532580707,
+        "tv_large_areas": 0.08182760091036109,
+        "tv_income_given_area_sex_age_edu_weighted": 0.051884785004874645,
         "gamma_selected": [
           0.0,
           0.0,
@@ -22,26 +22,26 @@
           2.0
         ],
         "tv_by_education": [
-          0.0587,
-          0.0412,
-          0.0466,
-          0.0625,
-          0.1017,
-          0.0485,
-          0.0932,
-          0.0633
+          0.0579,
+          0.0404,
+          0.0473,
+          0.0611,
+          0.1004,
+          0.0476,
+          0.1232,
+          0.0438
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.077200054317964,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08241363819192869,
-        "tv_small_areas": 0.08176144776392884,
-        "tv_large_areas": 0.0824419133198402,
-        "tv_income_given_area_sex_age_edu_weighted": 0.054519667753299715,
+        "tv_income_given_area_sex_age_weighted": 0.07728921670250755,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08186462341078571,
+        "tv_small_areas": 0.08038411973033428,
+        "tv_large_areas": 0.08196957505545575,
+        "tv_income_given_area_sex_age_edu_weighted": 0.052157245815845854,
         "gamma_selected": [
-          2.0,
-          1.0,
-          0.5
+          3.0,
+          3.0,
+          3.0
         ],
         "beta_selected": [
           2.0,
@@ -49,21 +49,21 @@
           2.0
         ],
         "tv_by_education": [
-          0.0589,
-          0.041,
-          0.0463,
-          0.0624,
-          0.1023,
-          0.0489,
-          0.0934,
-          0.0654
+          0.0585,
+          0.0405,
+          0.0472,
+          0.0613,
+          0.1019,
+          0.0491,
+          0.123,
+          0.0442
         ]
       },
-      "M1_minus_M0_tv_sa": 2.31474653179381e-05,
-      "M1_minus_M0_tv_edu": 0.0001679403914805408,
+      "M1_minus_M0_tv_sa": -0.0001575291882360691,
+      "M1_minus_M0_tv_edu": 0.000272460810971209,
       "seed_range_M1_minus_M0_tv_sa": [
-        -0.0001759455634116891,
-        0.0003737472542147402
+        -0.0005100373464516361,
+        0.0003549093523448066
       ]
     },
     "assoc_varying_unknown_random": {
@@ -72,11 +72,11 @@
         "unknown_corr": 0.0
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.07874759157388285,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08365905965384225,
-        "tv_small_areas": 0.08429099035417759,
-        "tv_large_areas": 0.08355214751723013,
-        "tv_income_given_area_sex_age_edu_weighted": 0.056567011719039335,
+        "tv_income_given_area_sex_age_weighted": 0.07831060762596116,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08369903982259412,
+        "tv_small_areas": 0.08373780780896815,
+        "tv_large_areas": 0.08361964096780246,
+        "tv_income_given_area_sex_age_edu_weighted": 0.054175124112928554,
         "gamma_selected": [
           0.0,
           0.0,
@@ -88,48 +88,48 @@
           2.0
         ],
         "tv_by_education": [
-          0.0647,
-          0.0408,
-          0.0476,
-          0.0673,
-          0.1145,
-          0.0498,
-          0.0929,
-          0.0629
+          0.0634,
+          0.0402,
+          0.0466,
+          0.0664,
+          0.1137,
+          0.0508,
+          0.1228,
+          0.0441
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.07887990459486698,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08400597617152668,
-        "tv_small_areas": 0.0851382294398157,
-        "tv_large_areas": 0.08385543039943182,
-        "tv_income_given_area_sex_age_edu_weighted": 0.056778239925731305,
+        "tv_income_given_area_sex_age_weighted": 0.0779859054005111,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08341282757032144,
+        "tv_small_areas": 0.08309017595497957,
+        "tv_large_areas": 0.08338349138844543,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05395106598080343,
         "gamma_selected": [
-          2.0,
+          6.0,
           0.0,
-          1.5
+          3.0
         ],
         "beta_selected": [
+          1.5,
           2.0,
-          2.0,
-          2.0
+          1.5
         ],
         "tv_by_education": [
-          0.0649,
-          0.0406,
-          0.0474,
-          0.0674,
-          0.1152,
-          0.0502,
-          0.0931,
-          0.065
+          0.0629,
+          0.0403,
+          0.0467,
+          0.0657,
+          0.1127,
+          0.0514,
+          0.1227,
+          0.044
         ]
       },
-      "M1_minus_M0_tv_sa": 0.00013231302098412612,
-      "M1_minus_M0_tv_edu": 0.0002112282066919699,
+      "M1_minus_M0_tv_sa": -0.00032470222545005756,
+      "M1_minus_M0_tv_edu": -0.00022405813212512254,
       "seed_range_M1_minus_M0_tv_sa": [
-        0.0,
-        0.0003075146886113017
+        -0.0009884285176221669,
+        1.4321841271994207e-05
       ]
     },
     "assoc_constant_unknown_correlated": {
@@ -138,11 +138,11 @@
         "unknown_corr": 0.8
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.07806317461300617,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.0821561763049026,
-        "tv_small_areas": 0.08211516220165066,
-        "tv_large_areas": 0.08211254800471073,
-        "tv_income_given_area_sex_age_edu_weighted": 0.05407590971229767,
+        "tv_income_given_area_sex_age_weighted": 0.07578349505001525,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08077427704474087,
+        "tv_small_areas": 0.08139911584574448,
+        "tv_large_areas": 0.08068031499540766,
+        "tv_income_given_area_sex_age_edu_weighted": 0.052228629865833744,
         "gamma_selected": [
           0.0,
           0.0,
@@ -154,26 +154,26 @@
           2.0
         ],
         "tv_by_education": [
-          0.0581,
-          0.0405,
-          0.0487,
-          0.0634,
-          0.1017,
-          0.0476,
-          0.0939,
-          0.0585
+          0.0561,
+          0.0401,
+          0.0479,
+          0.062,
+          0.1021,
+          0.048,
+          0.1174,
+          0.0458
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.07809572188198483,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08249834292759824,
-        "tv_small_areas": 0.08268280540432511,
-        "tv_large_areas": 0.08243456776698722,
-        "tv_income_given_area_sex_age_edu_weighted": 0.05418493939238409,
+        "tv_income_given_area_sex_age_weighted": 0.07575882440037868,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08104103157459859,
+        "tv_small_areas": 0.08154589237007236,
+        "tv_large_areas": 0.08095478201987182,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05241161504753806,
         "gamma_selected": [
-          0.5,
-          2.0,
-          2.0
+          3.0,
+          3.0,
+          0.0
         ],
         "beta_selected": [
           2.0,
@@ -181,21 +181,21 @@
           2.0
         ],
         "tv_by_education": [
-          0.0582,
-          0.0404,
-          0.0484,
-          0.0633,
-          0.1022,
-          0.0481,
-          0.094,
-          0.0602
+          0.0565,
+          0.0401,
+          0.0477,
+          0.0621,
+          0.1031,
+          0.049,
+          0.1173,
+          0.0467
         ]
       },
-      "M1_minus_M0_tv_sa": 3.254726897865268e-05,
-      "M1_minus_M0_tv_edu": 0.00010902968008642128,
+      "M1_minus_M0_tv_sa": -2.4670649636571174e-05,
+      "M1_minus_M0_tv_edu": 0.00018298518170431488,
       "seed_range_M1_minus_M0_tv_sa": [
-        -8.190281814875189e-05,
-        0.00021882641519456458
+        -0.00016291657403860738,
+        8.890462512889385e-05
       ]
     },
     "assoc_varying_unknown_correlated": {
@@ -204,11 +204,11 @@
         "unknown_corr": 0.8
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.07876394200139596,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08366691925940278,
-        "tv_small_areas": 0.08449438221128874,
-        "tv_large_areas": 0.08348157561591696,
-        "tv_income_given_area_sex_age_edu_weighted": 0.0563638582263436,
+        "tv_income_given_area_sex_age_weighted": 0.07699420271212942,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08244295253141662,
+        "tv_small_areas": 0.08241911431954484,
+        "tv_large_areas": 0.08236764070624625,
+        "tv_income_given_area_sex_age_edu_weighted": 0.054113506949189726,
         "gamma_selected": [
           0.0,
           0.0,
@@ -216,52 +216,52 @@
         ],
         "beta_selected": [
           2.0,
-          1.5,
+          2.0,
           2.0
         ],
         "tv_by_education": [
-          0.0631,
-          0.0413,
-          0.0488,
-          0.0674,
-          0.113,
-          0.0498,
-          0.0936,
-          0.059
+          0.0607,
+          0.0401,
+          0.0465,
+          0.0666,
+          0.1122,
+          0.0504,
+          0.1183,
+          0.0466
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.07866360047864451,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08343654115613892,
-        "tv_small_areas": 0.08450282014593052,
-        "tv_large_areas": 0.0832314356447092,
-        "tv_income_given_area_sex_age_edu_weighted": 0.05646123127592473,
+        "tv_income_given_area_sex_age_weighted": 0.07737064114022718,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08275578875009791,
+        "tv_small_areas": 0.08294015184786181,
+        "tv_large_areas": 0.08266541670123549,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05426075378658315,
         "gamma_selected": [
-          2.0,
-          1.5,
-          0.0
+          4.0,
+          0.0,
+          3.0
         ],
         "beta_selected": [
           2.0,
-          1.5,
-          2.0
+          2.0,
+          1.5
         ],
         "tv_by_education": [
-          0.0632,
-          0.0411,
-          0.0486,
-          0.0674,
-          0.1135,
-          0.05,
-          0.0936,
-          0.0607
+          0.0608,
+          0.0403,
+          0.0467,
+          0.0665,
+          0.1123,
+          0.0512,
+          0.1183,
+          0.0472
         ]
       },
-      "M1_minus_M0_tv_sa": -0.00010034152275144315,
-      "M1_minus_M0_tv_edu": 9.737304958112869e-05,
+      "M1_minus_M0_tv_sa": 0.0003764384280977584,
+      "M1_minus_M0_tv_edu": 0.00014724683739342215,
       "seed_range_M1_minus_M0_tv_sa": [
-        -0.0009983322759375274,
-        0.0006973077076832396
+        0.0,
+        0.0007727956169402139
       ]
     },
     "no_association": {
@@ -271,11 +271,11 @@
         "theta_scale": 0.0
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.07702416031265466,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08190961348025916,
-        "tv_small_areas": 0.07880109716878327,
-        "tv_large_areas": 0.08214821112881433,
-        "tv_income_given_area_sex_age_edu_weighted": 0.049299920032604104,
+        "tv_income_given_area_sex_age_weighted": 0.07797798320336888,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.08452035316208034,
+        "tv_small_areas": 0.08186431325216421,
+        "tv_large_areas": 0.08470523801865627,
+        "tv_income_given_area_sex_age_edu_weighted": 0.046532067777043745,
         "gamma_selected": [
           0.0,
           0.0,
@@ -284,29 +284,29 @@
         "beta_selected": [
           3.0,
           2.0,
-          2.0
+          3.0
         ],
         "tv_by_education": [
-          0.0529,
-          0.0393,
-          0.0471,
-          0.0527,
-          0.077,
-          0.0421,
-          0.0748,
-          0.0621
+          0.0518,
+          0.0388,
+          0.047,
+          0.0519,
+          0.0762,
+          0.043,
+          0.0388,
+          0.0438
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.07755941136086546,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.08299401296636129,
-        "tv_small_areas": 0.08106710725472738,
-        "tv_large_areas": 0.08311996263059605,
-        "tv_income_given_area_sex_age_edu_weighted": 0.04957447451539198,
+        "tv_income_given_area_sex_age_weighted": 0.07654562159119974,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.0820857607938354,
+        "tv_small_areas": 0.0802002760010405,
+        "tv_large_areas": 0.08218948870015053,
+        "tv_income_given_area_sex_age_edu_weighted": 0.04588780735503328,
         "gamma_selected": [
-          1.0,
-          3.0,
-          3.0
+          2.0,
+          6.0,
+          6.0
         ],
         "beta_selected": [
           3.0,
@@ -314,21 +314,21 @@
           2.0
         ],
         "tv_by_education": [
-          0.0529,
-          0.0392,
-          0.047,
-          0.0525,
-          0.077,
-          0.0422,
-          0.0748,
-          0.0654
+          0.0513,
+          0.0383,
+          0.0465,
+          0.051,
+          0.0754,
+          0.043,
+          0.0381,
+          0.043
         ]
       },
-      "M1_minus_M0_tv_sa": 0.0005352510482107969,
-      "M1_minus_M0_tv_edu": 0.0002745544827878754,
+      "M1_minus_M0_tv_sa": -0.0014323616121691418,
+      "M1_minus_M0_tv_edu": -0.000644260422010462,
       "seed_range_M1_minus_M0_tv_sa": [
-        0.0001532900472840798,
-        0.0008724849779929156
+        -0.004239315167031826,
+        0.00039345619737714277
       ]
     },
     "no_association_income_independent_of_urbanity": {
@@ -339,11 +339,11 @@
         "delta_urban": 0.0
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.07343063505820568,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.07757539495697978,
-        "tv_small_areas": 0.0770578047874046,
-        "tv_large_areas": 0.07758202822153569,
-        "tv_income_given_area_sex_age_edu_weighted": 0.047057723045826484,
+        "tv_income_given_area_sex_age_weighted": 0.07218301434471598,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.07640243200929793,
+        "tv_small_areas": 0.07587308980690277,
+        "tv_large_areas": 0.07640583968364456,
+        "tv_income_given_area_sex_age_edu_weighted": 0.04397954629104498,
         "gamma_selected": [
           0.0,
           0.0,
@@ -355,26 +355,26 @@
           2.0
         ],
         "tv_by_education": [
-          0.053,
-          0.0379,
-          0.0465,
-          0.0509,
-          0.0746,
-          0.0396,
-          0.0719,
-          0.0528
+          0.0504,
+          0.0367,
+          0.0461,
+          0.0487,
+          0.0733,
+          0.04,
+          0.0358,
+          0.0387
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.07407866739179457,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.0783027444021042,
-        "tv_small_areas": 0.07797807769069913,
-        "tv_large_areas": 0.078295474571053,
-        "tv_income_given_area_sex_age_edu_weighted": 0.04729629069462745,
+        "tv_income_given_area_sex_age_weighted": 0.07237737076406438,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.07676289848861327,
+        "tv_small_areas": 0.07629825012091355,
+        "tv_large_areas": 0.07676042910463872,
+        "tv_income_given_area_sex_age_edu_weighted": 0.044057377443252554,
         "gamma_selected": [
-          2.0,
-          2.0,
-          1.5
+          3.0,
+          6.0,
+          0.0
         ],
         "beta_selected": [
           2.0,
@@ -382,21 +382,21 @@
           2.0
         ],
         "tv_by_education": [
-          0.0531,
-          0.0379,
-          0.0465,
-          0.0509,
-          0.0746,
-          0.0396,
-          0.0718,
-          0.0547
+          0.0504,
+          0.0368,
+          0.0462,
+          0.0487,
+          0.0733,
+          0.0401,
+          0.0358,
+          0.0388
         ]
       },
-      "M1_minus_M0_tv_sa": 0.0006480323335888855,
-      "M1_minus_M0_tv_edu": 0.00023856764880096637,
+      "M1_minus_M0_tv_sa": 0.00019435641934839598,
+      "M1_minus_M0_tv_edu": 7.783115220757336e-05,
       "seed_range_M1_minus_M0_tv_sa": [
-        0.00038624750636499783,
-        0.0009290821758167339
+        0.0,
+        0.0003942948005220409
       ]
     },
     "assoc_constant_weak_tax_proxy": {
@@ -406,11 +406,11 @@
         "tax_noise": 0.3
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.10684034966870358,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.11590678550286265,
-        "tv_small_areas": 0.12143975081325316,
-        "tv_large_areas": 0.11535495643439048,
-        "tv_income_given_area_sex_age_edu_weighted": 0.06523331992099506,
+        "tv_income_given_area_sex_age_weighted": 0.10881531701291851,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.114871622412875,
+        "tv_small_areas": 0.11696014878124474,
+        "tv_large_areas": 0.11461656050909307,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06429468151260444,
         "gamma_selected": [
           0.0,
           0.0,
@@ -418,52 +418,52 @@
         ],
         "beta_selected": [
           1.0,
-          0.5,
+          1.0,
           1.0
         ],
         "tv_by_education": [
-          0.0649,
-          0.0531,
-          0.0587,
-          0.0757,
-          0.1074,
-          0.0514,
-          0.097,
-          0.0713
+          0.0653,
+          0.0529,
+          0.0597,
+          0.076,
+          0.1081,
+          0.0508,
+          0.1251,
+          0.0584
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.09723093331505302,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.1046866368194298,
-        "tv_small_areas": 0.10946129385462185,
-        "tv_large_areas": 0.1041703106919396,
-        "tv_income_given_area_sex_age_edu_weighted": 0.06158708812472935,
+        "tv_income_given_area_sex_age_weighted": 0.09948837006374896,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.10503100181401058,
+        "tv_small_areas": 0.10643216122639625,
+        "tv_large_areas": 0.10484459965359273,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06047744492627941,
         "gamma_selected": [
           6.0,
           6.0,
-          4.0
+          6.0
         ],
         "beta_selected": [
           0.5,
-          0.5,
+          1.0,
           1.0
         ],
         "tv_by_education": [
-          0.0624,
-          0.049,
-          0.0539,
-          0.0698,
-          0.1042,
-          0.0509,
-          0.0951,
-          0.0744
+          0.0632,
+          0.0496,
+          0.0559,
+          0.0707,
+          0.1046,
+          0.0506,
+          0.1244,
+          0.0539
         ]
       },
-      "M1_minus_M0_tv_sa": -0.009609416353650563,
-      "M1_minus_M0_tv_edu": -0.003646231796265706,
+      "M1_minus_M0_tv_sa": -0.009326946949169551,
+      "M1_minus_M0_tv_edu": -0.003817236586325025,
       "seed_range_M1_minus_M0_tv_sa": [
-        -0.01326395372028516,
-        -0.0048507170886695344
+        -0.009727739374777694,
+        -0.008940990682128419
       ]
     },
     "assoc_varying_unknown_correlated_weak_tax_proxy": {
@@ -473,11 +473,11 @@
         "tax_noise": 0.3
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.10371196252166041,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.1127368699359405,
-        "tv_small_areas": 0.11265456927048341,
-        "tv_large_areas": 0.1125820250119338,
-        "tv_income_given_area_sex_age_edu_weighted": 0.06549307615617656,
+        "tv_income_given_area_sex_age_weighted": 0.1066577967579551,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.11382531165730303,
+        "tv_small_areas": 0.12129278795725791,
+        "tv_large_areas": 0.11305401908639107,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06467862925522586,
         "gamma_selected": [
           0.0,
           0.0,
@@ -485,52 +485,52 @@
         ],
         "beta_selected": [
           1.0,
-          1.0,
+          0.5,
           1.0
         ],
         "tv_by_education": [
-          0.0689,
-          0.0518,
-          0.0588,
-          0.0777,
-          0.1176,
-          0.0527,
-          0.0978,
-          0.0662
+          0.0674,
+          0.053,
+          0.0589,
+          0.0775,
+          0.1154,
+          0.0532,
+          0.1205,
+          0.0548
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.10047769016310533,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.10793794222341639,
-        "tv_small_areas": 0.10920046625854203,
-        "tv_large_areas": 0.10766265907799066,
-        "tv_income_given_area_sex_age_edu_weighted": 0.06406965679747094,
+        "tv_income_given_area_sex_age_weighted": 0.09924507219775908,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.10523593984183092,
+        "tv_small_areas": 0.11436276616666817,
+        "tv_large_areas": 0.10437525991536321,
+        "tv_income_given_area_sex_age_edu_weighted": 0.061694687045317664,
         "gamma_selected": [
           6.0,
           6.0,
           6.0
         ],
         "beta_selected": [
-          0.5,
-          0.5,
-          1.0
+          1.0,
+          0.25,
+          0.5
         ],
         "tv_by_education": [
-          0.0673,
-          0.0499,
-          0.0568,
-          0.0746,
-          0.1153,
-          0.0531,
-          0.0963,
-          0.0708
+          0.0655,
+          0.0502,
+          0.0558,
+          0.0734,
+          0.1127,
+          0.0526,
+          0.1198,
+          0.0524
         ]
       },
-      "M1_minus_M0_tv_sa": -0.0032342723585550848,
-      "M1_minus_M0_tv_edu": -0.001423419358705616,
+      "M1_minus_M0_tv_sa": -0.007412724560196024,
+      "M1_minus_M0_tv_edu": -0.0029839422099081914,
       "seed_range_M1_minus_M0_tv_sa": [
-        -0.004273532318838508,
-        -0.0013893502034099808
+        -0.009324585022300755,
+        -0.005907314691068824
       ]
     },
     "no_association_weak_tax_proxy": {
@@ -541,11 +541,11 @@
         "tax_noise": 0.3
       },
       "M0": {
-        "tv_income_given_area_sex_age_weighted": 0.11147101836896427,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.1160026449343603,
-        "tv_small_areas": 0.10693397886633034,
-        "tv_large_areas": 0.11694058098204733,
-        "tv_income_given_area_sex_age_edu_weighted": 0.06312482603007959,
+        "tv_income_given_area_sex_age_weighted": 0.11177643256106401,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.11661420992069484,
+        "tv_small_areas": 0.11126148068262691,
+        "tv_large_areas": 0.11708728928799161,
+        "tv_income_given_area_sex_age_edu_weighted": 0.060797192389916856,
         "gamma_selected": [
           0.0,
           0.0,
@@ -557,22 +557,22 @@
           0.5
         ],
         "tv_by_education": [
-          0.0635,
-          0.0539,
-          0.0606,
-          0.0704,
-          0.09,
-          0.0484,
-          0.0831,
-          0.0698
+          0.0623,
+          0.0528,
+          0.0597,
+          0.0691,
+          0.0886,
+          0.0488,
+          0.0534,
+          0.0596
         ]
       },
       "M1": {
-        "tv_income_given_area_sex_age_weighted": 0.10569629300166405,
-        "tv_income_given_area_sex_age_unweighted_mean": 0.11062955128871443,
-        "tv_small_areas": 0.10748302358851995,
-        "tv_large_areas": 0.11098478063313984,
-        "tv_income_given_area_sex_age_edu_weighted": 0.060955808394886256,
+        "tv_income_given_area_sex_age_weighted": 0.10872797000434327,
+        "tv_income_given_area_sex_age_unweighted_mean": 0.11333806320650448,
+        "tv_small_areas": 0.1087943747428466,
+        "tv_large_areas": 0.11372550720531839,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05947291145466824,
         "gamma_selected": [
           6.0,
           6.0,
@@ -580,25 +580,25 @@
         ],
         "beta_selected": [
           0.5,
-          0.5,
+          1.0,
           0.5
         ],
         "tv_by_education": [
-          0.0615,
-          0.0512,
-          0.0579,
-          0.0666,
-          0.0869,
-          0.047,
-          0.0811,
-          0.0736
+          0.0614,
+          0.0517,
+          0.0586,
+          0.0673,
+          0.0871,
+          0.0482,
+          0.052,
+          0.0577
         ]
       },
-      "M1_minus_M0_tv_sa": -0.0057747253673002125,
-      "M1_minus_M0_tv_edu": -0.0021690176351933307,
+      "M1_minus_M0_tv_sa": -0.0030484625567207407,
+      "M1_minus_M0_tv_edu": -0.0013242809352486187,
       "seed_range_M1_minus_M0_tv_sa": [
-        -0.006206418127355465,
-        -0.005061905070741279
+        -0.0032659870224127363,
+        -0.0028280249177864702
       ]
     }
   },

@@ -54,7 +54,7 @@ def generate(seed,theta_sd,unknown_corr,theta_scale=1.,delta_urban=.18,tax_noise
     base=np.array([0.10-0.06*young,0.42-0.1*young,0.13+0.05*young,0.22+0.12*young*(1+0.5*urban[m]),0.04+0.03*young*(1+0.5*urban[m]),0.,0.01,0.])
     base=np.maximum(base,0.005);base[5]=0.55 if a==0 else (0.12 if a==1 else 0.005)
     unk=1/(1+np.exp(-(-2.2+0.6*urban[m]+rng.normal(0,.3))))     # unknown share varies by municipality (2%-40%)
-    pe=norm(base)*(1-unk);pe[7]=unk;edu_p[m,s,a]=pe
+    pe=np.zeros(8);pe[:7]=norm(base[:7])*(1-unk);pe[7]=unk;edu_p[m,s,a]=pe   # known classes share 1-unk; E08 = unk; sums to 1
     for e in range(8):
      emp=1/(1+np.exp(-(0.4+0.5*(1 if e in (3,4) else 0)-0.6*(1 if e==5 else 0)-1.2*(a>=11)-0.8*(a==0)+0.3*urban[m]*0.2-0.35*s)))
      st=np.array([0.55+0.15*(e in (3,4))-0.3*s,0.25+0.25*s+0.1*(e==5),0.05+0.06*(e==4),0.10,0.05]);st=norm(np.maximum(st,0.01))
@@ -86,7 +86,7 @@ def generate(seed,theta_sd,unknown_corr,theta_scale=1.,delta_urban=.18,tax_noise
 
 def truth_income(world):
  """Hidden targets: paid-worker income shares P(y|m,s,a) and P(y|m,s,a,e) (16 classes) and full distributions incl. nonworkers."""
- T=world['T'];paid=T[...,:4,1:].sum(3)           # (M,2,13,8,16)
+ T=world['T'];paid=T[...,:4,1:].sum(4)           # sum over paid status -> (M,2,13,8,16)
  by_e=norm(paid);by_sa=norm(paid.sum(3))
  return {'paid_by_edu':by_e,'paid_by_sa':by_sa,'R':T.sum((4,5))}
 
@@ -112,7 +112,11 @@ def observe(world):
   c=samp[pref==p].sum((0,3))   # (2,13,4,16)
   ess_cat[p]=c;pref_target[p]=norm(c.sum(2))
  nat_cat=ess_cat.sum(0)
- nat_edu=samp.sum((0,4));edu_q=norm(nat_edu+1000*norm(nat_edu.sum(2)+1e-8)[:,:,None,:])   # (2,13,8,16) smoothed as in build_education
+ # national education x income shapes, same contract as build_education.INCOME_MAP: E01-E06 own rows smoothed toward the
+ # all-education reference; E07 (never attended) and E08 (unknown) use the all-education total, so the survey never reveals
+ # an education-unknown-specific income shape to the estimator.
+ nat_edu=samp.sum((0,4));ref=norm(nat_edu.sum(2)+1e-8)[:,:,None,:];edu_q=norm(nat_edu+1000*ref)
+ edu_q[:,:,6]=edu_q[:,:,7]=norm(nat_edu.sum(2)+1000*ref[:,:,0])
  tax=np.clip(world['delta']-np.array([world['delta'][pref==p].mean() for p in pref])+rng.normal(0,world['tax_noise'],M),-.5,.5)
  edu_share=norm(T.sum((4,5)))                           # census education counts per area (incl. unknown)
  # education x labour at prefecture level only (as 12-1 for most municipalities)
@@ -130,7 +134,7 @@ def observe(world):
     if tot<1000:continue
     ids.append([int(m)]);age.append(a);obs.append(norm(o));weight.append(tot);hp.append(p);codes.append(f'{p:02}{m:03}')
  heldout={'ids':ids,'age':np.array(age),'obs':np.array(obs),'weight':np.array(weight),'pref':np.array(hp),'codes':codes}
- return {'areas':[f'{p:02}{m:03}' for m,p in enumerate(pref)],'pref':pref,'N':N,'Nraw':N.copy(),'Eraw':Eraw,'seed_q':seed_q,'t_status':t_status,'pref_rate':pref_rate,'ess_cat':ess_cat,'nat_cat':nat_cat,'pref_target':pref_target,'tax_feature':tax,'edu_share':edu_share,'edu_q':edu_q,'edu_rate':edu_rate,'heldout':heldout}
+ return {'areas':[f'{p:02}{m:03}' for m,p in enumerate(pref)],'pref':pref,'N':N,'Nraw':N.copy(),'Eraw':Eraw,'seed_q':seed_q,'t_status':t_status,'pref_rate':pref_rate,'ess_cat':ess_cat,'nat_cat':nat_cat,'pref_target':pref_target,'tax_feature':tax,'edu_share':edu_share,'edu_q':edu_q,'edu_reference':ref[:,:,0],'edu_rate':edu_rate,'heldout':heldout}
 
 def evaluate(inp,world,gammas=(0.,.5,1.,1.5,2.,3.,4.,6.),betas=(0.,.25,.5,1.,1.5,2.,3.)):
  truth=truth_income(world);N=inp['N'];pop=N;R=truth['R']
