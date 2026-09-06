@@ -37,8 +37,21 @@ def fetch(sex,status,model):
    if attempt==2:raise
    time.sleep(2)
 
+def ensure_workbook():
+ """Table 10-1 workbook (catalog/industry/manifest.json) is needed by build_employment; fetch and verify it if absent."""
+ import hashlib,subprocess,sys
+ from pathlib import Path
+ manifest=json.loads((CATALOG/'industry/manifest.json').read_text(encoding='utf-8'))
+ entry=[e for e in manifest['sources'] if e.get('raw_file')=='raw/industry/ess_education_industry_age.xlsx'][0]
+ dest=RAW/'industry/ess_education_industry_age.xlsx';dest.parent.mkdir(parents=True,exist_ok=True)
+ if not dest.exists():
+  with urllib.request.urlopen(entry['url'],timeout=300) as r:dest.write_bytes(r.read())
+ if hashlib.sha256(dest.read_bytes()).hexdigest()!=entry['raw_sha256']:raise RuntimeError('Source changed: ess_education_industry_age.xlsx')
+ subprocess.run([sys.executable,str(Path(__file__).with_name('parse_employment.py'))],check=True)
+
 def main():
  (RAW/'education').mkdir(parents=True,exist_ok=True);(SOURCES/'industry').mkdir(parents=True,exist_ok=True)
+ ensure_workbook()
  m=json.loads((CATALOG/'education/income_model.json').read_text());rows=[]
  for sex in ['1','2']:
   for st in STATUSES:

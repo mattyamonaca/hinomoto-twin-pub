@@ -1,5 +1,7 @@
 {
   "passed": true,
+  "model_version": "3.0-M12",
+  "variant": "base",
   "checks": {
     "nonnegative": true,
     "population_margin_max_error_persons": 2.09641370929603e-09,

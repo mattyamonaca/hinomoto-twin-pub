@@ -30,19 +30,22 @@ SHRINK_KG=300.   # pseudo-population toward the national association for small p
 
 def read(path,**kw):return pd.read_csv(path,dtype=str,**kw)
 
-def load_inputs():
- t0=time.time();inp=es.load_real_inputs(SOURCES);areas=inp['areas'];M=len(areas);pref=inp['pref'];prefs=inp['prefs'];P=len(prefs)
- d=np.load(OUTPUT/'final_arrays.npz');assert d['areas'].tolist()==areas,'final_arrays.npz must match the leaf areas'
+def load_inputs(sources_dir=None,output_dir=None):
+ from pathlib import Path
+ S=Path(sources_dir or SOURCES);O=Path(output_dir or OUTPUT)
+ t0=time.time();inp=es.load_real_inputs(S);areas=inp['areas'];M=len(areas);pref=inp['pref'];prefs=inp['prefs'];P=len(prefs)
+ d=np.load(O/'final_arrays.npz');assert d['areas'].tolist()==areas,'final_arrays.npz must match the leaf areas'
+ meta=json.loads((O/'model_metadata.json').read_text()) if (O/'model_metadata.json').exists() else {'model_version':'unknown'}
  N=inp['N'];W=es.fit_status(inp);K6=np.maximum(N-W.sum(-1),0)
  cube=be.allocate({'shapes':inp['edu_q'],'N':N,'edu_counts':inp['edu_share']*N[...,None],'rate_array':inp['edu_rate'],'income_counts':d['counts_by_sex']},keep_components=True)[0]
  assert np.allclose(cube.sum((3,4)),N,atol=1e-4)
  # census 6-3 employed persons by industry (K1..K5); scale to the model's employed persons; prefecture composition if empty
- c=read(SOURCES/'industry/census_industry_age_tidy.csv.gz').set_index(['area','sex','age'])
+ c=read(S/'industry/census_industry_age_tidy.csv.gz').set_index(['area','sex','age'])
  idx=pd.MultiIndex.from_product([areas,['1','2'],AGES],names=['area','sex','age'])
  cnt=np.nan_to_num(c.reindex(idx)[G].to_numpy(float).reshape(M,2,13,20))
  emp=W.sum(-1);gm=norm(np.where(cnt.sum(-1,keepdims=True)>0,cnt,inp['ind_share']))*emp[...,None]
  # --- P(k|e,s,a): national education x status x age (ESS 04000 by status)
- e4=read(SOURCES/'industry/education_status_income_tidy.csv.gz');e4['count']=e4['count'].astype(float)
+ e4=read(S/'industry/education_status_income_tidy.csv.gz');e4['count']=e4['count'].astype(float)
  e4=e4[(e4.income=='00')&(e4.age!='00')].copy();e4['age']=e4.age.astype(int).clip(upper=13).map(lambda x:f'{x:02}')
  tab=e4.groupby(['sex','status','age','education'])['count'].sum()
  pk_e=np.zeros((2,13,8,4))   # K1 regular, K2 nonregular, K3 executive, K4 self
@@ -53,7 +56,7 @@ def load_inputs():
     reg,non,empl,own=v('22'),v('23'),v('2'),v('1');pk_e[si,ai,ei]=[reg,non,max(empl-reg-non,0),own]
  pk_e=norm(pk_e+1e-6)
  # --- P(g|k,s,a,p) from ESS regional 10-1 (prefecture), enrolled rows for E06; national fallback via shrinkage
- t=read(SOURCES/'industry/ess_status_industry_age_tidy.csv.gz')
+ t=read(S/'industry/ess_status_industry_age_tidy.csv.gz')
  for a in AGES:t[a]=t[a].astype(float)
  t=t[t.industry!='G00'].drop(columns=['name']).set_index(['area','sex','education','status','industry']).sort_index()
  def kg(area,s,edu):
@@ -68,7 +71,7 @@ def load_inputs():
    for gi,edu in enumerate(['0','2']):
     c_=kg(p+'000',s,edu);prior=norm(nat[(s,edu)]+1e-6);pg[pi,si,gi]=norm(c_+SHRINK_KG*prior)
  # --- P(z|k,g,s): ESS regional 24 national industry x status x income -> tilt relative to the status total
- e24=read(SOURCES/'industry/income_industry_tidy.csv.gz');e24['count']=e24['count'].astype(float)
+ e24=read(S/'industry/income_industry_tidy.csv.gz');e24['count']=e24['count'].astype(float)
  e24=e24[(e24.area=='00000')&(e24.income!='00')]
  tilt=np.ones((2,4,20,16))
  for si,s in enumerate(['1','2']):
@@ -81,7 +84,7 @@ def load_inputs():
     qg=norm(num+1000*norm(den+1e-8));q0=norm(den+1e-8);tilt[si,ki,gi]=qg/np.maximum(q0,1e-12)
  cp=es.status_income_shapes(inp)   # (P,2,13,4,16) r(y|p,s,a,k)
  import sys;print(f'inputs loaded {time.time()-t0:.0f}s',file=sys.stderr,flush=True)
- return {'inp':inp,'areas':areas,'M':M,'pref':pref,'prefs':prefs,'N':N,'W':W,'K6':K6,'cube':cube,'gm':gm,'pk_e':pk_e,'pg':pg,'tilt':tilt,'cp':cp,'t101':t,'kg_fn':kg}
+ return {'inp':inp,'areas':areas,'M':M,'pref':pref,'prefs':prefs,'N':N,'W':W,'K6':K6,'cube':cube,'gm':gm,'pk_e':pk_e,'pg':pg,'tilt':tilt,'cp':cp,'t101':t,'kg_fn':kg,'model_version':meta.get('model_version','unknown'),'sources_dir':str(S),'output_dir':str(O)}
 
 def ipf3(seed,A,B,C,tol=1e-6,iters=600):
  """seed (n,8,4,20,16); margins A (n,8,16) over (e,y), B (n,4) over k, C (n,20) over g. Batched over n."""
@@ -140,7 +143,7 @@ def main(variant='base'):
    print(f'sex {si+1} age {AGES[ai]} it={b["iterations"]} err={b["error"]:.1e} {time.time()-t0:.0f}s',flush=True)
  N=x['N'];assert np.allclose(kg.sum((3,4)),N,atol=1e-4) and np.allclose(ke.sum((3,4)),N,atol=1e-4)
  assert np.abs(ke[...,:5].sum(3)-x['W']).max()<0.1   # persons
- np.savez_compressed(OUTPUT/('employment_a.npz' if variant=='base' else f'employment_a_{variant}.npz'),areas=np.array(x['areas']),population=N,status_industry=kg,education_status=ke,status_income=ky,industry_income=gy,education_industry=ge,independence_tv=indep,status_codes=np.array(K),industry_codes=np.array(['G00']+G),variant=variant)
+ np.savez_compressed(OUTPUT/('employment_a.npz' if variant=='base' else f'employment_a_{variant}.npz'),areas=np.array(x['areas']),population=N,status_industry=kg,education_status=ke,status_income=ky,industry_income=gy,education_industry=ge,independence_tv=indep,status_codes=np.array(K),industry_codes=np.array(['G00']+G),variant=variant,model_version=x['model_version'],sources_dir=x['sources_dir'],output_dir=x['output_dir'],stage='A')
  pop=N;ok=pop>0
  result={'variant':variant,'model_base':'3.0-M12','areas':M,'status_codes':K,'industry_codes':['G00']+G,'margins':{'education_x_income':'production counts, preserved exactly','status':'employment-status table of build.py (K6 = N - employed)','industry':'census 6-3 employed persons scaled to model employed persons'},'shrink_kg_pseudopopulation':SHRINK_KG,'ipf':{'max_iterations':max(f['iterations'] for f in fits),'max_absolute_margin_error_persons':max(f['max_relative_error'] for f in fits),'max_education_income_margin_error_persons':float(np.abs(ke.sum(-1)-x['cube'].sum(-1)).max()),'max_status_margin_error_persons':float(np.abs(ke[...,:5].sum(3)-x['W']).max())},'association_tv_joint_vs_independent':{'weighted_mean':float(np.average(indep[ok],weights=pop[ok])),'median':float(np.median(indep[ok])),'p90':float(np.quantile(indep[ok],.9))},'nonworker_share':float(kg[...,5,0].sum()/N.sum()),'family_share':float(kg[...,4,:].sum()/N.sum()),'elapsed_seconds':round(time.time()-t0,1),'notes':['Education x status x industry association is transported from national (04000) and prefecture (10-1) tables; municipal cross tables do not exist.','Industry x income shapes have no age dimension (table 24).','Preserving the production education x income margins means this stage does not change any published 5-attribute probability.']}
  (REPORTS/('employment_a_build.json' if variant=='base' else f'employment_a_build_{variant}.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2))

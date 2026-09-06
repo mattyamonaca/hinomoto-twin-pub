@@ -52,7 +52,7 @@
   },
   "nonworker_share": 0.39371869427905737,
   "family_share": 0.015918088207481234,
-  "elapsed_seconds": 157.0,
+  "elapsed_seconds": 155.5,
   "notes": [
     "Education x status x industry association is transported from national (04000) and prefecture (10-1) tables; municipal cross tables do not exist.",
     "Industry x income shapes have no age dimension (table 24).",

@@ -70,7 +70,7 @@
 ## 5. 出力と API
 
 - `make build-employment` → `data/employment_a.npz`（地域 × 性別 × 年齢ごとの 地位 × 産業、学歴 × 地位、地位 × 年収、産業 × 年収、学歴 × 産業。約200MB）。全属性の直積（1地域あたり 8×6×21×17）は保存せず、条件付き分布は API が該当する地域・性別・年齢のブロックだけを再計算する（1地域 0.5秒程度、初回の入力読み込み 30秒）。
-- `python src/persona_v3.py --municipality 13103 --age 35 --sex male`：P(地位)、P(産業｜就業者)、P(年収｜地位)。`--education E04 --status K1 --industry G07 --income-only`：条件付き年収分布と対象モデル人口（例：港区・35～39歳・男・大学等・正規・情報通信業 = 567 人、500万円以上 86.2%）。
+- `python src/persona_v3.py --municipality 13103 --age 35 --sex male`：P(地位)、P(産業｜就業者)、P(年収｜地位)。`--education` を付けると産業・年収は該当ブロックを再計算した学歴条件付きの値になる（年齢・性別の指定が必要。無い場合は None を返す）。15歳未満は拒否。再計算は `employment_a.npz` に記録したモデル版・地域順序・変種と入力（`--data-dir`, `--sources-dir`）が一致する場合だけ行い、不一致なら明示的に拒否する。`--education E04 --status K1 --industry G07 --income-only`：条件付き年収分布と対象モデル人口（例：港区・35～39歳・男・大学等・正規・情報通信業 = 567 人、500万円以上 86.2%）。
 - 既存の 5属性 API（`persona_v2.py`）と CSV は変更なし。5属性の周辺は完全に保存される。
 
 ## 6. 採否と次の段階
@@ -83,6 +83,6 @@
 make fetch-industry      # 表6-3, 表24（M2 で取得済みなら不要）
 make fetch-employment    # 表10-1、04000 の地位別レスポンス
 make build-employment    # data/employment_a.npz、validation/employment_a_build.json
-make verify-employment   # validation/employment_a_verification.json, employment_a_heldout.csv
+make verify-employment   # validation/employment_a_verification.json, employment_a_heldout.csv（不合格なら終了コード 1）
 python src/build_employment.py national_kg   # 感度分析の変種（k6_independent も同様）
 ```

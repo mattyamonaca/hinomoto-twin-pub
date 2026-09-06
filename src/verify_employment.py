@@ -26,20 +26,29 @@ def city_map(names_by_area,geo,parents):
   code=cand.municipality_code.iloc[0];out[area]=(code,parents.get(code,[code]))
  return out
 
-def main():
+def checks(d,fin,W,N,cnt):
+ """Pure margin checks on arrays; returns the checks dict and pass flag."""
+ kg=d['status_industry'];ke=d['education_status'];ky=d['status_income'];gy=d['industry_income'];res={}
+ res['nonnegative']=bool((kg>=-1e-9).all() and (ke>=-1e-9).all() and (gy>=-1e-9).all())
+ res['population_margin_max_error_persons']=float(np.abs(kg.sum((3,4))-N).max())
+ res['status_margin_max_error_persons']=float(np.abs(ke[...,:5].sum(3)-W).max())
+ res['production_income_margin_max_error_persons']=float(np.abs(ky.sum(3)-fin[...,1:]).max())
+ emp=W.sum(-1);ok=cnt.sum(-1)>0
+ gshare=norm(kg[...,:5,1:].sum(3));err=.5*np.abs(gshare-norm(cnt)).sum(-1)
+ res['industry_margin_tv_weighted_mean']=float(np.average(err[ok],weights=emp[ok])) if ok.any() else 0.;res['industry_margin_tv_max']=float(err[ok].max()) if ok.any() else 0.
+ passed=bool(res['nonnegative'] and res['population_margin_max_error_persons']<0.1 and res['status_margin_max_error_persons']<0.1 and res['production_income_margin_max_error_persons']<0.1 and res['industry_margin_tv_weighted_mean']<1e-3)
+ return res,passed
+
+def evaluate(output_dir=None,sources_dir=None,reports_dir=None):
+ from pathlib import Path
+ OUTPUT=Path(output_dir or globals()['OUTPUT']);SOURCES=Path(sources_dir or globals()['SOURCES']);REPORTS=Path(reports_dir or globals()['REPORTS'])
  d=np.load(OUTPUT/'employment_a.npz');areas=d['areas'].tolist();ix={a:i for i,a in enumerate(areas)};N=d['population']
  kg=d['status_industry'];ke=d['education_status'];ky=d['status_income'];gy=d['industry_income']
  fin=np.load(OUTPUT/'final_arrays.npz');mdl=np.load(OUTPUT/'model_arrays.npz');W=mdl['employment_status']
- res={'passed':True,'checks':{}}
- res['checks']['nonnegative']=bool((kg>=-1e-9).all() and (ke>=-1e-9).all() and (gy>=-1e-9).all())
- res['checks']['population_margin_max_error_persons']=float(np.abs(kg.sum((3,4))-N).max())
- res['checks']['status_margin_max_error_persons']=float(np.abs(ke[...,:5].sum(3)-W).max())
- res['checks']['production_income_margin_max_error_persons']=float(np.abs(ky.sum(3)-fin['counts_by_sex'][...,1:]).max())
  c=pd.read_csv(SOURCES/'industry/census_industry_age_tidy.csv.gz',dtype={'area':str,'sex':str,'age':str}).set_index(['area','sex','age'])
  idx=pd.MultiIndex.from_product([areas,['1','2'],AGES],names=['area','sex','age']);cnt=np.nan_to_num(c.reindex(idx)[G].to_numpy(float).reshape(len(areas),2,13,20))
- emp=W.sum(-1);ok=cnt.sum(-1)>0
- gshare=norm(kg[...,:5,1:].sum(3));err=.5*np.abs(gshare-norm(cnt)).sum(-1)
- res['checks']['industry_margin_tv_weighted_mean']=float(np.average(err[ok],weights=emp[ok]));res['checks']['industry_margin_tv_max']=float(err[ok].max());res['checks']['industry_margin_note']='Family workers take the prefecture self-employed industry profile; where that exceeds the census count in a tiny cell, the paid margin is clipped, so small cells can deviate.'
+ chk,passed=checks(d,fin['counts_by_sex'],W,N,cnt);chk['industry_margin_note']='Family workers take the prefecture self-employed industry profile; where that exceeds the census count in a tiny cell, the paid margin is clipped, so small cells can deviate.'
+ res={'passed':passed,'model_version':str(d['model_version']) if 'model_version' in d.files else 'unknown','variant':str(d['variant']) if 'variant' in d.files else 'base','checks':chk}
  geo=pd.read_csv(OUTPUT/'geography.csv',dtype=str);pm=pd.read_csv(OUTPUT/'parent_mapping.csv',dtype=str);parents={p:f.area.tolist() for p,f in pm.groupby('parent_code')}
  # ---- held-out 1: 10-1 city rows
  t=pd.read_csv(SOURCES/'industry/ess_status_industry_age_tidy.csv.gz',dtype=str)
@@ -88,6 +97,12 @@ def main():
  res['heldout_10_1_status_x_industry']={'cities':int(h1.city.nunique()),'cells':len(h1),**summ(h1,['tv_model','tv_prefecture','tv_independent','tv_industry_margin_model','tv_status_margin_model','tv_status_given_industry_model','tv_status_given_industry_prefecture','tv_status_given_industry_independent']),'note':'City rows of ESS regional 10-1 (status x industry x age by sex) were not used; prefecture rows were the seed. Own-account and family workers are compared together. The industry margin comes from the 2020 census (residence-based employed persons) while the ESS is a 2022 sample survey; their city compositions differ by TV ~0.2 on average, so the joint TV is bounded by source disagreement. tv_status_given_industry compares the conditional P(k|g) only.'}
  res['heldout_24_industry_x_income']={'cities':int(h2.city.nunique()),'cells':len(h2),**summ(h2,['tv_model','tv_national','tv_status_only']),'note':'City rows of ESS regional 24 (industry x income by sex, all ages) were not used; the national rows shaped the income tilt.'}
  res['association_tv_joint_vs_independent']={'weighted_mean':float(np.average(d['independence_tv'][N>0],weights=N[N>0]))}
- res['passed']=bool(res['checks']['nonnegative'] and res['checks']['population_margin_max_error_persons']<0.1 and res['checks']['status_margin_max_error_persons']<0.1 and res['checks']['production_income_margin_max_error_persons']<0.1 and res['checks']['industry_margin_tv_weighted_mean']<1e-3)
  (REPORTS/'employment_a_verification.json').write_text(json.dumps(res,ensure_ascii=False,indent=2));print(json.dumps(res,ensure_ascii=False,indent=1))
+ return res
+
+def main():
+ import sys
+ res=evaluate()
+ if not res['passed']:
+  print('Employment stage-A verification FAILED; see validation/employment_a_verification.json',file=sys.stderr);sys.exit(1)
 if __name__=='__main__':main()

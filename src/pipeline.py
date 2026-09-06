@@ -16,7 +16,7 @@ STAGES = {
     'verify-education': ['verify_education.py'],
     'sensitivity': ['sensitivity_education.py'],
     'fetch-industry': ['download_industry.py'],
-    'fetch-employment': ['parse_employment.py', 'fetch_employment.py'],
+    'fetch-employment': ['fetch_employment.py'],
     'build-employment': ['build_employment.py'],
     'verify-employment': ['verify_employment.py'],
     'experiment': ['experiment_models.py'],
