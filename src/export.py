@@ -50,7 +50,7 @@ def main():
   (dest/(e[0]+'.json')).write_text(json.dumps(clean(obj),ensure_ascii=False,separators=(',',':'),allow_nan=False))
  # Examples show both requested joint-within-municipality and age-conditioned income probabilities.
  chosen=['13103','13121','14100','01100','47201','13382'];ex=frame[frame.municipality_code.isin(chosen)]
- ex.to_csv(BASE/'examples.csv',index=False,float_format='%.8g')
+ ex.to_csv(OUT/'examples.csv',index=False,float_format='%.8g')
  check={'geographic_records':len(entries),'municipalities':int((meta.geography_level=='municipality').sum()),'designated_city_wards':int((meta.geography_level=='designated_city_ward').sum()),'age_groups':13,'income_groups':16,'probability_cells':len(frame),'nonempty_geographies':int((den>0).sum()),'zero_population_geographies':meta.loc[den==0,['municipality_code','municipality_name']].to_dict('records'),'max_sum_error_per_nonempty_municipality':float(np.nanmax(np.abs(by_m.sum((1,2))-1))),'max_sum_error_income_given_age':float(np.nanmax(np.abs(by_ma.sum(2)-1))),'nonoverlapping_15plus_population':float(d['population'].sum()),'caution':'Do not sum designated-city parents and their wards; all published boundaries are 2020. Tax source uses 2022 fiscal year.'}
  (BASE/'validation/export_checks.json').write_text(json.dumps(check,ensure_ascii=False,indent=2));print(json.dumps(check,ensure_ascii=False,indent=2))
  print('EXAMPLES: 35-39, income >=500万円')

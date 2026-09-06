@@ -1,4 +1,6 @@
-# Hinomoto Twin Pub
+# Hinomoto Twin Pub（v1 の説明・記録用）
+
+この文書は v1（年齢 × 年収）の説明を記録として残したものです。現行の説明は [README.md](README.md)、v1 の推定方法は [METHOD.md](METHOD.md) を参照してください。v1 専用の抜粋ファイルと比較図は整理済みで、`src/export.py` を実行すると `examples.csv` を再生成できます（Git 管理外）。
 
 市区町村別・年齢 × 個人就業年収の推定分布
 
@@ -61,7 +63,6 @@ Python 3.11以上が必要です。makeがない環境では、後述のPython�
 | `data/geography.csv` | 地域コード・名称・地域階層・人口・定義可否 |
 | `data/age_bins.csv`, `data/income_bins.csv` | 行列の区分と境界 |
 | `data/municipality_model.npz` | Pythonでの高速読み込み・条件付き抽出用 |
-| `examples.csv` | 港区、足立区、横浜市、札幌市、那覇市、御蔵島村の抜粋 |
 | `METHOD.md` | 推定式・仮定・検証結果・限界 |
 | `SOURCES.md`, `sources/manifest.json` | 元統計のURL、取得・加工情報、ファイルのハッシュ |
 | `validation/verification.json` | 実行済み検証の結果 |
@@ -71,10 +72,6 @@ Python 3.11以上が必要です。makeがない環境では、後述のPython�
 政令指定都市は市全体と各区の両方を収録しています。全国集計には `geography_level=municipality` の1,741地域だけを使うか、市全体を除いて行政区を使ってください。**市全体とその区を同時に足すと二重計上です。** 東京23区は各区を自治体として扱い、「特別区部」の集計地域13100は主出力に含めません。
 
 ## 確率の読み方
-
-![市区町村別の年齢×年収分布の比較](municipal_comparison.png)
-
-図は表示用に年収を6区分に集約しています。配布データは16区分です。表示値は四捨五入しています。
 
 港区の例では、15歳以上の住民から一人選んだときに「35～39歳、かつ年収500万円以上」である推定確率は **4.9535%** です。35～39歳の住民に限定して選ぶと、500万円以上である確率は **46.7341%** です。分母が異なります。
 
@@ -159,11 +156,3 @@ python src/verify.py
 
 元ファイルから加工を再現する手順はSOURCES.mdを参照してください。パラメータを変更した場合は、推定仮定と検証結果を同時に更新してください。
 
-## 比較図の再作成
-
-```sh
-python -m pip install -r requirements-plot.txt
-python src/plot.py --font /path/to/japanese-font.ttf
-```
-
-日本語を含むフォントを指定してください。macOSのArial Unicodeがある場合は `--font` を省略できます。図は最終NPZから作成し、表示上のみ所得階級を6群へ集約します。

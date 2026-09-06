@@ -9,6 +9,7 @@ help:
 	@echo "build          Rebuild distributions from bundled normalized sources"
 	@echo "verify         Verify rebuilt data and probability constraints"
 	@echo "sample         Sample 10 synthetic residents of Minato aged 35-39"
+	@echo "sensitivity    Re-allocate education x income under alternative assumptions"
 install:
 	$(PYTHON) -m pip install -r requirements.txt
 install-source:
@@ -34,9 +35,11 @@ verify:
 sample:
 	$(PYTHON) src/persona_v2.py --municipality 13103 --age 35 --sample 10 --seed 7
 
-.PHONY: build-education verify-education
+.PHONY: build-education verify-education sensitivity
 build-education:
 	$(PYTHON) src/build_education.py
 	$(PYTHON) src/export_education.py
 verify-education:
 	$(PYTHON) src/verify_education.py
+sensitivity:
+	$(PYTHON) src/sensitivity_education.py
