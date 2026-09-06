@@ -1,0 +1,17 @@
+# Local environments, caches, machine-specific settings
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+!.env.example
+.mplconfig/
+
+# Downloaded third-party originals and reproducible large outputs.
+# These files are present locally; obtain/regenerate them using the README.
+/raw/
+/data/
+/dist/
+*.zip

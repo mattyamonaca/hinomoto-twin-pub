@@ -1,0 +1,139 @@
+{
+  "retrieved_date": "2026-09-05",
+  "timezone": "Asia/Tokyo",
+  "publisher": "総務省統計局・e-Stat（税務指標の原統計は市町村税課税状況等の調）",
+  "note": "Original binary workbooks and public income-table responses are stored locally in raw/. The raw directory is excluded from Git by default. Normalized source tables, metadata and download/parse code are versionable. Gzip metadata and live website responses can change byte hashes without changing values.",
+  "sources": [
+    {
+      "title": "2020国勢調査 不詳補完参考表1-4",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032144437&fileKind=0",
+      "raw_filename": "census_population.xlsx",
+      "raw_sha256": "7f2f60ac2a372a4ce3a140c4740166c1882d1b5c80cfbd1d1cac5de542e62feb",
+      "raw_bytes": 3876945,
+      "tidy_file": "census_population_tidy.csv.gz",
+      "tidy_sha256": "3c0ab9c4e454764d44b6dad53f183f2a5b1e9a998af7ff59bf358acefea999a2"
+    },
+    {
+      "title": "2020国勢調査 就業状態等 不詳補完参考表1",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201519&fileKind=0",
+      "raw_filename": "census_imputed_age.xlsx",
+      "raw_sha256": "68551fddb97e4d8104f5b0f34ddeae531bac3fa1ed2c0d8bda3d410343bd027b",
+      "raw_bytes": 13556575,
+      "tidy_file": "census_imputed_age_tidy.csv.gz",
+      "tidy_sha256": "d9087ade45765de1f2129021db0b50798d8d81c708bf8b04a75a920f1ca218bb"
+    },
+    {
+      "title": "2020国勢調査 就業状態等 不詳補完参考表5-1",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201523&fileKind=0",
+      "raw_filename": "census_imputed_detailed_status.xlsx",
+      "raw_sha256": "cdf7869f0f306e4386a016b950412e2b4a978f3a83683c54b4c17671859801cc",
+      "raw_bytes": 13677435,
+      "tidy_file": "census_imputed_detailed_status_tidy.csv.gz",
+      "tidy_sha256": "7ff6825536284c77edba7f953b6347a34f9dd862b91be25330d1329f330bf854"
+    },
+    {
+      "title": "2020国勢調査 就業状態等 表3-1",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?fileKind=0&statInfId=000032201197",
+      "raw_filename": "census_age_status.xlsx",
+      "raw_sha256": "daa1e1719d1fde2ae067027cb0e151adbfeda63336771487e1710f23fe1b80b2",
+      "raw_bytes": 18192770,
+      "tidy_file": "census_age_status_tidy.csv.gz",
+      "tidy_sha256": "4336f67e7271b2a4e9d94b40d445e1f388437dc398649e7c691c84e935ea05ee"
+    },
+    {
+      "title": "市区町村のすがた2024 C経済基盤（2022年度）",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040186223&fileKind=0",
+      "raw_filename": "economic.xlsx",
+      "raw_sha256": "af5e0a06ba6b22a4308c62acad28d3bcac67088ad7744f9d369ba100854e7b43",
+      "raw_bytes": 854528,
+      "tidy_file": "tax_tidy.csv",
+      "tidy_sha256": "917c6e39d3bfeef88da03c7b7983a3b9ac4771270f6418adaf02cecfb6ae8016"
+    },
+    {
+      "title": "2022就業構造基本調査 地域編02300",
+      "url": "https://www.e-stat.go.jp/dbview?sid=0004008500",
+      "result_endpoint": "https://www.e-stat.go.jp/dbview/api_get_result?sid=0004008500",
+      "metadata_endpoint": "https://www.e-stat.go.jp/dbview/api_get_model?sid=0004008500",
+      "metadata_sha256": "4454a8e32cd3e7b292aa7099b264e359bd76891d3e27afe8f884f36ac4dfe2a8",
+      "tidy_file": "income_tidy.csv.gz",
+      "tidy_sha256": "3f2d990581ad8a3aa9a10dfbd4f6c5b4ba7fc881962376407015562c770d9470",
+      "raw_responses": [
+        {
+          "filename": "income_0_0.json.gz",
+          "sha256": "b5f5cdd099a6e9f08cf7e22c3badb3f193cf9939556004ff6b7696deffd67353",
+          "bytes": 73518
+        },
+        {
+          "filename": "income_0_1.json.gz",
+          "sha256": "96f8c47575a22cb49234fd7da2cf22f0f1b7f33132613983f50868c29b2e1925",
+          "bytes": 49124
+        },
+        {
+          "filename": "income_0_2.json.gz",
+          "sha256": "53ceeccc1571f9f03ce5ec316431ef3f2c6346618dd462b0ae9b357522014356",
+          "bytes": 72551
+        },
+        {
+          "filename": "income_0_22.json.gz",
+          "sha256": "83ace9b85b1654a20d36ace7192e881e16de211f00885492c4d79e72af20de0e",
+          "bytes": 64266
+        },
+        {
+          "filename": "income_0_23.json.gz",
+          "sha256": "b6bb9cefaa80a39f7a6aa0d6542eb9afcc6e4f44ef95915e5666f7ce81aa4f6e",
+          "bytes": 55273
+        },
+        {
+          "filename": "income_1_0.json.gz",
+          "sha256": "7a2aae3d94b9644f9f6e4e2f858a0458090abf278e10208f36ddde9aec33f000",
+          "bytes": 68421
+        },
+        {
+          "filename": "income_1_1.json.gz",
+          "sha256": "066c2f3c7c29e3ed248dfb8513e50a0867b4727a709bf221c2b3eaf9d3de9cb8",
+          "bytes": 46906
+        },
+        {
+          "filename": "income_1_2.json.gz",
+          "sha256": "a6fe76d18679863ab6f72d6fa5d967279feff038bde0ed33b9981c9a8ad726b1",
+          "bytes": 66718
+        },
+        {
+          "filename": "income_1_22.json.gz",
+          "sha256": "2b9ca940361c6d82fe5b68f1d6152519af18713a32bfe215a4268196edc9a3e0",
+          "bytes": 60010
+        },
+        {
+          "filename": "income_1_23.json.gz",
+          "sha256": "931c596a1952f77ed6b6830851a3bfb9f856d063cf3439c40f29a40046d24751",
+          "bytes": 48481
+        },
+        {
+          "filename": "income_2_0.json.gz",
+          "sha256": "7b63c623e3c19fed8f3d94f09598b839b74bf7e821229c316183bfb69c7d6ee1",
+          "bytes": 62623
+        },
+        {
+          "filename": "income_2_1.json.gz",
+          "sha256": "4cc78d976a13c7a2b7ed3e79bca994c3ee7998cff6dd00dc014a94da903c8662",
+          "bytes": 37737
+        },
+        {
+          "filename": "income_2_2.json.gz",
+          "sha256": "9e14f5ef9756574c436483e0085a078dc308e8b3f1f88374dcba86192748b27b",
+          "bytes": 61817
+        },
+        {
+          "filename": "income_2_22.json.gz",
+          "sha256": "69de6e378dc5ad6563732c9e6058bdcfe35726a9aff89cb47d3c2150f39cfd43",
+          "bytes": 53399
+        },
+        {
+          "filename": "income_2_23.json.gz",
+          "sha256": "31c334b04156981babee73d2e5a8c226d1165b1b56a3b612a897a087c4b10d35",
+          "bytes": 49601
+        }
+      ]
+    }
+  ]
+}

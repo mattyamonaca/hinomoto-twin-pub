@@ -1,0 +1,120 @@
+# Hinomoto Twin Pub
+
+公開統計に基づいて、市区町村別のペルソナ属性分布を生成するプロジェクトです。
+
+**v2では「市区町村 × 年齢 × 性別 × 最終学歴 × 個人就業年収」を収録しています。** 最終学歴は国勢調査の学校区分に基づき、在学中・未就学・不詳を別区分にしています。
+
+更新：2026年9月6日。人口・地域境界・学歴は2020年、所得は2022年、税務補助は2022年度の統計を使用しています。2026年の現況推計ではありません。
+
+## 提供する分布
+
+主出力は **P（年齢, 性別, 学歴, 年収｜市区町村）**。市区町村を選ぶと、13年齢 × 2性別 × 8学歴 × 16年収の確率が合計1になります。
+
+- 1,741市区町村と175政令市行政区、計1,916地域・6,376,448セル。
+- 15歳以上の住民を対象とし、外国人住民・非就業者を含みます。
+- 性別は公表統計の「男・女」です。性自認を推定する属性ではありません。
+- 年収は主な仕事から通常得る年額。給与は税込み、事業は経費控除後。副業・年金・資産収入は含みません。
+- 2020年人口が0の双葉町は確率が未定義です。人口のある1,915地域で分布を提供します。
+- 性別・学歴を集約すると従来の市区町村別年齢・年収分布を再現します。
+
+主なファイルは以下のとおりです。
+
+| パス | 内容 |
+|---|---|
+| `data/municipality_age_sex_education_income.csv.gz` | 全国の5属性分布。UTF-8・gzip圧縮CSV |
+| `data/municipalities_v2/{市区町村コード}.json.gz` | 地域ごとの分布。例えば港区は13103 |
+| `data/municipality_model_v2.npz` | Pythonで読み込む推定人数の配列 |
+| `data/schema_v2.json` | 行列の軸、区分コード・名称、確率の定義 |
+| `data/education_bins.csv`, `data/sex_bins.csv` | 追加属性の区分と注意点 |
+| `data/geography.csv`, `data/age_bins.csv`, `data/income_bins.csv` | 地域・年齢・年収の定義 |
+| `examples_v2.csv` | 5都市での性別・学歴を指定した推定例 |
+| `validation/education_verification.json` | 5属性版の検証結果 |
+
+CSVのコード列は文字列で読み込んでください。政令市は市全体と各区を含むため、全国集計では両方を同時に合計しないでください。`geography_level=municipality` の1,741地域を使うと重複を避けられます。
+
+CSVの `p_age_sex_education_income_given_municipality` が主出力、`p_income_given_municipality_age_sex_education` は年齢・性別・学歴をすべて条件にした年収確率です。`estimated_count` は小数を含む期待人数です。人口0の条件付き分布はCSVで空欄、JSONでnullです。
+
+## 最終学歴の8区分
+
+| コード | 区分 | 注意点 |
+|---|---|---|
+| E01 | 小学校・中学校 | 所得表に合わせて統合 |
+| E02 | 高校・旧中相当 | 所得接続では専門学校2年未満も含める近似 |
+| E03 | 短大・高専等 | 一定の専門学校2年以上4年未満等を含む |
+| E04 | 大学等 | 一定の専門学校4年以上等を含む。学士号保有の意味ではない |
+| E05 | 大学院 | 修士・専門職・博士を統合 |
+| E06 | 在学中 | 卒業済みの学校種別は推定しない |
+| E07 | 未就学 | 学校に在学したことがない者 |
+| E08 | 不詳 | 卒業学校不詳と在学状況不詳 |
+
+専門学校の扱いは両統計の定義を近づけるための対応付けです。卒業時期や入学資格による厳密な対応を再現できない部分は仮定として記録しています。詳しくは [学歴追加の推定方法](METHOD_V2.md) を参照してください。
+
+今回のモデルでは、不詳が約13.98%、在学中が約6.88%です。不詳を所得から推測して既知の学歴に割り振る処理はしていません。
+
+## 条件付き分布とペルソナ抽出
+
+Python 3.11以上で実行します。収録済みのデータを使う場合、再取得・再計算は不要です。
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+# 港区の全4軸の同時分布（市区町村は条件）
+python src/persona_v2.py --municipality 13103
+
+# 港区・35～39歳・男性・大学等の年収分布
+python src/persona_v2.py --municipality 13103 --age 35 --sex male --education E04 --income-only
+
+# 同じ条件から10人を抽出
+python src/persona_v2.py --municipality 13103 --age 35 --sex male --education E04 --sample 10 --seed 7
+
+# 性別と学歴は分布から抽出
+python src/persona_v2.py --municipality 13103 --age 35 --sample 10 --seed 7
+```
+
+`--age 35` は35～39歳区分を指定します。1歳単位や1円単位の数値は生成しません。性別は `1/male/男` または `2/female/女`、学歴はE01～E08で指定できます。任意の条件だけを指定し、残りは分布から抽出できます。
+
+Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込みます。`distribution()` は年齢・性別・学歴・年収の4軸を維持し、指定された属性の軸の長さを1にします。`income_distribution()` は残りの属性を集約した16年収確率を返します。出力はすべて、指定した条件の下で合計1になります。
+
+## 推定と検証
+
+性別はv1で使っていた内部の人口・所得配列を出力に残しています。学歴は2020国勢調査11-2の市区町村別年齢・性別・学校区分人口を基準にします。学歴と就業の関連を国勢調査12-1、学歴と年収の関連を2022就業構造基本調査04000から取り出し、地域の人口と従来の所得分布の双方に合うよう調整します。
+
+**学歴と所得を独立に掛け合わせてはいません。** 一方、全国の学歴別所得の関連を地域に移植する仮定があり、実測された市区町村別学歴・所得の同時分布ではありません。内部整合性の検証と、小地域での精度保証は区別してください。
+
+[推定方法・制約・限界（v2）](METHOD_V2.md)／[基礎モデル（v1）](METHOD.md)／[全出典](SOURCES.md)
+
+## 元データと再実行
+
+| ディレクトリ | 内容 | 通常のGit管理 |
+|---|---|---|
+| `src/` | 取得・加工・推定・出力・検証・抽出 | 対象 |
+| `sources/` | 全加工済み入力、表定義、出典・ハッシュ | 対象 |
+| `raw/` | 使用した元Excel・所得表レスポンス | 除外。ローカル保存と再取得に対応 |
+| `data/` | 全分布と計算用配列 | 除外。再計算可能 |
+| `validation/` | 検証結果・処理品質 | 対象 |
+
+Gitから取得した場合でも、同梱の `sources/` からオフラインで推定できます。
+
+```sh
+make build          # v1の基礎推定 → v2の性別・学歴追加
+make verify         # v1・v2を検証
+make sample
+```
+
+v1の計算済みデータがある場合、追加分だけは `make build-education`、検証は `make verify-education` で実行できます。makeがない場合は対応するPythonプログラムを順に実行してください。
+
+```sh
+python src/build_education.py
+python src/export_education.py
+python src/verify_education.py
+```
+
+元データからやり直す場合は `make install-source` の後、`make fetch` で取得・加工、保存済み原表なら `make prepare` で加工できます。学歴分だけなら `python src/fetch_education.py` と `python src/parse_education.py` です。e-Statの画面構造・原表更新に影響される可能性があるため、再取得時は出典と検証結果も確認してください。
+
+## 互換性と開発
+
+従来のCSV・NPZ・地域別JSONと `src/persona.py` はv1の形式で利用できます。v1の説明書は [README_V1.md](README_V1.md) に残しています。v2の生成結果には `_v2` または `sex_education` を含む名前を付けています。
+
+開発方針：[CONTRIBUTING.md](CONTRIBUTING.md)。ソフトウェアライセンスは所有者による選定前です：[LICENSE_STATUS.md](LICENSE_STATUS.md)。

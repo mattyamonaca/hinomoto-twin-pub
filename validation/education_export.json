@@ -1,0 +1,14 @@
+{
+  "model_version": "2.0",
+  "geographies": 1916,
+  "shape_per_municipality": [
+    13,
+    2,
+    8,
+    16
+  ],
+  "csv_rows": 6376448,
+  "defined_municipalities": 1915,
+  "max_joint_sum_error": 4.440892098500626e-16,
+  "compressed_csv_bytes": 117903464
+}

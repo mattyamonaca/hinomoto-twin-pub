@@ -1,0 +1,19 @@
+{
+  "geographic_records": 1916,
+  "municipalities": 1741,
+  "designated_city_wards": 175,
+  "age_groups": 13,
+  "income_groups": 16,
+  "probability_cells": 398528,
+  "nonempty_geographies": 1915,
+  "zero_population_geographies": [
+    {
+      "municipality_code": "07546",
+      "municipality_name": "双葉町"
+    }
+  ],
+  "max_sum_error_per_nonempty_municipality": 1.4978684959032762e-11,
+  "max_sum_error_income_given_age": 5.645839351586801e-11,
+  "nonoverlapping_15plus_population": 111114497.0,
+  "caution": "Do not sum designated-city parents and their wards; all published boundaries are 2020. Tax source uses 2022 fiscal year."
+}

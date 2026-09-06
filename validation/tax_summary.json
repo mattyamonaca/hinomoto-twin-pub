@@ -1,0 +1,48 @@
+{
+  "tax_fiscal_year": 2022,
+  "tax_income_reference_year": 2021,
+  "feature": "log(municipal taxable-income-per-taxpayer / prefectural value), clipped [-0.5,0.5]",
+  "income_tilt_score": "log(bin representative/3 million yen), representatives 0.25,...,17.5 million",
+  "fit_criterion": "population-weighted known-income cross entropy; weights are expanded population, not sample sizes",
+  "coefficient_grid": [
+    0,
+    4,
+    0.1
+  ],
+  "beta_full_fit": 0.5,
+  "beta_selected": 0.5,
+  "five_fold_by_prefecture": [
+    {
+      "fold": 0,
+      "beta": 0.6000000000000001,
+      "test_city_age_cells": 156
+    },
+    {
+      "fold": 1,
+      "beta": 0.6000000000000001,
+      "test_city_age_cells": 195
+    },
+    {
+      "fold": 2,
+      "beta": 0.5,
+      "test_city_age_cells": 299
+    },
+    {
+      "fold": 3,
+      "beta": 0.5,
+      "test_city_age_cells": 273
+    },
+    {
+      "fold": 4,
+      "beta": 0.5,
+      "test_city_age_cells": 195
+    }
+  ],
+  "tv_base": 0.09395151165303622,
+  "tv_tax_out_of_fold": 0.09327746840483724,
+  "tv_tax_in_sample": 0.09324528636331447,
+  "relative_tv_improvement_out_of_fold": 0.007174373635287945,
+  "municipality_proxy_missing_uses_parent_or_prefecture": 175,
+  "feature_clipped_count": 9,
+  "warning": "City income tables are not used in base model but city data contribute to prefecture totals. CV is not independent microdata validation; small towns and individual wards are not validated by city holdouts."
+}

@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "date": "2026-09-05",
+  "method": "Replayed original workbook/response parsers into an isolated output directory; compared exact CSV bytes after gzip decompression. Original input hashes verified separately.",
+  "tables": [
+    {
+      "source": "census_population_tidy.csv.gz",
+      "decompressed_csv_identical": true,
+      "canonical_csv_sha256": "1bd97cda2e0901719643285078c8e995cd6eb949034843c13cf9214040ddcf6b"
+    },
+    {
+      "source": "census_imputed_age_tidy.csv.gz",
+      "decompressed_csv_identical": true,
+      "canonical_csv_sha256": "529a460107d5f72e6515358fd8831dc7071259e59fe418b47eb82a10df61e766"
+    },
+    {
+      "source": "census_imputed_detailed_status_tidy.csv.gz",
+      "decompressed_csv_identical": true,
+      "canonical_csv_sha256": "f001fc9074fc5efe28acd6eacfdb94ef75c42447cd661e1fce246ef4494508b0"
+    },
+    {
+      "source": "census_age_status_tidy.csv.gz",
+      "decompressed_csv_identical": true,
+      "canonical_csv_sha256": "5fb0ce21ba93e241f6917bc7ae81f52533003f35061c7da54c85488dbe4b8a41"
+    },
+    {
+      "source": "tax_tidy.csv",
+      "decompressed_csv_identical": true,
+      "canonical_csv_sha256": "917c6e39d3bfeef88da03c7b7983a3b9ac4771270f6418adaf02cecfb6ae8016"
+    },
+    {
+      "source": "income_tidy.csv.gz",
+      "decompressed_csv_identical": true,
+      "canonical_csv_sha256": "748da0d4d580c3641511fddc94cfa9c922b8eae8555ab6605d57f270de3112f1"
+    }
+  ]
+}

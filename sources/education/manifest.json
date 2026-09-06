@@ -1,0 +1,49 @@
+{
+  "retrieved_date": "2026-09-05",
+  "publisher": "総務省統計局・e-Stat",
+  "sources": [
+    {
+      "title": "2020国勢調査 就業状態等基本集計 11-2",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201217&fileKind=0",
+      "raw_file": "raw/census_education.xlsx",
+      "raw_sha256": "40a3cbc4fb0f7f2030edf43466f9dbcf2bfae7c1e247607452f6077e1e5318d9",
+      "tidy_file": "sources/education/census_education_tidy.csv.gz",
+      "tidy_sha256": "c44652e6d21b524ba54b150d17d4d61bf2464bcf4400cf7c09edf37ce002a954"
+    },
+    {
+      "title": "2020国勢調査 就業状態等基本集計 12-1",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&fileKind=0",
+      "raw_file": "raw/census_education_labor.xlsx",
+      "raw_sha256": "0afeacee612f95b01c30dbdc0ac55f19da871d530870e5844f3a7c03c9c362ec",
+      "tidy_file": "sources/education/census_education_labor_tidy.csv.gz",
+      "tidy_sha256": "c581e5b6d156786827ede01c3434024832443cc80514fccd4945c7f81d778341"
+    },
+    {
+      "title": "2022就業構造基本調査 全国編04000",
+      "url": "https://www.e-stat.go.jp/dbview?sid=0004008157",
+      "metadata_file": "sources/education/income_model.json",
+      "metadata_sha256": "950ae7c723577a9c3ec595293b67f88bd370c24b3f0443aa0a95183a7de83bf5",
+      "tidy_file": "sources/education/income_education_tidy.csv.gz",
+      "tidy_sha256": "aff0c362bf7655801e07fb84d207e1db13e8733bea552f629a3f5f94daee5d9e",
+      "raw_responses": [
+        {
+          "file": "raw/education/income_education_0.json.gz",
+          "sha256": "1bab8bfd45ba10841409b8fc62fa928a56c759b5f19e5ed7521b55627b4166d7"
+        },
+        {
+          "file": "raw/education/income_education_1.json.gz",
+          "sha256": "a1b14bb54fcfbc8e64547959d674906f4b6af74eb5b710f0aa1d060e92abf90d"
+        },
+        {
+          "file": "raw/education/income_education_2.json.gz",
+          "sha256": "9150082291467189fcafd4ee7db4acecf6fe463c627ba7c949d27ee6d0eb780c"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    "https://www.stat.go.jp/data/kokusei/2020/kekka/pdf/u_guide_2020.pdf",
+    "https://www.stat.go.jp/data/shugyou/2022/pdf/yougo.pdf"
+  ],
+  "education_unknown_handling": "Retain E08; do not impute schooling from income. Enrolled E06 is separate by user preference."
+}
