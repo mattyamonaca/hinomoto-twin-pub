@@ -20,6 +20,8 @@ Input contract (leaf areas M, prefectures P, sexes 2, ages 13, statuses 5, incom
   edu_q        (2,13,8,16)    national education x income shapes (paid workers, smoothed)
   edu_rate     (M,2,13,8)     education-specific employment-rate seeds
   heldout      dict           city evaluation cells: ids (list of leaf index lists), age (int idx), obs (n,16), weight (n,), pref (n,)
+  ind_share    (M,2,13,20)    industry composition of employed persons (census 6-3, JSIC A-T), optional (M2)
+  ind_q        (2,13,20,16)   national industry x income shapes (ESS regional table 24, no age: broadcast), optional (M2)
 """
 import numpy as np
 from model_math import AGES,norm,ipf
@@ -197,4 +199,32 @@ def load_real_inputs(sources_dir,reports_dir=None,shrink_unused=None):
    if tot<1000:continue
    ids.append(cmap[city]);age.append(ai);obs.append(norm(o));weight.append(tot);hp.append(pidx[city[:2]]);codes.append(city)
  heldout={'ids':ids,'age':np.array(age),'obs':np.array(obs),'weight':np.array(weight),'pref':np.array(hp),'codes':codes}
- return {'areas':areas,'prefs':prefs,'pref':pref,'N':N,'Nraw':Nraw,'Eraw':Eraw,'seed_q':seed_q,'t_status':t_status,'pref_rate':pref_rate,'ess_cat':ess_cat,'nat_cat':nat_cat,'pref_target':pref_target,'tax_feature':tax_feature,'edu_share':edu_share,'edu_q':be_inputs['shapes'],'edu_rate':be_inputs['rate_array'],'edu_reference':be_inputs['reference'],'heldout':heldout,'parent':parent}
+ out={'areas':areas,'prefs':prefs,'pref':pref,'N':N,'Nraw':Nraw,'Eraw':Eraw,'seed_q':seed_q,'t_status':t_status,'pref_rate':pref_rate,'ess_cat':ess_cat,'nat_cat':nat_cat,'pref_target':pref_target,'tax_feature':tax_feature,'edu_share':edu_share,'edu_q':be_inputs['shapes'],'edu_rate':be_inputs['rate_array'],'edu_reference':be_inputs['reference'],'heldout':heldout,'parent':parent}
+ ind=load_industry_inputs(S,areas,pref,prefs)
+ if ind:out.update(ind)
+ return out
+
+def load_industry_inputs(S,areas,pref,prefs,shrink=1000.):
+ """M2 inputs from sources/industry (optional). ind_share: employed-person industry composition per area x sex x age
+ (prefecture composition where an area x sex x age has no employed persons); ind_q: national industry x income shapes by sex,
+ smoothed toward the all-industry shape with pseudo-population `shrink`, identical across ages (table 24 has no age)."""
+ import pandas as pd
+ D=S/'industry'
+ if not (D/'census_industry_age_tidy.csv.gz').is_file() or not (D/'income_industry_tidy.csv.gz').is_file():return None
+ G=[f'G{i:02}' for i in range(1,21)];M=len(areas)
+ c=pd.read_csv(D/'census_industry_age_tidy.csv.gz',dtype={'area':str,'sex':str,'age':str,'type':str}).set_index(['area','sex','age'])
+ idx=pd.MultiIndex.from_product([areas,['1','2'],AGES],names=['area','sex','age'])
+ cnt=c.reindex(idx)[G].to_numpy(float).reshape(M,2,13,20);cnt=np.nan_to_num(cnt)
+ pidx=pd.MultiIndex.from_product([[p+'000' for p in prefs],['1','2'],AGES],names=['area','sex','age'])
+ pcnt=c.reindex(pidx)[G].to_numpy(float).reshape(len(prefs),2,13,20)
+ tot=cnt.sum(-1,keepdims=True);share=np.divide(cnt,tot,out=np.zeros_like(cnt),where=tot>0)
+ empty=(tot[...,0]==0);pshare=norm(pcnt)[pref]
+ share[empty]=pshare[empty]
+ e=pd.read_csv(D/'income_industry_tidy.csv.gz',dtype={'area':str,'sex':str,'status':str,'income':str,'industry':str})
+ e=e[(e.area=='00000')&(e.status=='0')&(e.income!='00')]
+ q=np.zeros((2,13,20,16))
+ for si,s in enumerate(['1','2']):
+  t=e[e.sex==s].pivot(index='industry',columns='income',values='count').sort_index(axis=1)
+  ref=norm(t.loc['G00'].to_numpy(float)+1e-8)
+  for gi,g in enumerate(G):q[si,:,gi]=norm(t.loc[g].to_numpy(float)+shrink*ref)[None]
+ return {'ind_share':share,'ind_q':q,'ind_reference_note':'ESS regional table 24, national, status total, by sex; no age dimension'}

@@ -15,6 +15,7 @@ STAGES = {
     'verify': ['verify.py', 'verify_education.py'],
     'verify-education': ['verify_education.py'],
     'sensitivity': ['sensitivity_education.py'],
+    'fetch-industry': ['download_industry.py'],
     'experiment': ['experiment_models.py'],
     'synthetic': ['synthetic_population.py'],
     'site': ['build_site.py'],

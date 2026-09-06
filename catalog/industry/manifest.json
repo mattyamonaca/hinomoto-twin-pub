@@ -1,0 +1,25 @@
+{
+  "retrieved_date": "2026-09-06",
+  "publisher": "総務省統計局・e-Stat",
+  "sources": [
+    {
+      "title": "2020国勢調査 就業状態等基本集計 表6-3 男女，年齢（5歳階級），産業（大分類）別就業者数及び平均年齢（15歳以上就業者）－全国，都道府県，市区町村",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201184&fileKind=0",
+      "raw_file": "raw/industry/census_industry_age.xlsx",
+      "raw_sha256": "a96a8de50a335716dcade90bb90fbc9c11b63b3100f498db1628f4e9d4dca049",
+      "tidy_file": "sources/industry/census_industry_age_tidy.csv.gz"
+    },
+    {
+      "title": "2022就業構造基本調査 地域編 表24 男女、従業上の地位・雇用形態・起業の有無、所得（主な仕事からの年間収入・収益）、産業別人口（有業者）",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077604&fileKind=0",
+      "raw_file": "raw/industry/ess_industry_income.xlsx",
+      "raw_sha256": "53377001fa48fa46754c617f7ec1a2e6ad0b43473f73953b6dc84afa9ff24b34",
+      "tidy_file": "sources/industry/income_industry_tidy.csv.gz"
+    }
+  ],
+  "notes": [
+    "Industry = JSIC major divisions A-T; G20 is 分類不能の産業.",
+    "Table 24 has no age dimension: industry x income shapes are age-independent in M2.",
+    "Census 6-3 counts employed persons (paid + unpaid family workers) by residence."
+  ]
+}
