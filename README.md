@@ -111,6 +111,8 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 
 詳細は [METHOD_V2.md](METHOD_V2.md) の「学歴不詳の扱いと補完モードの仕様」「移植仮定の感度分析」「検証の範囲」を参照してください。
 
+**属性拡張 段階A（Issue #16）**：就業状態・従業上の地位（6区分）と産業（大分類20＋該当なし）を、公開中の5属性分布を周辺として固定したまま条件付きで配分する `make build-employment` と `src/persona_v3.py` を追加しました（試験実装。5属性の公開値は変わりません）。設計・検証は [docs/EMPLOYMENT_A.md](docs/EMPLOYMENT_A.md)。
+
 **モデル改善の比較実験（Issue #12）**：学歴構成で地域の所得分布を再推定する M1 は、86都市の out-of-fold 比較で加重TVを 0.09328 → 0.09000（3.5%）改善し、仮想人口実験では税務指標が弱い条件で一貫して改善しました。産業構成を加える M2 は単独で 2.1% 改善、M1 との併用では M1 に対して 0.14% の上乗せにとどまります。本番の既定値は M0 のままで、設計・データ契約・評価設定・結果・採否理由は [docs/EXPERIMENT_M12.md](docs/EXPERIMENT_M12.md) にまとめています（`make experiment`、`make synthetic` で再現）。
 
 ## 元データと再実行

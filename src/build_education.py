@@ -71,7 +71,7 @@ def prepare(income_shrink=1000.,rate_shrink=100.):
     quality.append((m,s,a,observed_total,float(N[mi,si,ai]),labor_source,fallback,float(edu_counts[mi,si,ai,7]/N[mi,si,ai]) if N[mi,si,ai]>0 else None))
  return {'areas':areas,'N':N,'income_counts':income_counts,'shapes':shapes,'reference':reference,'edu_counts':edu_counts,'rate_array':rate_array,'quality':quality,'income_quality':income_quality,'income_shrink':income_shrink,'rate_shrink':rate_shrink}
 
-def allocate(inputs,shapes=None):
+def allocate(inputs,shapes=None,keep_components=False):
  """Allocate v1 income counts to education classes with IPF. Returns 16-bin counts (area, sex, age, education, income) and fit rows."""
  shapes=inputs['shapes'] if shapes is None else shapes
  N=inputs['N'];edu_counts=inputs['edu_counts'];rate_array=inputs['rate_array'];income_counts=inputs['income_counts']
@@ -83,6 +83,7 @@ def allocate(inputs,shapes=None):
    cube[:,si,ai],it,err=project(seed,edu_counts[:,si,ai],income_counts[:,si,ai])
    fits.append((s,a,it,err))
  # The model's synthetic zero and earned <50万円 component merge only after allocation.
+ if keep_components:return cube,fits
  final=np.concatenate([cube[...,:2].sum(-1,keepdims=True),cube[...,2:]],axis=-1)
  return final,fits
 

@@ -15,11 +15,36 @@
       "raw_file": "raw/industry/ess_industry_income.xlsx",
       "raw_sha256": "53377001fa48fa46754c617f7ec1a2e6ad0b43473f73953b6dc84afa9ff24b34",
       "tidy_file": "sources/industry/income_industry_tidy.csv.gz"
+    },
+    {
+      "title": "2022就業構造基本調査 地域編 表10-1 男女、教育（卒業者・在学者）、従業上の地位・雇用形態、産業、年齢別人口（有業者）",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077583&fileKind=0",
+      "raw_file": "raw/industry/ess_education_industry_age.xlsx",
+      "raw_sha256": "84e4bb261b5c3c5e7411b2fa86302a40662f8e1b0d82ca117619ad3576dbd1c8",
+      "tidy_file": "sources/industry/ess_status_industry_age_tidy.csv.gz",
+      "used_by": "stage A: P(industry | status, sex, age, prefecture); enrolled rows for E06"
+    },
+    {
+      "title": "2022就業構造基本調査 全国編 04000（従業上の地位別に取得）男女、年齢、従業上の地位・雇用形態、所得、教育別人口",
+      "url": "https://www.e-stat.go.jp/dbview?sid=0004008157",
+      "raw_responses": [
+        "raw/education/income_education_1_1.json.gz",
+        "raw/education/income_education_1_2.json.gz",
+        "raw/education/income_education_1_22.json.gz",
+        "raw/education/income_education_1_23.json.gz",
+        "raw/education/income_education_2_1.json.gz",
+        "raw/education/income_education_2_2.json.gz",
+        "raw/education/income_education_2_22.json.gz",
+        "raw/education/income_education_2_23.json.gz"
+      ],
+      "tidy_file": "sources/industry/education_status_income_tidy.csv.gz",
+      "used_by": "stage A: P(status | education, sex, age) national"
     }
   ],
   "notes": [
     "Industry = JSIC major divisions A-T; G20 is 分類不能の産業.",
     "Table 24 has no age dimension: industry x income shapes are age-independent in M2.",
-    "Census 6-3 counts employed persons (paid + unpaid family workers) by residence."
+    "Census 6-3 counts employed persons (paid + unpaid family workers) by residence.",
+    "Stage A (issue #16) adds table 10-1 and status-specific 04000 responses; see docs/EMPLOYMENT_A.md."
   ]
 }

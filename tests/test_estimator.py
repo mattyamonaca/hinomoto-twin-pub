@@ -44,3 +44,14 @@ class EstimatorTests(unittest.TestCase):
     def test_m2_hook_requires_inputs(self):
         with self.assertRaises(NotImplementedError):es.industry_tilt(self.inp,1.)
 if __name__=='__main__':unittest.main()
+
+class EmploymentIpfTests(unittest.TestCase):
+    def test_ipf3_matches_margins(self):
+        import build_employment as bm
+        rng=np.random.default_rng(3);n=4
+        seed=rng.random((n,8,4,20,16))+0.05
+        A=rng.random((n,8,16))*100;B=rng.random((n,4));C=rng.random((n,20))
+        tot=A.sum((1,2));B=B/B.sum(1,keepdims=True)*tot[:,None];C=C/C.sum(1,keepdims=True)*tot[:,None]
+        z,it,err=bm.ipf3(seed,A,B,C,tol=1e-9,iters=2000)
+        self.assertLess(np.abs(z.sum((2,3))-A).max(),1e-3);self.assertLess(np.abs(z.sum((1,3,4))-B).max(),1e-3);self.assertLess(np.abs(z.sum((1,2,4))-C).max(),1e-3)
+        self.assertTrue((z>=0).all())
