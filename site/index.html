@@ -249,7 +249,7 @@ footer a{color:var(--ink-2)}
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><span class="eyebrow">Hinomoto Twin Pub / モデル v2.0 / 2020年境界・2022年所得</span><h1>都道府県 → 市区町村 → 年齢 → 性別 → 学歴 → 年収帯</h1></div>
+  <div class="brand"><span class="eyebrow">Hinomoto Twin Pub / モデル v3.0 / M1+M2 / 2020年境界・2022年所得</span><h1>都道府県 → 市区町村 → 年齢 → 性別 → 学歴 → 年収帯</h1></div>
   <nav class="crumb" id="crumb" aria-label="現在の選択"></nav>
   <button class="srcbtn" id="srcbtn" type="button">データソース一覧</button>
   <button class="srcbtn" id="scopebtn" type="button">検証の範囲</button>
@@ -301,7 +301,7 @@ footer a{color:var(--ink-2)}
   <aside class="panel" id="panel" aria-live="polite"></aside>
 </div>
 
-<footer>ノードをクリックすると、そのノードに属する要素が右隣の列に展開され、属性が右パネルに表示されます。項目をクリックすると、その値の導出過程が段階的に表示されます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。学歴 × 年収の配分は、モデルと同じ初期値と制約（全国の学歴別年収分布、地域の学歴別就業率、学歴人数、年齢・性別の年収分布）を埋め込み、ページ内で同じ反復比例調整を再計算しています（<code>municipality_model_v2.npz</code> との差は最大 0.006 ポイント）。都道府県・全国は市区町村（行政区を除く）の合算値です。国勢調査 2020・就業構造基本調査 2022・市区町村のすがた 2024 を加工したモデル推定であり、実測値ではありません。</footer>
+<footer>ノードをクリックすると、そのノードに属する要素が右隣の列に展開され、属性が右パネルに表示されます。項目をクリックすると、その値の導出過程が段階的に表示されます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。学歴 × 年収の配分は、モデルと同じ初期値と制約（全国の学歴別年収分布、地域の学歴別就業率、学歴人数、年齢・性別の年収分布）を埋め込み、ページ内で同じ反復比例調整を再計算しています（M1+M2の最終配列を使用）。都道府県・全国は市区町村（行政区を除く）の合算値です。国勢調査 2020・就業構造基本調査 2022・市区町村のすがた 2024 を加工したモデル推定であり、実測値ではありません。</footer>
 </div>
 
 <script>
@@ -313,7 +313,7 @@ try {
   var response = await fetch(dataUrl);
   if (!response.ok) throw new Error('HTTP ' + response.status);
   var payload = await response.json();
-  if (payload.schema_version !== 1 || !payload.graph || !['prefs','munis','pop','q','rates','ess','xc','xd','e','rs','ag','shrink','sens','sens_or'].every(function(k){return Object.prototype.hasOwnProperty.call(payload.graph,k);})) throw new Error('Unsupported data format');
+  if (payload.schema_version !== 2 || !payload.graph || !['prefs','munis','pop','q','rates','ess','xc','xd','e','rs','ag','shrink','sens','sens_or'].every(function(k){return Object.prototype.hasOwnProperty.call(payload.graph,k);})) throw new Error('Unsupported data format');
   G = payload.graph;
 } catch (error) {
   var panel = document.getElementById('panel');
@@ -338,11 +338,11 @@ var DIM_VAR = { pref: 'var(--d-pref)', muni: 'var(--d-muni)', age: 'var(--d-age)
 var DIM_SOFT = { pref: 'var(--d-pref-soft)', muni: 'var(--d-muni-soft)', age: 'var(--d-age-soft)', sex: 'var(--d-sex-soft)', edu: 'var(--d-edu-soft)', inc: 'var(--d-inc-soft)' };
 
 /* ---------- decode ---------- */
-function u16(b64){ var bin = atob(b64), u8 = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new Uint16Array(u8.buffer); }
+function u16(b64){ var bin = atob(b64), u8 = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new Float64Array(u8.buffer); }
 var XC = u16(G.xc), XD = u16(G.xd), EE = u16(G.e), RS = u16(G.rs), AG = u16(G.ag);
 var MI = {}; G.munis.forEach(function(m, k){ MI[m.c] = k; });
 var PI = {}; G.prefs.forEach(function(p){ PI[p.c] = p; });
-var Q = 1/65535;
+var Q = 1;
 function xc(k, s, a, y){ return XC[((k*2 + s)*13 + a)*16 + y] * Q; }
 function xd(k, s, a, y){ return XD[((k*2 + s)*13 + a)*16 + y] * Q; }
 function emp(k, s, a){ return EE[(k*2 + s)*13 + a] * Q; }
@@ -385,7 +385,7 @@ function ipfMuni(k, s, a){
   if (!n) return out;
   var R = new Float64Array(8), rsum = 0; for (e = 0; e < 8; e++){ R[e] = rsh(k, s, a, e); rsum += R[e]; } for (e = 0; e < 8; e++) R[e] = rsum ? R[e]/rsum*n : 0;
   var em = emp(k, s, a), B = new Float64Array(17), xs = 0; for (y = 0; y < 16; y++) xs += xd(k, s, a, y); B[0] = n*(1 - em); for (y = 0; y < 16; y++) B[y+1] = xs ? n*em*xd(k, s, a, y)/xs : 0;
-  var r = G.rates[G.munis[k].ls][s][a], q = G.q[s][a], Z = [];
+  var r = G.rates[G.munis[k].rk || G.munis[k].ls][s][a], q = G.q[s][a], Z = [];
   for (e = 0; e < 8; e++){ var row = new Float64Array(17); row[0] = Math.max(R[e]*(1 - r[e]), 1e-14); for (z = 0; z < 16; z++) row[z+1] = Math.max(R[e]*r[e]*q[e][z], 1e-14); for (z = 0; z < 17; z++) if (!(R[e] > 0) || !(B[z] > 0)) row[z] = 0; Z.push(row); }
   for (var it = 0; it < 2000; it++){
     var err = 0;
@@ -400,7 +400,7 @@ function ipfMuni(k, s, a){
 function seedMuni(k, s, a){
   var n = pop(k, s, a), out = [], e, y; for (e = 0; e < 8; e++) out.push(new Float64Array(16));
   if (!n) return out;
-  var r = G.rates[G.munis[k].ls][s][a], q = G.q[s][a];
+  var r = G.rates[G.munis[k].rk || G.munis[k].ls][s][a], q = G.q[s][a];
   for (e = 0; e < 8; e++){ var R = rsh(k, s, a, e)*n; out[e][0] = R*(1 - r[e]) + R*r[e]*q[e][0]; for (y = 1; y < 16; y++) out[e][y] = R*r[e]*q[e][y]; }
   return out;
 }
@@ -513,31 +513,25 @@ var SRC = {
   S4: { fam: 'census', nm: '2020年国勢調査 就業状態等基本集計 表3-1（不詳補完前）', short: '国勢調査 表3-1', year: 2020, file: 'sources/census_age_status_tidy.csv.gz', url: 'https://www.e-stat.go.jp/stat-search/file-download?fileKind=0&statInfId=000032201197', what: '公表99地域 × 性別 × 年齢 × 従業上の地位', use: '年齢と就業形態の関連の初期値' },
   S5: { fam: 'ess', nm: '2022年就業構造基本調査 地域編 02300', short: '就業構造基本調査 02300', year: 2022, file: 'sources/income_tidy.csv.gz', url: 'https://www.e-stat.go.jp/dbview?sid=0004008500', what: '全国・都道府県・86都市 × 性別 × 従業上の地位 × 年齢 × 所得', use: '年収分布の出発点、都道府県への整合、検証' },
   S6: { fam: 'tax', nm: '市区町村のすがた2024 C経済基盤（2022年度）', short: '市区町村のすがた C経済基盤', year: 2022, file: 'sources/tax_tidy.csv', url: 'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040186223&fileKind=0', what: '課税対象所得（百万円）と納税義務者数（所得割）', use: '地域の所得水準の補助変数 h(m)' },
+  S10: {fam:'census',nm:'2020国勢調査 表6-3',short:'産業別就業者',year:2020,file:'sources/industry/census_industry_age_tidy.csv.gz',url:'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201184&fileKind=0',what:'市区町村×性別×年齢×産業',use:'地域の産業構成'},
+  S11: {fam:'ess',nm:'2022就業構造基本調査 表24',short:'産業別年間収入',year:2022,file:'sources/industry/income_industry_tidy.csv.gz',url:'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077604&fileKind=0',what:'全国×性別×産業×所得',use:'産業別所得形状（年齢なし）'},
   S7: { fam: 'census', nm: '2020年国勢調査 就業状態等基本集計 表11-2', short: '国勢調査 表11-2', year: 2020, file: 'sources/education/census_education_tidy.csv.gz', url: 'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201217&fileKind=0', what: '市区町村 × 性別 × 年齢 × 在学・最終卒業学校', use: '学歴人数（学歴構成）' },
   S8: { fam: 'census', nm: '2020年国勢調査 就業状態等基本集計 表12-1', short: '国勢調査 表12-1', year: 2020, file: 'sources/education/census_education_labor_tidy.csv.gz', url: 'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&fileKind=0', what: '全国・都道府県・主要都市 × 性別 × 年齢 × 学歴 × 労働力状態', use: '学歴別の就業率の初期値' },
   S9: { fam: 'ess', nm: '2022年就業構造基本調査 全国編 04000', short: '就業構造基本調査 04000', year: 2022, file: 'sources/education/income_education_tidy.csv.gz', url: 'https://www.e-stat.go.jp/dbview?sid=0004008157', what: '全国 × 性別 × 年齢 × 学歴 × 所得（有業者）', use: '学歴と年収の関連の初期分布' },
   G1: { fam: 'gen', nm: 'geography.csv / parent_mapping.csv（生成ファイル）', short: '生成ファイル', year: 2020, file: 'data/geography.csv, data/parent_mapping.csv', url: '', what: '地域コード・区分・都道府県コード、政令市と行政区の対応', use: '所属関係と合算の範囲' },
   M1: { fam: 'model', nm: 'model_arrays.npz（税補助なしの内部配列）', short: '内部配列（税補助なし）', year: 2020, file: 'data/model_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '就業構成を反映した段階の分布' },
-  M2: { fam: 'model', nm: 'final_arrays.npz（税補助ありの内部配列）', short: '内部配列（税補助あり）', year: 2022, file: 'data/final_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '年齢・性別までの最終分布' },
+  M2: { fam: 'model', nm: 'final_arrays.npz（学歴・産業構成を反映した内部配列）', short: '内部配列（M1+M2）', year: 2022, file: 'data/final_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '年齢・性別までの最終分布' },
   M3: { fam: 'model', nm: 'education_leaf_arrays.npz / municipality_model_v2.npz', short: '内部配列（学歴別）', year: 2022, file: 'data/education_leaf_arrays.npz, data/municipality_model_v2.npz', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 年収の人数', use: '学歴別の最終分布（このページでは同じ配分計算を再現）' }
 };
 function sid(id){ var r = SRC[id]; return '<button type="button" class="sid ' + r.fam + '" data-src="' + id + '" title="' + esc(r.nm) + '">' + id + '</button>'; }
 function ref(list){ if (!list || !list.length) return ''; return '<span class="refs"><span class="lab">参照データ</span>' + list.map(function(it){ var r = SRC[it[0]]; return '<span class="r">' + sid(it[0]) + (r.url ? '<a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.short) + '</a>' : esc(r.short)) + ' <code>' + esc(r.file.split(', ')[0].split('/').pop()) + '</code>' + (it[1] ? '　' + it[1] : '') + '</span>'; }).join('') + '</span>'; }
 function renderScope(){
-  var P = $('panel'), sv = G.sens; P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--line-strong)');
-  var rowsS = [['lambda_0.5', '有業所得の初期形状の学歴差を半分に弱める（λ=0.5）'], ['lambda_0.0', '初期形状の学歴差を除く（λ=0。学歴別就業率は維持）'], ['lambda_0.0_common_rate', '初期形状の学歴差と就業率の学歴差の両方を除く'], ['lambda_1.5', '初期形状の学歴差を1.5倍に強める（λ=1.5）'], ['income_shrink_300', '年収形状の平滑化を弱める（300）'], ['income_shrink_3000', '平滑化を強める（3000）'], ['income_unknown_to_reference', '所得不詳の有業者を全体形状に置く'], ['education_unknown_as_known_mix', '学歴不詳の形状を地域の既知学歴の混合にする']];
-  P.innerHTML = '<span class="eyebrow">検証の範囲</span><h2>何が検証され、何が未検証か</h2><p class="sub">モデル v2.0 / 2026-09-06</p>'
-    + '<h3 class="dh">対象母集団</h3><p>2020年国勢調査時点で各地域に居住する15歳以上（非就業者・外国人住民を含む）。年収は2022年就業構造基本調査の「主な仕事から通常得る年間収入」で、年金・資産所得・副業を含まない。2026年の現況ではない。</p>'
-    + '<h3 class="dh">検証できた範囲</h3><div class="vals">' + dl([['地域', '就業構造基本調査に所得表がある86都市（地域一覧で「検証都市」と表示）'], ['属性', '年齢別（13区分）の就業者の年収構成。性別・学歴では分けていない'], ['指標', '16階級の全変動距離 TV。税補助なし 0.09395、税係数を都道府県単位で交差検証 0.09328（セル中央値 0.121、90%点 0.226）'], ['意味', 'TV は移す必要のある確率質量の割合。各階級 ±9.3pt の誤差や信頼区間ではない'], ['独立性', '都市の観測は都道府県合計にも含まれるため完全な独立検証ではない。交差検証は税係数の選択のみを対象']]) + '</div>'
-    + '<h3 class="dh">未検証の範囲</h3><ul class="steps" style="font-size:12.5px;color:var(--ink-2);padding-left:1.2em"><li>町村・行政区の年収分布（実測クロス表がない）</li><li>性別で分けた市区町村の年収分布</li><li>学歴で分けた年収分布（市区町村・都道府県とも公表表がない）</li><li>非就業者を含む住民全体の分布（比較対象は所得が判明した有業者）</li></ul>'
-    + '<h3 class="dh">制約との一致（精度検証とは別）</h3><div class="vals">' + dl([['地域内合計', '全地域で 1（誤差 1e-11 以下）'], ['都道府県 × 性別 × 年齢 × 所得既知の有業者の年収構成比', '公表値と一致（誤差 1e-15 以下）。年齢・性別をまとめた集計や非就業者を含む分布は一致の対象外で、公表表の総数行とは重みが異なる（例：500万円以上は東京都でモデル 35.87%／公表 35.74%）'], ['学歴人数', '国勢調査 11-2 の按分に一致（誤差 3e-7 人以下）'], ['v1 との整合', '学歴を合計すると v1 に一致（誤差 3e-10 人以下）']]) + '<p class="ex" style="font-size:11.5px;color:var(--muted)">周辺合計に一致することは、未観測の同時分布が正しいことの証明ではない。都道府県・全国の画面表示は市区町村モデルの加重集計であり、原表そのものではない。</p></div>'
-    + '<h3 class="dh">移植仮定の感度（学歴 × 年収）</h3><p class="ex" style="font-size:12px;color:var(--ink-2)">各仮定を置き換えて再配分したときの、P(年収帯｜地域, 性別, 年齢, 学歴) の変化。重みは推定学歴人口で、標本数ではない。</p><div class="tbl" style="overflow-x:auto"><table style="width:100%;font-size:11.5px;border-collapse:collapse"><tr><th style="text-align:left;padding:3px 4px;border-bottom:1px solid var(--line)">仮定の置き換え</th><th style="text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)">平均 TV</th><th style="text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)">500万円以上の平均変化</th></tr>'
-    + rowsS.map(function(r){ var v = sv[r[0]]; return '<tr><td style="padding:3px 4px;border-bottom:1px solid var(--line)">' + r[1] + '</td><td class="tnum" style="text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)">' + v.tv.toFixed(3) + '</td><td class="tnum" style="text-align:right;padding:3px 4px;border-bottom:1px solid var(--line)">' + (v.ge*100).toFixed(1) + 'pt</td></tr>'; }).join('') + '</table></div>'
-    + '<p class="src">出力：validation/education_sensitivity.json、validation/tax_summary.json、validation/city_validation_with_tax.csv、validation/education_verification.json</p>';
+ var P=$('panel');P.classList.remove('edge');
+ P.innerHTML='<span class="eyebrow">検証の範囲</span><h2>M1+M2：学歴・産業構成を反映</h2><p>2020年の15歳以上人口と2022年の主な仕事からの年間就業収入を対象とします。2026年の現況ではありません。</p><h3>比較結果</h3><p>86都市・1,118年齢セルの交差検証で、所得既知の有業者の年収構成のTVは旧モデル0.09328、新モデル0.08987（相対3.65%改善）。中央値0.1152。公開データは全都市で選んだ係数を用い、交差検証の各分割の係数とは異なります。</p><h3>未検証の範囲</h3><p>性別別・学歴別、町村・行政区、非就業者を含む住民全体の実測精度は未検証です。都市の所得は入力の県集計にも含まれ、開発でも繰り返し利用しているため、完全な独立評価ではありません。TVは各階級の誤差幅や信頼区間ではありません。</p><h3>推定の仮定</h3><p>学歴構成の傾き1.5、産業構成の傾き1.0、税務係数0を使用します。産業別の所得形状に年齢区分はありません。学歴と産業の効果を乗算する近似であり、個人の学歴・産業・所得の関連を実測したものではありません。</p><h3>統計への整合</h3><p>地域の人口・学歴人数と、県×性別×年齢の所得既知の有業者の構成比を維持します。学歴を合計した所得分布自体は旧モデルから変わります。全国・県の表示は市区町村モデルの加重集計です。</p><p>旧モデルの感度分析値を新モデルの精度として表示しません。不詳は独立区分のまま保持します。</p><p><a href="logic.html">計算手順と出典を見る</a></p>';
 }
 function renderSources(hl){
   var P = $('panel'); P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--line-strong)');
-  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','G1','M1','M2','M3'];
+  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','G1','M1','M2','M3'];
   P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 9 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json と catalog/education/manifest.json に記録。</p>';
   if (hl){ var el = $('src-' + hl); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }
 }
@@ -555,11 +549,9 @@ function aggActions(){
   if (S.muni && S.pref) b.push('<button class="action" data-go="skipdim" data-id="muni">' + esc(PI[S.pref].n) + '全体で見る</button>');
   return b.length ? '<p class="l" style="margin-top:8px">広い区分で見る</p><div class="tags">' + b.join(' ') + '</div>' : '';
 }
-function unknownBlock(r, e){
-  var u = r.den ? r.R[7]/r.den : 0, sk = G.sens['education_unknown_as_known_mix'];
-  var h = '<div class="vals">' + dl([['学歴不詳率', pct(u, 1) + '（' + esc(scopeName()) + '・' + (S.age !== null ? AGE[S.age] : '15歳以上すべて') + '・' + (S.sex !== null ? SEX[S.sex] : '男女計') + '）'], ['不詳の扱い', '不詳は独立の区分として保持。他の学歴へ配分せず、削除して再正規化もしない']]) + '</div>';
-  h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">不詳の年収形状の初期値は「同じ性別・年齢の全学歴の分布」です。不詳の人の所得が既知の人と異なる場合、その差は既知の学歴の配分にも波及します。感度分析（不詳の形状を地域の既知学歴の混合に置き換え）では、学歴別の500万円以上の割合が平均 ' + (sk.ge*100).toFixed(1) + 'pt、「' + EDU[e] + '」では ' + (sk.by[e]*100).toFixed(1) + 'pt 動きました。</p>';
-  return h;
+function unknownBlock(r,e){
+ var u=r.den?r.R[7]/r.den:0;
+ return '<div class="vals">'+dl([['学歴不詳率',pct(u,1)],['不詳の扱い','独立区分として保持し、他学歴へ配分しない']])+'</div><p>不詳の所得の初期形状には同じ性別・年齢の全学歴分布を使います。不詳者の実際の所得が異なる可能性は残ります。</p>';
 }
 function refBlock(den){
   var m = S.muni ? G.munis[MI[S.muni]] : null, pr = S.pref ? PI[S.pref] : null, h = '';
@@ -578,7 +570,6 @@ function refBlock(den){
   rows.push(['検証', (m && m.v ? esc(m.n) + 'は86都市の年収比較に含まれる（就業者の年収構成、年齢別）。' : m ? esc(m.n) + 'は86都市の年収比較に含まれない。' : (pr ? '都道府県' : '全国') + 'の表示は公表統計を制約・初期値に用いた市区町村モデルの加重集計で、公表表の総数行とは一致しない（一致するのは都道府県 × 性別 × 年齢 × 所得既知の有業者の構成比のみ）。') + '性別別・学歴別の市区町村精度は未検証']);
   h += '<h3 class="dh">推定の根拠と範囲</h3><div class="vals">' + dl(rows) + '</div>';
   if (den < 100) h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">対象人口が少ない条件です。分布の形はこの地域の実測ではなく、上記の参照範囲から移植した形と、地域の年齢・性別の年収分布への整合で決まります。人数の大小は統計的な信頼度を表すものではありません。</p>';
-  if (S.edu !== null){ var l5 = G.sens['lambda_0.5'], l0 = G.sens['lambda_0.0']; h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">移植仮定の感度：有業所得の初期形状にある全国の学歴差（所得階級間のオッズ比は地域によらず一定、例：35～39歳男性の大学等/高校等 × 500～600/300～400万円 = ' + G.sens_or + '）を半分に弱めると、学歴別の500万円以上の割合は平均 ' + (l5.ge*100).toFixed(1) + 'pt（「' + EDU[S.edu] + '」で ' + (l5.by[S.edu]*100).toFixed(1) + 'pt）、初期形状の学歴差を除く（学歴別就業率は維持）と平均 ' + (l0.ge*100).toFixed(1) + 'pt、就業率の学歴差も除くと平均 ' + (G.sens['lambda_0.0_common_rate'].ge*100).toFixed(1) + 'pt 動きます。非就業者を含む最終分布には学歴別就業率の差が残るため、λ=0 だけでは学歴と所得の関連は消えません。詳細は validation/education_sensitivity.json。</p>'; }
   h += aggActions();
   return h;
 }
@@ -645,7 +636,7 @@ function renderPanel(){
     else if (f.dim === 'age') h = '<span class="eyebrow">次元ノード</span><h2>年齢</h2><p class="sub">13 ノード / コード 01–13</p>' + dl([['区分', '15～19歳から70～74歳まで5歳刻み、75歳以上は一括（内部の年齢差は所得の条件に反映されない）'], ['対象', '15歳以上の居住者。15歳未満は含まない'], ['出所', '2020年国勢調査（年齢不詳を補完した値。本モデルでは追加推定しない）'], ['分布', 'P(年齢｜地域) = 人口(地域, 年齢) / 人口(地域)']]) + '<p>年齢は市区町村ごとの人口構成として観測されています。年齢を選ぶと右の列がその年齢の内訳に切り替わります。</p>';
     else if (f.dim === 'sex') h = '<span class="eyebrow">次元ノード</span><h2>性別</h2><p class="sub">2 ノード / コード 1, 2</p>' + dl([['区分', '男・女'], ['出所', '2020年国勢調査（不詳補完結果）、就業構造基本調査の男女別表'], ['分布', 'P(性別｜地域, 年齢) = 人口(地域, 年齢, 性別) / 人口(地域, 年齢)']]) + '<p>公表統計の男女区分をそのまま使っています。性自認の分布や第三の区分を推定するものではありません。年収の推定は最初から男女別に行われており、男女計はその合計です。</p>';
     else if (f.dim === 'edu') h = '<span class="eyebrow">次元ノード</span><h2>学歴</h2><p class="sub">8 ノード / コード E01–E08</p>' + dl(EDU.map(function(n, e){ return [EDU_CODE[e] + ' ' + n, EDU_NOTE[e]]; })) + '<p>2020年国勢調査の最終卒業学校区分に基づきます。地域 × 性別 × 年齢ごとの学歴人数は観測値、学歴ごとの年収は全国の学歴と年収の関連を移植した推定です。</p>';
-    else h = '<span class="eyebrow">次元ノード</span><h2>年収帯</h2><p class="sub">16 ノード / コード I01–I16</p>' + dl([['定義', '主な仕事から通常得る年間収入。給与は賞与込み・税引前、自営は必要経費控除後'], ['含まない', '副業、年金、資産収入、仕送り'], ['境界', '下限以上・上限未満'], ['出所', '2022年就業構造基本調査の所得階級']]) + '<p>「50万円未満」には非就業者・無給家族従業者のモデル上の0円を含みます。年収帯は市区町村では観測されず、都道府県の分布を地域の就業構成と税務指標で調整し、さらに学歴別に配分して推定しています。</p>';
+    else h = '<span class="eyebrow">次元ノード</span><h2>年収帯</h2><p class="sub">16 ノード / コード I01–I16</p>' + dl([['定義', '主な仕事から通常得る年間収入。給与は賞与込み・税引前、自営は必要経費控除後'], ['含まない', '副業、年金、資産収入、仕送り'], ['境界', '下限以上・上限未満'], ['出所', '2022年就業構造基本調査の所得階級']]) + '<p>「50万円未満」には非就業者・無給家族従業者のモデル上の0円を含みます。年収帯は市区町村では観測されず、都道府県の分布を地域の就業・学歴・産業構成で調整し、さらに学歴別に配分して推定しています。</p>';
   }
   else {
     var pre = pathSteps(f.dim), cur = [], stagesHtml = '', closing = [], title = '';
@@ -772,7 +763,7 @@ function derivationBase(y){
   if (pr) st.push({ t: esc(pr.n) + 'の就業者の年収分布', s: '同じ調査の都道府県表（公表値）に置き換える。この段階は原表そのもの。③以降はモデル推定で、都道府県・全国の表示でも市区町村モデルの加重集計になる。', p: prf, dim: 'pref', src: [['S5', 'area=' + pr.c + '000、sex=' + sSex + '、status=0、age=' + sAge]] });
   else st.push({ t: '都道府県ごとの分布に置き換え', s: '47都道府県それぞれの公表分布（原表）を出発点にする。全国表示の③以降は市区町村モデルを合算した推定値で、公表表の総数行とは一致しない。', p: nat, dim: 'pref', src: [['S5', 'area=01000–47000']] });
   st.push({ t: here + 'の就業構成で混ぜ直す', s: '国勢調査から分かる' + here + 'の就業率と、正規・非正規・自営・役員の比率で都道府県の分布を再構成' + aggNote + '。都道府県 × 性別 × 年齢の所得既知の有業者の構成比とは一致したままにする（年齢・性別をまとめた合計は公表表の総数行と一致しない）。', p: pC, dim: 'muni', src: [['S2', '年齢別就業者数 employed'], ['S3', '従業上の地位の列（regular, dispatch, part_other, executive, self_*, family）'], ['S4', '年齢 × 地位の初期表'], ['S5', '都道府県 × 地位 × 所得（status=1,2,22,23）'], ['M1', 'counts_by_sex（この段階の結果）']] });
-  st.push({ t: '課税所得の水準で少し傾ける', s: (m && m.h !== undefined ? here + 'の1人あたり課税対象所得は' + esc(pr.n) + 'の ' + (Math.exp(m.h)*100).toFixed(0) + '%' + (Math.abs(m.h) > 0.5 ? '（上限で頭打ち）' : '') + '。' : '') + '都道府県平均より高い地域は高所得側へ、低い地域は低所得側へ分布をわずかに傾ける。効果は小さい。', p: pD, dim: 'muni', src: [['S6', (m ? 'area=' + (m.ts || m.c) : '各地域') + ' の taxable_income_million_yen ÷ income_taxpayers'], ['M2', 'counts_by_sex（この段階の結果）']] });
+  st.push({ t: '学歴・産業構成で地域の年収分布を再推定', s: '地域の学歴構成による傾きの1.5乗と、産業構成による傾きの1.0乗を、就業構成の混合分布に掛けてから県×性別×年齢の所得構成へ再調整する。比較の③は従来の就業構成だけの結果であり、計算上はその県整合前の混合分布に傾きを加える。税務係数は0。産業別所得形状に年齢区分はなく、未知の関連は推定上の仮定である。', p: pD, dim: 'muni', src: [['S7','地域の学歴構成'],['S9','全国の学歴別所得形状'],['S10','地域の産業構成'],['S11','全国の産業別所得形状'],['M2','M1+M2の最終人数']] });
   st.push({ t: '非就業者を加えて住民全体の分布に', s: who + 'の就業率は ' + pct(er, 1) + '（就業者 ' + fmtN(W) + '人 / ' + fmtN(N) + '人）。残りの非就業者を「50万円未満」に置く。これが右の年収帯列の値。', p: pF, dim: 'sex', clip: true, last: true, src: [['S1', '人口 N'], ['M2', 'counts_by_sex の第0成分（非就業）']] });
   return renderStages(st, y, '性別・年齢まで');
 }
@@ -786,7 +777,7 @@ function derivationEdu(y){
     var T = seedTab(key, s, a)[e]; for (k = 0; k < 16; k++){ pS[k] += T[k]; Sw += T[k]; }
     var F = eduTab(key, s, a)[e]; for (k = 0; k < 16; k++){ pF[k] += F[k]; Fw += F[k]; }
     for (k = 0; k < 16; k++){ pB[k] += d.cnt[s][a][k]; } Bw += d.pop[s][a];
-    if (m && m.s !== 'aggregated_wards'){ rw += G.rates[m.ls][s][a][e] * R; rn += R; }
+    if (m && m.s !== 'aggregated_wards'){ rw += G.rates[m.rk || m.ls][s][a][e] * R; rn += R; }
   }); });
   for (k = 0; k < 16; k++){ pQ[k] = Rw ? pQ[k]/Rw : 0; pS[k] = Sw ? pS[k]/Sw : 0; pF[k] = Fw ? pF[k]/Fw : 0; pB[k] = Bw ? pB[k]/Bw : 0; }
   var here = m ? esc(m.n) : pr ? esc(pr.n) : '全国', who = (S.age !== null ? AGE[S.age] : '15歳以上すべて') + '・' + (S.sex !== null ? SEX[S.sex] : '男女計');

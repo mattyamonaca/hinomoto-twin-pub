@@ -40,10 +40,17 @@ verify-education:
 sensitivity:
 	$(PYTHON) src/pipeline.py sensitivity
 dataset:
-	$(PYTHON) src/dataset.py fetch-baseline
+	$(PYTHON) src/dataset.py fetch-production
 paths:
 	$(PYTHON) src/pipeline.py paths
 site:
 	$(PYTHON) src/build_site.py
 test:
 	$(PYTHON) -m unittest discover -s tests -v
+
+fetch-industry:
+	$(PYTHON) src/pipeline.py fetch-industry
+experiment:
+	$(PYTHON) src/pipeline.py experiment
+synthetic:
+	$(PYTHON) src/pipeline.py synthetic

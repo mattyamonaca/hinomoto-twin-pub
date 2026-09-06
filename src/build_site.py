@@ -7,7 +7,7 @@ from paths import CODE_ROOT, WEB
 
 def build(graph_path, destination):
     payload=json.loads(Path(graph_path).read_text(encoding='utf-8'))
-    if payload.get('schema_version')!=1 or not isinstance(payload.get('graph'),dict):
+    if payload.get('schema_version') not in (1,2) or not isinstance(payload.get('graph'),dict):
         raise ValueError('Expected web dataset schema_version=1 and graph object')
     required={'prefs','munis','pop','q','rates','ess','xc','xd','e','rs','ag','shrink','sens','sens_or'}
     if not required<=payload['graph'].keys():raise ValueError('Incomplete web dataset')

@@ -120,6 +120,15 @@ def import_pack(archive, paths=PATHS):
             write_new(target,data)
     check_sources(paths.sources)
 
+def fetch_production(paths=PATHS):
+    lock=json.loads((CATALOG/'production.json').read_text())
+    with tempfile.TemporaryDirectory() as tmp:
+        archive=Path(tmp)/'dataset.tar.gz'
+        with urllib.request.urlopen(lock['archive_url'],timeout=180) as response, archive.open('wb') as dest:
+            shutil.copyfileobj(response,dest)
+        if digest(archive.read_bytes())!=lock['sha256']:raise ValueError('Production dataset hash mismatch')
+        import_pack(archive,paths)
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     sub=p.add_subparsers(dest='command',required=True)
@@ -128,9 +137,11 @@ def main():
     for cmd in ['pack','import']:
         s=sub.add_parser(cmd);s.add_argument('archive',type=Path)
     sub.add_parser('check')
+    sub.add_parser('fetch-production')
     args=p.parse_args()
     if args.command=='migrate':migrate(args.legacy)
     elif args.command=='fetch-baseline':fetch_baseline(archive=args.archive)
+    elif args.command=='fetch-production':fetch_production()
     elif args.command=='pack':pack(args.archive)
     elif args.command=='import':import_pack(args.archive)
     else:check_sources(PATHS.sources)
