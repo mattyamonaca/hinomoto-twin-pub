@@ -1,0 +1,24 @@
+{
+  "stage": "C",
+  "description": "Web distribution of the stage-C residence x workplace x industry table (2020 census 従業地・通学地集計, 15歳以上就業者, both sexes). graph.json adds graph.workplace; the page fetches only the files of the selected municipality.",
+  "graph.workplace": {
+    "version": "model version of workplace_c.npz (every file carries the same value; the page refuses a mismatch)",
+    "stage": "C",
+    "index": "workplace/index.json",
+    "index_sha256": "sha256 of index.json",
+    "files": "number of files (2 per leaf municipality)",
+    "industry_codes": ["G01", "...", "G20"],
+    "categories": ["own", "in_city", "in_pref", "other_pref"]
+  },
+  "workplace/index.json": {"model_version": "C-0.1", "files": {"workplace/o_<code>.json": ["bytes", "sha256"], "workplace/d_<code>.json": ["bytes", "sha256"]}},
+  "workplace/o_<code>.json": {
+    "code": "residence municipality (2020 leaf: ward of a designated city, or municipality)",
+    "rows": "[[workplace code, commuting category 0..3, [20 industry counts, persons rounded to 0.01]], ...] sorted by size; every OD pair published in table 3",
+    "unknown": "[20] residents with unknown workplace by industry (outside the distribution)",
+    "home": "residents working at home (inside the own-municipality category; all industries)",
+    "model_version": "C-0.1"
+  },
+  "workplace/d_<code>.json": {"code": "workplace municipality", "rows": "[[residence code, commuting category, [20 industry counts]], ...]", "model_version": "C-0.1"},
+  "page_computation": "P(workplace | residence[, industry]) sums the rows (a designated city = union of its wards); a stage-A industry mixture is re-conditioned on a known workplace (w_g (1 - P(unknown|o,g)) renormalised) before mixing P(d|o,g), exactly as persona_v4. The workplace side gives P(residence | workplace[, industry]) for 働きに来る人; it is never labelled 昼間人口.",
+  "acceptance_criteria": {"probability_max_abs_error_vs_persona_v4": 1e-4, "denominator_error_persons": "max(0.5, 1e-5 relative)", "total_bytes_max": 80000000, "file_bytes_max": 1000000}
+}

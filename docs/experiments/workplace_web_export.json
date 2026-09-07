@@ -1,0 +1,12 @@
+{
+  "files": 3792,
+  "total_bytes": 54738038,
+  "largest_file_bytes": 128803,
+  "criteria": {
+    "total_bytes_max": 80000000,
+    "file_bytes_max": 1000000
+  },
+  "passed": true,
+  "pairs": 244944,
+  "persons": 56240365.997670144
+}

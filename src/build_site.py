@@ -25,6 +25,11 @@ def build(graph_path, destination):
             src=web/rel
             if not src.is_file():raise FileNotFoundError(f'Stage-A web file missing: {src}')
             (data/rel).parent.mkdir(parents=True,exist_ok=True);shutil.copy2(src,data/rel)
+    wp=payload['graph'].get('workplace')
+    if wp:
+        web=Path(graph_path).parent;src=web/'workplace'
+        if not (src/'index.json').is_file():raise FileNotFoundError(f'Stage-C web files missing: {src}')
+        shutil.copytree(src,data/'workplace',dirs_exist_ok=True)
     hh=payload['graph'].get('household')
     if hh:
         web=Path(graph_path).parent
