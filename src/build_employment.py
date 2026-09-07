@@ -3,9 +3,13 @@
 For each leaf area, sex and age the production (M12) counts C(e, z) over education (8) and the 17 internal income
 components (0 = no main-job income, 1..16 = income classes) are kept as fixed margins and split by
   k  employment status: K1 regular, K2 non-regular, K3 executive, K4 self-employed (incl. home work),
-                        K5 unpaid family worker, K6 not employed (unemployed + not in labour force)
-  g  industry: G01..G20 JSIC major divisions for K1..K5 (G20 = unclassifiable), G00 not applicable for K6
-Structural zeros: K6 -> G00 and z=0; K5 -> z=0; K1..K4 -> z in 1..16.
+                        K5 unpaid family worker, K6 unemployed (完全失業者), K7 not in the labour force (非労働力人口)
+     labour-force status J1 employed = K1..K5, J2 unemployed = K6, J3 not in labour force = K7
+  g  industry: G01..G20 JSIC major divisions for K1..K5 (G20 = 分類不能の産業, which in the 2020 census also holds
+     the industry-unknown), G00 not applicable for K6/K7
+Structural zeros: K6/K7 -> G00 and z=0; K5 -> z=0; K1..K4 -> z in 1..16.
+The K6/K7 split uses the municipal unemployed / not-in-labour-force ratio of census 参考表1 (imputed) as the margin and
+the prefecture education-specific unemployment share of census 12-1 as the seed of the education association.
 Margins (same area, sex, age): C(e,z) [production]; W(k) [employment-status table of build.py, K6 = N - sum W];
 census 6-3 industry counts of employed persons (K1..K5).
 Seed associations (transported, documented in docs/EMPLOYMENT_A.md):
@@ -24,9 +28,11 @@ from model_math import AGES,norm
 import estimator as es
 import build_education as be
 
-K=['K1','K2','K3','K4','K5','K6'];G=[f'G{i:02}' for i in range(1,21)];EDU=[f'E{i:02}' for i in range(1,9)]
+K=['K1','K2','K3','K4','K5','K6','K7'];J=['J1','J2','J3'];G=[f'G{i:02}' for i in range(1,21)];EDU=[f'E{i:02}' for i in range(1,9)]
 INCOME_MAP=[['11'],['12','13'],['14','16','17'],['15','18'],['19'],['2'],['0'],['0']]
 SHRINK_KG=300.   # pseudo-population toward the national association for small prefecture cells
+SHRINK_U=100.    # pseudo-population toward the all-education unemployment share (K6/K7 split seed)
+BLOCK=8*4*20*16+8*20+8+8   # flattened block per (sex, age): paid[e,k,g,y], family[e,g], unemployed[e], inactive[e]
 
 def read(path,**kw):return pd.read_csv(path,dtype=str,**kw)
 
@@ -83,8 +89,20 @@ def load_inputs(sources_dir=None,output_dir=None):
     else:num=row(st,g);den=row(st,'G00')
     qg=norm(num+1000*norm(den+1e-8));q0=norm(den+1e-8);tilt[si,ki,gi]=qg/np.maximum(q0,1e-12)
  cp=es.status_income_shapes(inp)   # (P,2,13,4,16) r(y|p,s,a,k)
+ # --- K6/K7: municipal unemployed share among the not-employed (参考表1); prefecture fallback where the cell is empty
+ lab=read(S/'census_imputed_age_tidy.csv.gz');lab['unemployed']=lab.unemployed.astype(float);lab['inactive']=lab.inactive.astype(float)
+ L=lab.set_index(['area','sex','age']).reindex(idx);un=np.nan_to_num(L.unemployed.to_numpy(float).reshape(M,2,13));ina=np.nan_to_num(L.inactive.to_numpy(float).reshape(M,2,13))
+ Lp=lab.set_index(['area','sex','age']);pu=np.zeros((P,2,13));pu_e=np.zeros((P,2,13,8))
+ el=read(S/'education/census_education_labor_tidy.csv.gz').set_index(['area','sex','age','labor_status'])
+ for pi,p in enumerate(prefs):
+  for si,s in enumerate(['1','2']):
+   for ai,a in enumerate(AGES):
+    r=Lp.loc[(p+'000',s,a)];pu[pi,si,ai]=r.unemployed/max(r.unemployed+r.inactive,1.)
+    u12=el.loc[(p+'000',s,a,'12'),EDU].to_numpy(float);n2=el.loc[(p+'000',s,a,'2'),EDU].to_numpy(float)
+    pu_e[pi,si,ai]=(u12+SHRINK_U*pu[pi,si,ai])/(u12+n2+SHRINK_U)
+ u_share=np.where(un+ina>0,un/np.maximum(un+ina,1.),pu[pref])   # (M,2,13)
  import sys;print(f'inputs loaded {time.time()-t0:.0f}s',file=sys.stderr,flush=True)
- return {'inp':inp,'areas':areas,'M':M,'pref':pref,'prefs':prefs,'N':N,'W':W,'K6':K6,'cube':cube,'gm':gm,'pk_e':pk_e,'pg':pg,'tilt':tilt,'cp':cp,'t101':t,'kg_fn':kg,'model_version':meta.get('model_version','unknown'),'sources_dir':str(S),'output_dir':str(O)}
+ return {'inp':inp,'areas':areas,'M':M,'pref':pref,'prefs':prefs,'N':N,'W':W,'K6':K6,'u_share':u_share,'pu_e':pu_e,'cube':cube,'gm':gm,'pk_e':pk_e,'pg':pg,'tilt':tilt,'cp':cp,'t101':t,'kg_fn':kg,'model_version':meta.get('model_version','unknown'),'sources_dir':str(S),'output_dir':str(O)}
 
 def ipf3(seed,A,B,C,tol=1e-6,iters=600):
  """seed (n,8,4,20,16); margins A (n,8,16) over (e,y), B (n,4) over k, C (n,20) over g. Batched over n."""
@@ -109,9 +127,11 @@ def block(x,si,ai,ids=None,variant='base'):
  rate=inp['edu_rate'][ids,si,ai]                  # education-specific employment rate seed (prefecture)
  if variant=='k6_independent':rate=np.full_like(rate,rate.mean())
  seed=np.stack([np.maximum(rate,1e-6)*np.maximum(x['pk_e'][si,ai,:,3],1e-6),np.maximum(1-rate,1e-6)],-1)*zero[...,None]   # (n,8,2)
- fam=np.zeros((n,8));non=np.zeros((n,8))
+ fam=np.zeros((n,8));non=np.zeros((n,8));unemp=np.zeros((n,8));inact=np.zeros((n,8))
+ pu_e=x['pu_e'][pref,si,ai];u=x['u_share'][ids,si,ai]                   # (n,8) seed share, (n,) margin share
  for i in range(n):
   z,_,_=es.ipf(seed[i],zero[i],np.array([W[i,4],K6[i]]),tol=1e-7);fam[i]=z[:,0];non[i]=z[:,1]
+  z2,_,_=es.ipf(np.stack([np.maximum(pu_e[i],1e-6),np.maximum(1-pu_e[i],1e-6)],-1)*non[i][:,None],non[i],np.array([K6[i]*u[i],K6[i]*(1-u[i])]),tol=1e-7);unemp[i]=z2[:,0];inact[i]=z2[:,1]
  # family industry: self-employed profile of the prefecture (10-1), enrolled profile for E06
  pgp=x['pg'][pref]                                 # (n,2,13,4,20) -> use age ai
  pg_grad=pgp[:,si,0,ai];pg_enr=pgp[:,si,1,ai]      # (n,4,20)
@@ -125,16 +145,25 @@ def block(x,si,ai,ids=None,variant='base'):
  pk=np.repeat(x['pk_e'][si,ai][None],n,0)                                    # (n,8,4)
  seed_paid=A.sum(-1)[:,:,None,None,None]*pk[:,:,:,None,None]*pg_e[:,:,:,:,None]*ry[:,None]
  z,it,err=ipf3(seed_paid,A,W[:,:4],paid_g)
- return {'paid':z,'family':fam[...,None]*pg_e[:,:,3,:],'nonwork':non,'iterations':it,'error':err}
+ return {'paid':z,'family':fam[...,None]*pg_e[:,:,3,:],'nonwork':non,'unemployed':unemp,'inactive':inact,'iterations':it,'error':err}
 
 def main(variant='base'):
  x=load_inputs();M=x['M'];t0=time.time()
- kg=np.zeros((M,2,13,6,21));ke=np.zeros((M,2,13,8,6));ky=np.zeros((M,2,13,4,16));gy=np.zeros((M,2,13,20,16));ge=np.zeros((M,2,13,8,21));indep=np.zeros((M,2,13));fits=[]
+ kg=np.zeros((M,2,13,7,21));ke=np.zeros((M,2,13,8,7));ky=np.zeros((M,2,13,4,16));gy=np.zeros((M,2,13,20,16));ge=np.zeros((M,2,13,8,21));indep=np.zeros((M,2,13));fits=[]
+ # aggregate full blocks (paid e,k,g,y + family e,g + unemployed e + inactive e) for national, prefectures and aggregated-ward cities
+ pm=pd.read_csv(OUTPUT/'parent_mapping.csv',dtype=str);groups={'00000':list(range(M))}
+ for pi,p in enumerate(x['prefs']):groups[p+'000']=[i for i in range(M) if x['pref'][i]==pi]
+ aix={a:i for i,a in enumerate(x['areas'])}
+ for parent,f in pm.groupby('parent_code'):
+  if parent!='13100':groups[parent]=[aix[a] for a in f.area if a in aix]
+ gcodes=list(groups);agg=np.zeros((len(gcodes),2,13,BLOCK))
  for si in range(2):
   for ai in range(13):
-   b=block(x,si,ai,variant=variant);z=b['paid'];fam=b['family'];non=b['nonwork']
-   kg[:,si,ai,:4,1:]=z.sum((1,4));kg[:,si,ai,4,1:]=fam.sum(1);kg[:,si,ai,5,0]=non.sum(1)
-   ke[:,si,ai,:,:4]=z.sum((3,4));ke[:,si,ai,:,4]=fam.sum(2);ke[:,si,ai,:,5]=non
+   b=block(x,si,ai,variant=variant);z=b['paid'];fam=b['family'];un=b['unemployed'];ina=b['inactive'];non=un+ina
+   for gi,code in enumerate(gcodes):
+    ids=groups[code];agg[gi,si,ai]=np.concatenate([z[ids].sum(0).ravel(),fam[ids].sum(0).ravel(),un[ids].sum(0),ina[ids].sum(0)])
+   kg[:,si,ai,:4,1:]=z.sum((1,4));kg[:,si,ai,4,1:]=fam.sum(1);kg[:,si,ai,5,0]=un.sum(1);kg[:,si,ai,6,0]=ina.sum(1)
+   ke[:,si,ai,:,:4]=z.sum((3,4));ke[:,si,ai,:,4]=fam.sum(2);ke[:,si,ai,:,5]=un;ke[:,si,ai,:,6]=ina
    ky[:,si,ai]=z.sum((1,3));gy[:,si,ai]=z.sum((1,2));ge[:,si,ai,:,1:]=z.sum((2,4))+fam;ge[:,si,ai,:,0]=non
    # association strength: TV between the paid joint and the product of its (e,y),(k),(g) margins
    tot=np.maximum(z.sum((1,2,3,4)),1e-12);A=z.sum((2,3))/tot[:,None,None];B=z.sum((1,3,4))/tot[:,None];C=z.sum((1,2,4))/tot[:,None]
@@ -143,9 +172,10 @@ def main(variant='base'):
    print(f'sex {si+1} age {AGES[ai]} it={b["iterations"]} err={b["error"]:.1e} {time.time()-t0:.0f}s',flush=True)
  N=x['N'];assert np.allclose(kg.sum((3,4)),N,atol=1e-4) and np.allclose(ke.sum((3,4)),N,atol=1e-4)
  assert np.abs(ke[...,:5].sum(3)-x['W']).max()<0.1   # persons
- np.savez_compressed(OUTPUT/('employment_a.npz' if variant=='base' else f'employment_a_{variant}.npz'),areas=np.array(x['areas']),population=N,status_industry=kg,education_status=ke,status_income=ky,industry_income=gy,education_industry=ge,independence_tv=indep,status_codes=np.array(K),industry_codes=np.array(['G00']+G),variant=variant,model_version=x['model_version'],sources_dir=x['sources_dir'],output_dir=x['output_dir'],stage='A')
+ if variant=='base':np.savez_compressed(OUTPUT/'employment_a_agg.npz',codes=np.array(gcodes),blocks=agg.astype(np.float32),layout='paid[8,4,20,16] family[8,20] unemployed[8] inactive[8] per (sex, age); float32 persons',model_version=x['model_version'])
+ np.savez_compressed(OUTPUT/('employment_a.npz' if variant=='base' else f'employment_a_{variant}.npz'),areas=np.array(x['areas']),population=N,status_industry=kg,education_status=ke,status_income=ky,industry_income=gy,education_industry=ge,independence_tv=indep,status_codes=np.array(K),labor_codes=np.array(J),industry_codes=np.array(['G00']+G),variant=variant,model_version=x['model_version'],sources_dir=x['sources_dir'],output_dir=x['output_dir'],stage='A')
  pop=N;ok=pop>0
- result={'variant':variant,'model_base':'3.0-M12','areas':M,'status_codes':K,'industry_codes':['G00']+G,'margins':{'education_x_income':'production counts, preserved exactly','status':'employment-status table of build.py (K6 = N - employed)','industry':'census 6-3 employed persons scaled to model employed persons'},'shrink_kg_pseudopopulation':SHRINK_KG,'ipf':{'max_iterations':max(f['iterations'] for f in fits),'max_absolute_margin_error_persons':max(f['max_relative_error'] for f in fits),'max_education_income_margin_error_persons':float(np.abs(ke.sum(-1)-x['cube'].sum(-1)).max()),'max_status_margin_error_persons':float(np.abs(ke[...,:5].sum(3)-x['W']).max())},'association_tv_joint_vs_independent':{'weighted_mean':float(np.average(indep[ok],weights=pop[ok])),'median':float(np.median(indep[ok])),'p90':float(np.quantile(indep[ok],.9))},'nonworker_share':float(kg[...,5,0].sum()/N.sum()),'family_share':float(kg[...,4,:].sum()/N.sum()),'elapsed_seconds':round(time.time()-t0,1),'notes':['Education x status x industry association is transported from national (04000) and prefecture (10-1) tables; municipal cross tables do not exist.','Industry x income shapes have no age dimension (table 24).','Preserving the production education x income margins means this stage does not change any published 5-attribute probability.']}
+ result={'variant':variant,'model_base':'3.0-M12','areas':M,'status_codes':K,'labor_codes':J,'industry_codes':['G00']+G,'margins':{'education_x_income':'production counts, preserved exactly','status':'employment-status table of build.py (K6+K7 = N - employed; K6/K7 split by the municipal unemployed share of census 参考表1)','industry':'census 6-3 employed persons scaled to model employed persons'},'shrink_kg_pseudopopulation':SHRINK_KG,'ipf':{'max_iterations':max(f['iterations'] for f in fits),'max_absolute_margin_error_persons':max(f['max_relative_error'] for f in fits),'max_education_income_margin_error_persons':float(np.abs(ke.sum(-1)-x['cube'].sum(-1)).max()),'max_status_margin_error_persons':float(np.abs(ke[...,:5].sum(3)-x['W']).max())},'association_tv_joint_vs_independent':{'weighted_mean':float(np.average(indep[ok],weights=pop[ok])),'median':float(np.median(indep[ok])),'p90':float(np.quantile(indep[ok],.9))},'nonworker_share':float(kg[...,5:,0].sum()/N.sum()),'unemployed_share':float(kg[...,5,0].sum()/N.sum()),'unemployed_share_of_not_employed':float(kg[...,5,0].sum()/max(kg[...,5:,0].sum(),1)),'family_share':float(kg[...,4,:].sum()/N.sum()),'elapsed_seconds':round(time.time()-t0,1),'notes':['Education x status x industry association is transported from national (04000) and prefecture (10-1) tables; municipal cross tables do not exist.','Industry x income shapes have no age dimension (table 24).','Preserving the production education x income margins means this stage does not change any published 5-attribute probability.','K6 (unemployed) vs K7 (not in labour force): municipal margin from census 参考表1 (imputed labour-force status), education association from prefecture census 12-1 with pseudo-population %d; no association with income is assumed (both have no main-job income).'%SHRINK_U]}
  (REPORTS/('employment_a_build.json' if variant=='base' else f'employment_a_build_{variant}.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2))
  print(json.dumps({k:v for k,v in result.items() if k in ('ipf','association_tv_joint_vs_independent','nonworker_share','family_share','elapsed_seconds')},indent=1))
  return x,kg,ke,ky,ge

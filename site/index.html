@@ -12,8 +12,8 @@
   --bg:#F3F5F3;--surface:#FFFFFF;--surface-2:#E9EDE9;--surface-3:#DDE3DD;
   --ink:#17211C;--ink-2:#485350;--muted:#76817B;--line:#D3DAD4;--line-strong:#AEB8B0;
   --accent:#1F4E8C;--accent-soft:#E2EBF7;
-  --d-pref:#2a78d6;--d-muni:#1baf7a;--d-age:#eb6834;--d-sex:#4a3aa7;--d-edu:#b07d00;--d-inc:#c9558a;
-  --d-pref-soft:#E3EDFB;--d-muni-soft:#DCF3E9;--d-age-soft:#FCE9E0;--d-sex-soft:#E6E2F5;--d-edu-soft:#F5EDD6;--d-inc-soft:#F8E3EC;
+  --d-pref:#2a78d6;--d-muni:#1baf7a;--d-age:#eb6834;--d-sex:#4a3aa7;--d-edu:#b07d00;--d-lab:#0e8f9a;--d-sta:#6b7a1f;--d-ind:#8a4fc2;--d-inc:#c9558a;
+  --d-pref-soft:#E3EDFB;--d-muni-soft:#DCF3E9;--d-age-soft:#FCE9E0;--d-sex-soft:#E6E2F5;--d-edu-soft:#F5EDD6;--d-lab-soft:#DDF1F3;--d-sta-soft:#ECF0D8;--d-ind-soft:#EEE4F8;--d-inc-soft:#F8E3EC;
   --edge:#AEB8B0;
   --font-display:"Zen Kaku Gothic New","Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
   --font-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
@@ -25,8 +25,8 @@
     --bg:#101412;--surface:#181E1B;--surface-2:#202723;--surface-3:#2A322D;
     --ink:#ECF0EC;--ink-2:#B7C0BA;--muted:#8B958F;--line:#2C3530;--line-strong:#4A554F;
     --accent:#7FB0F0;--accent-soft:#1B2A3E;
-    --d-pref:#3987e5;--d-muni:#199e70;--d-age:#d95926;--d-sex:#9085e9;--d-edu:#c98500;--d-inc:#d55181;
-    --d-pref-soft:#1A2A40;--d-muni-soft:#13302A;--d-age-soft:#3B2118;--d-sex-soft:#26223E;--d-edu-soft:#3A2E12;--d-inc-soft:#3C1F2C;
+    --d-pref:#3987e5;--d-muni:#199e70;--d-age:#d95926;--d-sex:#9085e9;--d-edu:#c98500;--d-lab:#2fb3bf;--d-sta:#a3b53a;--d-ind:#b184e0;--d-inc:#d55181;
+    --d-pref-soft:#1A2A40;--d-muni-soft:#13302A;--d-age-soft:#3B2118;--d-sex-soft:#26223E;--d-edu-soft:#3A2E12;--d-lab-soft:#12333A;--d-sta-soft:#2A3016;--d-ind-soft:#2C2140;--d-inc-soft:#3C1F2C;
     --edge:#4A554F;
   }
 }
@@ -35,8 +35,8 @@
   --bg:#101412;--surface:#181E1B;--surface-2:#202723;--surface-3:#2A322D;
   --ink:#ECF0EC;--ink-2:#B7C0BA;--muted:#8B958F;--line:#2C3530;--line-strong:#4A554F;
   --accent:#7FB0F0;--accent-soft:#1B2A3E;
-  --d-pref:#3987e5;--d-muni:#199e70;--d-age:#d95926;--d-sex:#9085e9;--d-edu:#c98500;--d-inc:#d55181;
-  --d-pref-soft:#1A2A40;--d-muni-soft:#13302A;--d-age-soft:#3B2118;--d-sex-soft:#26223E;--d-edu-soft:#3A2E12;--d-inc-soft:#3C1F2C;
+  --d-pref:#3987e5;--d-muni:#199e70;--d-age:#d95926;--d-sex:#9085e9;--d-edu:#c98500;--d-lab:#2fb3bf;--d-sta:#a3b53a;--d-ind:#b184e0;--d-inc:#d55181;
+  --d-pref-soft:#1A2A40;--d-muni-soft:#13302A;--d-age-soft:#3B2118;--d-sex-soft:#26223E;--d-edu-soft:#3A2E12;--d-lab-soft:#12333A;--d-sta-soft:#2A3016;--d-ind-soft:#2C2140;--d-inc-soft:#3C1F2C;
   --edge:#4A554F;
 }
 *{box-sizing:border-box}
@@ -83,7 +83,7 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .pnode:hover{border-color:var(--sw)}
 .pnode.on{border-color:var(--sw);background:var(--soft)}
 .pnode.on .c{background:var(--sw);color:#fff;border-color:var(--sw)}
-.pnode.pref{--sw:var(--d-pref);--soft:var(--d-pref-soft)}.pnode.muni{--sw:var(--d-muni);--soft:var(--d-muni-soft)}.pnode.age{--sw:var(--d-age);--soft:var(--d-age-soft)}.pnode.sex{--sw:var(--d-sex);--soft:var(--d-sex-soft)}.pnode.edu{--sw:var(--d-edu);--soft:var(--d-edu-soft)}.pnode.inc{--sw:var(--d-inc);--soft:var(--d-inc-soft)}
+.pnode.pref{--sw:var(--d-pref);--soft:var(--d-pref-soft)}.pnode.muni{--sw:var(--d-muni);--soft:var(--d-muni-soft)}.pnode.age{--sw:var(--d-age);--soft:var(--d-age-soft)}.pnode.sex{--sw:var(--d-sex);--soft:var(--d-sex-soft)}.pnode.edu{--sw:var(--d-edu);--soft:var(--d-edu-soft)}.pnode.lab{--sw:var(--d-lab);--soft:var(--d-lab-soft)}.pnode.sta{--sw:var(--d-sta);--soft:var(--d-sta-soft)}.pnode.ind{--sw:var(--d-ind);--soft:var(--d-ind-soft)}.pnode[disabled]{opacity:.55;cursor:not-allowed}.pnode.inc{--sw:var(--d-inc);--soft:var(--d-inc-soft)}
 .palette .hint{font-size:11px;color:var(--muted);line-height:1.5;margin:6px 4px 0}
 .board-empty{display:flex;align-items:center;justify-content:center;min-height:260px;border:1px dashed var(--line-strong);border-radius:8px;color:var(--muted);font-size:13px;text-align:center;padding:20px;line-height:1.7}
 .board-empty[hidden]{display:none}
@@ -110,10 +110,14 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .col.inc{--sw:var(--d-inc);--soft:var(--d-inc-soft)}
 .col.sex{--sw:var(--d-sex);--soft:var(--d-sex-soft)}
 .col.edu{--sw:var(--d-edu);--soft:var(--d-edu-soft)}
+.col.lab{--sw:var(--d-lab);--soft:var(--d-lab-soft)}.col.sta{--sw:var(--d-sta);--soft:var(--d-sta-soft)}.col.ind{--sw:var(--d-ind);--soft:var(--d-ind-soft)}
+.col.lab{width:170px}.col.sta{width:200px}.col.ind{width:230px}
+.stage.lab{--st:var(--d-lab)}.stage.sta{--st:var(--d-sta)}.stage.ind{--st:var(--d-ind)}
+.row.zero{opacity:.5}
 .stage.sex{--st:var(--d-sex)}.stage.edu{--st:var(--d-edu)}
 .bars.n8{grid-template-columns:repeat(8,1fr)}.axis.n8{grid-template-columns:repeat(8,1fr)}
 .hubwrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px;position:relative}
-.hub{width:78px;height:78px;border-radius:50%;border:2.5px solid var(--sw);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-family:var(--font-display);font-weight:700;font-size:14px;line-height:1.15;color:var(--ink);transition:transform .12s,box-shadow .12s;position:relative}
+.hub{width:78px;height:78px;font-size:13px;border-radius:50%;border:2.5px solid var(--sw);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-family:var(--font-display);font-weight:700;font-size:14px;line-height:1.15;color:var(--ink);transition:transform .12s,box-shadow .12s;position:relative}
 .hub small{font-family:var(--font-mono);font-weight:500;font-size:11px;color:var(--muted)}
 .hub:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .hub[aria-expanded="true"]{background:var(--soft)}
@@ -224,7 +228,8 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .panel .eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--sw,var(--muted))}
 .panel h2{font-size:1.2rem;margin:6px 0 2px}
 .panel .sub{font-size:12.5px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px}
-.panel dl{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;margin:0 0 14px;font-size:13px}
+.panel dl{display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr);gap:5px 14px;margin:0 0 14px;font-size:13px}
+.panel dt,.panel dd{overflow-wrap:anywhere;min-width:0}
 .panel dt{color:var(--muted);white-space:nowrap}
 .panel dd{margin:0;font-variant-numeric:tabular-nums;word-break:break-all}
 .panel dd .mono{font-size:12px}
@@ -281,11 +286,11 @@ footer a{color:var(--ink-2)}
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><span class="eyebrow">Hinomoto Twin Pub / モデル v3.0 / M1+M2 / 2020年境界・2022年所得</span><h1>都道府県 → 市区町村 → 年齢 → 性別 → 学歴 → 年収帯</h1></div>
+  <div class="brand"><span class="eyebrow">Hinomoto Twin Pub / モデル v3.0 / M1+M2 / 2020年境界・2022年所得</span><h1>都道府県 → 市区町村 → 年齢 → 性別 → 学歴 → 就業状態 → 地位 → 産業 → 年収帯</h1></div>
   <nav class="crumb" id="crumb" aria-label="現在の選択"></nav>
   <button class="srcbtn" id="srcbtn" type="button">データソース一覧</button>
   <button class="srcbtn" id="scopebtn" type="button">検証の範囲</button>
-  <div class="search"><input id="q" type="search" placeholder="市区町村を検索（名称・5桁コード）" autocomplete="off" aria-label="市区町村を検索"><div class="res" id="q-res" role="listbox"></div></div>
+  <div class="search"><input id="q" type="search" placeholder="市区町村・属性を検索（名称・コード）" autocomplete="off" aria-label="市区町村を検索"><div class="res" id="q-res" role="listbox"></div></div>
 </header>
 
 <p class="edgehint"><span class="wide">左のパレットからノードを選ぶと中央に配置され、配置したノードが左から順に連なります。各列の先頭の「…でまとめる」を選ぶと、その次元を選ばずに合算のまま次の列へ進めます。各項目をクリックすると、その値がどう導出されたかが右に段階的に表示されます。</span><span class="narrow">上のノードをタップすると下に展開され、選んだノードが左から順に連なります（横にスクロール）。各項目をタップすると、その値の導出過程が画面下のパネルに表示されます。</span></p>
@@ -297,6 +302,9 @@ footer a{color:var(--ink-2)}
     <button class="pnode age" data-dim="age"><span class="c">13</span><span class="t">年齢<span class="s" id="pn-age">未配置</span></span></button>
     <button class="pnode sex" data-dim="sex"><span class="c">2</span><span class="t">性別<span class="s" id="pn-sex">未配置</span></span></button>
     <button class="pnode edu" data-dim="edu"><span class="c">8</span><span class="t">学歴<span class="s" id="pn-edu">未配置</span></span></button>
+    <button class="pnode lab" data-dim="lab"><span class="c">3</span><span class="t">就業状態<span class="s" id="pn-lab">未配置</span></span></button>
+    <button class="pnode sta" data-dim="sta"><span class="c">7</span><span class="t">地位・雇用形態<span class="s" id="pn-sta">未配置</span></span></button>
+    <button class="pnode ind" data-dim="ind"><span class="c">21</span><span class="t">産業<span class="s" id="pn-ind">未配置</span></span></button>
     <button class="pnode inc" data-dim="inc"><span class="c">16</span><span class="t">年収帯<span class="s" id="pn-inc">未配置</span></span></button>
     <p class="hint">クリックで中央に配置／解除。配置していない次元は合算されます。</p>
   </aside>
@@ -324,6 +332,18 @@ footer a{color:var(--ink-2)}
         <div class="hubwrap"><button class="hubx" data-remove="edu" title="中央から外す" aria-label="edu を外す">×</button><button class="hub" data-hub="edu" aria-expanded="false">学歴<small>8</small></button><div class="hubcap" id="cap-edu">全学歴</div></div>
         <div class="list" id="list-edu" hidden></div>
       </div>
+      <div class="col lab" data-dim="lab" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="lab" title="中央から外す" aria-label="lab を外す">×</button><button class="hub" data-hub="lab" aria-expanded="false">就業状態<small>3</small></button><div class="hubcap" id="cap-lab">全体</div></div>
+        <div class="list" id="list-lab" hidden></div>
+      </div>
+      <div class="col sta" data-dim="sta" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="sta" title="中央から外す" aria-label="sta を外す">×</button><button class="hub" data-hub="sta" aria-expanded="false">地位・雇用形態<small>7</small></button><div class="hubcap" id="cap-sta">全体</div></div>
+        <div class="list" id="list-sta" hidden></div>
+      </div>
+      <div class="col ind" data-dim="ind" hidden>
+        <div class="hubwrap"><button class="hubx" data-remove="ind" title="中央から外す" aria-label="ind を外す">×</button><button class="hub" data-hub="ind" aria-expanded="false">産業<small>21</small></button><div class="hubcap" id="cap-ind">全体</div></div>
+        <div class="list" id="list-ind" hidden></div>
+      </div>
       <div class="col inc" data-dim="inc" hidden>
         <div class="hubwrap"><button class="hubx" data-remove="inc" title="中央から外す" aria-label="inc を外す">×</button><button class="hub" data-hub="inc" aria-expanded="false">年収帯<small>16</small></button><div class="hubcap" id="cap-inc">全体</div></div>
         <div class="list" id="list-inc" hidden></div>
@@ -334,7 +354,7 @@ footer a{color:var(--ink-2)}
 </div>
 <button class="sheetbar" id="sheetbar" type="button" aria-controls="panel" aria-expanded="false"><span class="sbt" id="sheetbar-t">属性パネル</span><span class="sbx" id="sheetbar-x">開く</span></button>
 
-<footer>ノードをクリックすると、そのノードに属する要素が右隣の列に展開され、属性が右パネルに表示されます。項目をクリックすると、その値の導出過程が段階的に表示されます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。学歴 × 年収の配分は、モデルと同じ初期値と制約（全国の学歴別年収分布、地域の学歴別就業率、学歴人数、年齢・性別の年収分布）を埋め込み、ページ内で同じ反復比例調整を再計算しています（M1+M2の最終配列を使用）。都道府県・全国は市区町村（行政区を除く）の合算値です。国勢調査 2020・就業構造基本調査 2022・市区町村のすがた 2024 を加工したモデル推定であり、実測値ではありません。</footer>
+<footer>ノードをクリックすると、そのノードに属する要素が右隣の列に展開され、属性が右パネルに表示されます。項目をクリックすると、その値の導出過程が段階的に表示されます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。就業状態・地位・産業（段階A、試験）は5属性の周辺を固定した条件付き配分で、市区町村ではページ内で同じ配分を再計算し、都道府県・全国・政令市は集計済みブロックを読み込みます。学歴 × 年収の配分は、モデルと同じ初期値と制約（全国の学歴別年収分布、地域の学歴別就業率、学歴人数、年齢・性別の年収分布）を埋め込み、ページ内で同じ反復比例調整を再計算しています（M1+M2の最終配列を使用）。都道府県・全国は市区町村（行政区を除く）の合算値です。国勢調査 2020・就業構造基本調査 2022・市区町村のすがた 2024 を加工したモデル推定であり、実測値ではありません。</footer>
 </div>
 
 <script>
@@ -346,7 +366,7 @@ try {
   var response = await fetch(dataUrl);
   if (!response.ok) throw new Error('HTTP ' + response.status);
   var payload = await response.json();
-  if (payload.schema_version !== 2 || !payload.graph || !['prefs','munis','pop','q','rates','ess','xc','xd','e','rs','ag','shrink','sens','sens_or'].every(function(k){return Object.prototype.hasOwnProperty.call(payload.graph,k);})) throw new Error('Unsupported data format');
+  if ((payload.schema_version !== 2 && payload.schema_version !== 3) || !payload.graph || !['prefs','munis','pop','q','rates','ess','xc','xd','e','rs','ag','shrink','sens','sens_or'].every(function(k){return Object.prototype.hasOwnProperty.call(payload.graph,k);})) throw new Error('Unsupported data format');
   G = payload.graph;
 } catch (error) {
   var panel = document.getElementById('panel');
@@ -365,10 +385,16 @@ var INC = ['50万円未満（就業収入なしを含む）','50～100万円','1
 var INC_CODE = ['I01','I02','I03','I04','I05','I06','I07','I08','I09','I10','I11','I12','I13','I14','I15','I16'];
 var INC_EDGE = [0,50,100,150,200,250,300,400,500,600,700,800,900,1000,1250,1500,null];
 var INC_SHORT = ['<50','50','100','150','200','250','300','400','500','600','700','800','900','1000','1250','1500+'];
-var DIMS = ['pref','muni','age','sex','edu','inc'];
-var DIM_LABEL = { pref: '都道府県', muni: '市区町村', age: '年齢', sex: '性別', edu: '学歴', inc: '年収帯' };
-var DIM_VAR = { pref: 'var(--d-pref)', muni: 'var(--d-muni)', age: 'var(--d-age)', sex: 'var(--d-sex)', edu: 'var(--d-edu)', inc: 'var(--d-inc)' };
-var DIM_SOFT = { pref: 'var(--d-pref-soft)', muni: 'var(--d-muni-soft)', age: 'var(--d-age-soft)', sex: 'var(--d-sex-soft)', edu: 'var(--d-edu-soft)', inc: 'var(--d-inc-soft)' };
+var DIMS = ['pref','muni','age','sex','edu','lab','sta','ind','inc'];
+var DIM_LABEL = { pref: '都道府県', muni: '市区町村', age: '年齢', sex: '性別', edu: '学歴', lab: '就業状態', sta: '地位・雇用形態', ind: '産業', inc: '年収帯' };
+var LAB = ['就業者','完全失業者','非労働力人口'], LAB_CODE = ['J1','J2','J3'], LAB_NOTE = ['従業上の地位・雇用形態 K1–K5 のいずれか（有給の就業者と無給家族従業者）','仕事を探していて就業できていない人（国勢調査の労働力状態、不詳補完後）','家事・通学・その他で仕事を探していない人（国勢調査の労働力状態、不詳補完後）'];
+var STA = ['正規の職員・従業員','非正規（派遣・パート等）','役員','自営業主（内職含む）','無給家族従業者','完全失業者','非労働力人口'], STA_CODE = ['K1','K2','K3','K4','K5','K6','K7'], STA_SHORT = ['正規','非正規','役員','自営','家族従業','完全失業','非労働力'];
+var STA_NOTE = ['雇用者のうち正規の職員・従業員','派遣社員・パート・アルバイト・その他の雇用者','会社などの役員（雇用者 − 正規 − 非正規の残差）','自営業主（雇人あり・なし）と家庭内職者','自営の家族の仕事を無給で手伝う人。主な仕事の収入なし','就業状態 J2 と同じ。主な仕事の収入なし','就業状態 J3 と同じ。主な仕事の収入なし'];
+var STA_LAB = [0,0,0,0,0,1,2];
+var IND = ['該当なし（非就業）','農業，林業','漁業','鉱業，採石業，砂利採取業','建設業','製造業','電気・ガス・熱供給・水道業','情報通信業','運輸業，郵便業','卸売業，小売業','金融業，保険業','不動産業，物品賃貸業','学術研究，専門・技術サービス業','宿泊業，飲食サービス業','生活関連サービス業，娯楽業','教育，学習支援業','医療，福祉','複合サービス事業','サービス業（他に分類されないもの）','公務（他に分類されるものを除く）','分類不能の産業（不詳を含む）'];
+var IND_CODE = ['G00','G01','G02','G03','G04','G05','G06','G07','G08','G09','G10','G11','G12','G13','G14','G15','G16','G17','G18','G19','G20'], IND_LETTER = ['—','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'];
+var DIM_VAR = { pref: 'var(--d-pref)', muni: 'var(--d-muni)', age: 'var(--d-age)', sex: 'var(--d-sex)', edu: 'var(--d-edu)', lab: 'var(--d-lab)', sta: 'var(--d-sta)', ind: 'var(--d-ind)', inc: 'var(--d-inc)' };
+var DIM_SOFT = { pref: 'var(--d-pref-soft)', muni: 'var(--d-muni-soft)', age: 'var(--d-age-soft)', sex: 'var(--d-sex-soft)', edu: 'var(--d-edu-soft)', lab: 'var(--d-lab-soft)', sta: 'var(--d-sta-soft)', ind: 'var(--d-ind-soft)', inc: 'var(--d-inc-soft)' };
 
 /* ---------- decode ---------- */
 function u16(b64){ var bin = atob(b64), u8 = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new Float64Array(u8.buffer); }
@@ -384,9 +410,9 @@ function ag(p, a, s, e, y){ return AG[(((p*13 + a)*2 + s)*8 + e)*16 + y] * Q; }
 function pop(k, s, a){ return G.pop[k][s][a]; }
 
 /* ---------- state ---------- */
-var S = { pref: null, muni: null, age: null, sex: null, edu: null, inc: null, open: { pref: false, muni: false, age: false, sex: false, edu: false, inc: false }, skip: { pref: false, muni: false, age: false, sex: false, edu: false }, focus: { dim: null, id: null } };
-var SKIP_LABEL = { pref: function(){ return '全国でまとめる'; }, muni: function(){ return S.pref ? PI[S.pref].n + '全体でまとめる' : '全国でまとめる'; }, age: function(){ return '15歳以上すべてでまとめる'; }, sex: function(){ return '男女計でまとめる'; }, edu: function(){ return '全学歴でまとめる'; } };
-var AGG_LABEL = { pref: '全国', muni: '都道府県全体', age: '15歳以上すべて', sex: '男女計', edu: '全学歴' };
+var S = { pref: null, muni: null, age: null, sex: null, edu: null, lab: null, sta: null, ind: null, inc: null, open: { pref: false, muni: false, age: false, sex: false, edu: false, lab: false, sta: false, ind: false, inc: false }, skip: { pref: false, muni: false, age: false, sex: false, edu: false, lab: false, sta: false, ind: false }, focus: { dim: null, id: null } };
+var SKIP_LABEL = { pref: function(){ return '全国でまとめる'; }, muni: function(){ return S.pref ? PI[S.pref].n + '全体でまとめる' : '全国でまとめる'; }, age: function(){ return '15歳以上すべてでまとめる'; }, sex: function(){ return '男女計でまとめる'; }, edu: function(){ return '全学歴でまとめる'; }, lab: function(){ return '就業状態を問わずまとめる'; }, sta: function(){ return '地位・雇用形態を問わずまとめる'; }, ind: function(){ return '産業を問わずまとめる'; } };
+var AGG_LABEL = { pref: '全国', muni: '都道府県全体', age: '15歳以上すべて', sex: '男女計', edu: '全学歴', lab: '就業状態計', sta: '地位計', ind: '産業計' };
 function skipRow(dim){ return '<button class="row skip' + (S.skip[dim] ? ' sel' : '') + (isFocus(dim, 'all') ? ' focus' : '') + '" data-id="all" title="この次元を選ばずに右の列へ進む"><span class="dot"></span><span class="nm">' + esc(SKIP_LABEL[dim]()) + '</span><span class="arr">→</span></button>'; }
 var $ = function(id){ return document.getElementById(id); };
 var fmtN = function(n){ return Math.round(n).toLocaleString('ja-JP'); };
@@ -398,7 +424,8 @@ function scopeName(){ if (S.muni) return G.munis[MI[S.muni]].n; if (S.pref) retu
 function scopeShort(){ return S.muni ? '市区町村' : S.pref ? '都道府県' : '全国'; }
 function agesSel(){ return S.age === null ? [0,1,2,3,4,5,6,7,8,9,10,11,12] : [S.age]; }
 function sexesSel(){ return S.sex === null ? [0,1] : [S.sex]; }
-function pathName(){ return (S.age !== null ? AGE[S.age] : '15歳以上すべて') + '・' + (S.sex !== null ? SEX[S.sex] : '男女計') + (S.edu !== null ? '・' + EDU[S.edu] : ''); }
+function pathName(){ return (S.age !== null ? AGE[S.age] : '15歳以上すべて') + '・' + (S.sex !== null ? SEX[S.sex] : '男女計') + (S.edu !== null ? '・' + EDU[S.edu] : '') + (S.lab !== null ? '・' + LAB[S.lab] : '') + (S.sta !== null ? '・' + STA_SHORT[S.sta] : '') + (S.ind !== null ? '・' + IND[S.ind] : ''); }
+function empSel(){ return S.lab !== null || S.sta !== null || S.ind !== null; }
 function scopeKs(key){ var ks = []; if (key[0] === 'm') ks = [MI[key.slice(2)]]; else G.munis.forEach(function(m, k){ if (m.l === 'm' && (key === 'n' || m.c.slice(0,2) === key.slice(2))) ks.push(k); }); return ks; }
 
 /* ---------- aggregation (per sex) ---------- */
@@ -412,10 +439,13 @@ function dist(key){
   return (cache[key] = d);
 }
 /* education x income allocation for one municipality/sex/age: same IPF as build_education.py */
-function ipfMuni(k, s, a){
-  var n = pop(k, s, a), out = [], e, y, z;
-  for (e = 0; e < 8; e++) out.push(new Float64Array(16));
-  if (!n) return out;
+var zcache = {};
+/* 8 x 17 components (0 = no main-job income, 1..16 = income classes) before merging component 0 into I01 */
+function ipfMuni17(k, s, a){
+  var ck = k + '|' + s + '|' + a; if (zcache[ck]) return zcache[ck];
+  var n = pop(k, s, a), e, y, z, Z = [];
+  for (e = 0; e < 8; e++) Z.push(new Float64Array(17));
+  if (!n) return (zcache[ck] = Z);
   var R = new Float64Array(8), rsum = 0; for (e = 0; e < 8; e++){ R[e] = rsh(k, s, a, e); rsum += R[e]; } for (e = 0; e < 8; e++) R[e] = rsum ? R[e]/rsum*n : 0;
   var em = emp(k, s, a), B = new Float64Array(17), xs = 0; for (y = 0; y < 16; y++) xs += xd(k, s, a, y); B[0] = n*(1 - em); for (y = 0; y < 16; y++) B[y+1] = xs ? n*em*xd(k, s, a, y)/xs : 0;
   var r = G.rates[G.munis[k].rk || G.munis[k].ls][s][a], q = G.q[s][a], Z = [];
@@ -427,7 +457,11 @@ function ipfMuni(k, s, a){
     for (e = 0; e < 8; e++){ var rs2 = 0; for (z = 0; z < 17; z++) rs2 += Z[e][z]; err = Math.max(err, Math.abs(rs2 - R[e]) / Math.max(R[e], 1)); }
     if (err < 1e-10) break;
   }
-  for (e = 0; e < 8; e++){ out[e][0] = Z[e][0] + Z[e][1]; for (y = 1; y < 16; y++) out[e][y] = Z[e][y+1]; }
+  return (zcache[ck] = Z);
+}
+function ipfMuni(k, s, a){
+  var Z = ipfMuni17(k, s, a), out = [], e, y;
+  for (e = 0; e < 8; e++){ out.push(new Float64Array(16)); out[e][0] = Z[e][0] + Z[e][1]; for (y = 1; y < 16; y++) out[e][y] = Z[e][y+1]; }
   return out;
 }
 function seedMuni(k, s, a){
@@ -460,12 +494,151 @@ function seedTab(key, s, a){
 /* P(income | scope, selected age/sex/edu) */
 function incDist(){
   var key = scope(), d = dist(key), p = new Float64Array(16), den = 0, y;
+  if (empSel()){ var R = empCounts({ e: S.edu, lab: S.lab, sta: S.sta, ind: S.ind }); if (!R.ready) return { p: p, den: 0, defined: false, loading: true }; for (y = 0; y < 16; y++) p[y] = R.total ? R.Y[y]/R.total : 0; return { p: p, den: R.total, defined: R.total > 0, emp: true }; }
   if (S.edu === null){ agesSel().forEach(function(a){ sexesSel().forEach(function(s){ den += d.pop[s][a]; for (y = 0; y < 16; y++) p[y] += d.cnt[s][a][y]; }); }); }
   else { agesSel().forEach(function(a){ sexesSel().forEach(function(s){ var T = eduTab(key, s, a)[S.edu]; for (y = 0; y < 16; y++){ p[y] += T[y]; den += T[y]; } }); }); }
   for (y = 0; y < 16; y++) p[y] = den ? p[y]/den : 0;
   return { p: p, den: den, defined: den > 0 };
 }
+/* ---------- stage A: employment status x industry (recomputed from the same inputs as build_employment.py) ---------- */
+var EMP = G.emp || null, EMPD = null, EMP_STATE = { inputs: null, agg: {}, loading: {}, error: null };
+function f32(b64){ var bin = atob(b64), u8 = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new Float32Array(u8.buffer); }
+if (EMP){ EMPD = { pk_e: f32(EMP.pk_e), pg: f32(EMP.pg), tilt: f32(EMP.tilt), cp: f32(EMP.cp), pu_e: f32(EMP.pu_e), P: EMP.prefs.length }; }
+function empAvailable(){ return !!EMP; }
+function empUrl(rel){ var base = (new URLSearchParams(location.search).get('data') || 'data/graph.json'); return base.slice(0, base.lastIndexOf('/') + 1) + rel; }
+/* resources are fetched on first use; while loading the caller renders a placeholder and renderAll() runs again on arrival */
+function empFetch(name, rel){
+  if (EMP_STATE.loading[name]) return; EMP_STATE.loading[name] = true;
+  fetch(empUrl(rel)).then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); }).then(function(buf){
+    if (name === 'inputs') EMP_STATE.inputs = new Float32Array(buf); else EMP_STATE.agg[name] = new Float32Array(buf);
+    EMP_STATE.loading[name] = false; ecache = {}; renderAll();
+  }).catch(function(err){ EMP_STATE.loading[name] = false; EMP_STATE.error = String(err); renderAll(); });
+}
+/* which pre-aggregated block file a scope key needs (null = recompute per leaf municipality) */
+function empAggCode(key){
+  if (key === 'n') return '00000';
+  if (key[0] === 'p') return key.slice(2) + '000';
+  var m = G.munis[MI[key.slice(2)]]; return m.s === 'aggregated_wards' ? m.c : null;
+}
+/* returns true when everything needed for the scope is loaded, otherwise starts loading */
+function empReady(key){
+  if (!EMP) return false;
+  var code = empAggCode(key);
+  if (code){ if (EMP_STATE.agg[code]) return true; if (!EMP.agg_files[code]) return false; empFetch(code, EMP.agg_files[code]); return false; }
+  if (EMP_STATE.inputs) return true; empFetch('inputs', EMP.inputs_file); return false;
+}
+function ipf2(seed, rows, cols, tol){
+  var R = rows.length, C = cols.length, z = [], r, c, it, sum, f, err;
+  for (r = 0; r < R; r++){ z.push(new Float64Array(C)); for (c = 0; c < C; c++) z[r][c] = (rows[r] > 0 && cols[c] > 0) ? Math.max(seed[r][c], 1e-14) : 0; }
+  for (it = 0; it < 2000; it++){
+    for (r = 0; r < R; r++){ sum = 0; for (c = 0; c < C; c++) sum += z[r][c]; f = sum > 0 ? rows[r]/sum : 0; for (c = 0; c < C; c++) z[r][c] *= f; }
+    for (c = 0; c < C; c++){ sum = 0; for (r = 0; r < R; r++) sum += z[r][c]; f = sum > 0 ? cols[c]/sum : 0; for (r = 0; r < R; r++) z[r][c] *= f; }
+    err = 0;
+    for (r = 0; r < R; r++){ sum = 0; for (c = 0; c < C; c++) sum += z[r][c]; err = Math.max(err, Math.abs(sum - rows[r]) / Math.max(rows[r], 1)); }
+    for (c = 0; c < C; c++){ sum = 0; for (r = 0; r < R; r++) sum += z[r][c]; err = Math.max(err, Math.abs(sum - cols[c]) / Math.max(cols[c], 1)); }
+    if (err < tol) break;
+  }
+  return z;
+}
+/* one leaf municipality x sex x age: paid[e,k,g,y] (8x4x20x16), family[e,g], unemployed[e], inactive[e]; same steps as block() in build_employment.py */
+function empBlockLeaf(k, s, a){
+  var li = EMP.leaf_index[k], pr = EMP.pref_of_muni[k], D = EMPD, n = pop(k, s, a), E = 8, K = 4, GN = 20, Y = 16, e, kk, g, y, i;
+  var out = { paid: new Float64Array(E*K*GN*Y), fam: new Float64Array(E*GN), un: new Float64Array(E), ina: new Float64Array(E), it: 0, err: 0 };
+  if (li < 0 || !n) return out;
+  var base = ((li*2 + s)*13 + a)*27, IN = EMP_STATE.inputs, W = [IN[base], IN[base+1], IN[base+2], IN[base+3], IN[base+4]], K6 = IN[base+5], u = IN[base+6], gm = new Float64Array(20);
+  for (g = 0; g < GN; g++) gm[g] = IN[base + 7 + g];
+  var Z = ipfMuni17(k, s, a), A = [], Asum = new Float64Array(E), zero = new Float64Array(E);
+  for (e = 0; e < E; e++){ A.push(new Float64Array(Y)); zero[e] = Z[e][0]; for (y = 0; y < Y; y++){ A[e][y] = Z[e][y+1]; Asum[e] += Z[e][y+1]; } }
+  var rate = G.rates[G.munis[k].rk || G.munis[k].ls][s][a], pkb = ((s*13 + a)*E)*K, pk = function(e, kk){ return D.pk_e[pkb + e*K + kk]; };
+  /* zero-income component -> family workers (K5) / not employed (K6+K7), by education */
+  var seed2 = [], fam = new Float64Array(E), non = new Float64Array(E);
+  for (e = 0; e < E; e++) seed2.push([Math.max(rate[e], 1e-6)*Math.max(pk(e, 3), 1e-6)*zero[e], Math.max(1 - rate[e], 1e-6)*zero[e]]);
+  var z2 = ipf2(seed2, zero, [W[4], K6], 1e-7); for (e = 0; e < E; e++){ fam[e] = z2[e][0]; non[e] = z2[e][1]; }
+  /* not employed -> unemployed (K6) / not in labour force (K7), by education */
+  var seed3 = [], pub = ((pr*2 + s)*13 + a)*E;
+  for (e = 0; e < E; e++){ var pu = D.pu_e[pub + e]; seed3.push([Math.max(pu, 1e-6)*non[e], Math.max(1 - pu, 1e-6)*non[e]]); }
+  var z3 = ipf2(seed3, non, [K6*u, K6*(1 - u)], 1e-7); for (e = 0; e < E; e++){ out.un[e] = z3[e][0]; out.ina[e] = z3[e][1]; }
+  /* P(g|k) of the prefecture: graduates for all education classes, enrolled rows for E06 */
+  var P2 = D.P, pgb = function(grp){ return ((((pr*2 + s)*2 + grp)*13 + a)*K)*GN; }, pg0 = pgb(0), pg1 = pgb(1);
+  function pge(e, kk, g){ return D.pg[(e === 5 ? pg1 : pg0) + kk*GN + g]; }
+  var fam_g = new Float64Array(GN), paid_g = new Float64Array(GN), tot4 = W[0] + W[1] + W[2] + W[3], pgsum = 0;
+  for (e = 0; e < E; e++) for (g = 0; g < GN; g++){ out.fam[e*GN + g] = fam[e]*pge(e, 3, g); fam_g[g] += fam[e]*pge(e, 3, g); }
+  for (g = 0; g < GN; g++){ paid_g[g] = Math.max(gm[g] - fam_g[g], 0); pgsum += paid_g[g]; }
+  for (g = 0; g < GN; g++) paid_g[g] = pgsum ? paid_g[g]/pgsum*tot4 : 0;
+  /* income shape per (k, g): prefecture status shape x industry tilt (clipped), floored, normalised */
+  var ry = new Float64Array(K*GN*Y), cpb = (((pr*2 + s)*13 + a)*K)*Y, tb = (s*K)*GN*Y;
+  for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){
+    var mx = 0, sm = 0, o = (kk*GN + g)*Y;
+    for (y = 0; y < Y; y++){ var t = D.tilt[tb + (kk*GN + g)*Y + y]; t = Math.min(20, Math.max(0.05, t)); ry[o + y] = D.cp[cpb + kk*Y + y]*t; mx = Math.max(mx, ry[o + y]); }
+    for (y = 0; y < Y; y++){ ry[o + y] = Math.max(ry[o + y], 1e-4*mx); sm += ry[o + y]; }
+    for (y = 0; y < Y; y++) ry[o + y] = sm ? ry[o + y]/sm : 0;
+  }
+  /* seed and 3-margin IPF: (e,y) = A, (k) = W1..W4, (g) = paid_g */
+  var z = out.paid, B = [W[0], W[1], W[2], W[3]];
+  for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++) for (y = 0; y < Y; y++){
+    i = ((e*K + kk)*GN + g)*Y + y;
+    z[i] = (A[e][y] > 0 && B[kk] > 0 && paid_g[g] > 0) ? Math.max(Asum[e]*pk(e, kk)*pge(e, kk, g)*ry[(kk*GN + g)*Y + y], 1e-14) : 0;
+  }
+  var sA = new Float64Array(E*Y), sB = new Float64Array(K), sC = new Float64Array(GN), it, errA, errB;
+  for (it = 0; it < 600; it++){
+    sA.fill(0); for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++) sA[e*Y + y] += z[i + y]; }
+    for (e = 0; e < E; e++) for (y = 0; y < Y; y++) sA[e*Y + y] = sA[e*Y + y] > 0 ? A[e][y]/sA[e*Y + y] : 0;
+    for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++) z[i + y] *= sA[e*Y + y]; }
+    sB.fill(0); for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++) sB[kk] += z[i + y]; }
+    for (kk = 0; kk < K; kk++) sB[kk] = sB[kk] > 0 ? B[kk]/sB[kk] : 0;
+    for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++) z[i + y] *= sB[kk]; }
+    sC.fill(0); for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++) sC[g] += z[i + y]; }
+    for (g = 0; g < GN; g++) sC[g] = sC[g] > 0 ? paid_g[g]/sC[g] : 0;
+    for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++) z[i + y] *= sC[g]; }
+    sA.fill(0); sB.fill(0); for (e = 0; e < E; e++) for (kk = 0; kk < K; kk++) for (g = 0; g < GN; g++){ i = ((e*K + kk)*GN + g)*Y; for (y = 0; y < Y; y++){ sA[e*Y + y] += z[i + y]; sB[kk] += z[i + y]; } }
+    errA = 0; errB = 0; for (e = 0; e < E; e++) for (y = 0; y < Y; y++) errA = Math.max(errA, Math.abs(sA[e*Y + y] - A[e][y]) / Math.max(A[e][y], 1e4));
+    for (kk = 0; kk < K; kk++) errB = Math.max(errB, Math.abs(sB[kk] - B[kk]) / Math.max(B[kk], 1e4));
+    if (Math.max(errA, errB) < 1e-6) break;
+  }
+  out.it = it + 1; out.err = Math.max(errA, errB);
+  return out;
+}
+var bcache = {};
+/* block for a scope key, sex, age: leaf -> recomputed; prefecture / nation / aggregated-ward city -> pre-aggregated file */
+function empBlock(key, s, a){
+  var ck = key + '|' + s + '|' + a; if (bcache[ck]) return bcache[ck];
+  var code = empAggCode(key), out;
+  if (code){
+    var F = EMP_STATE.agg[code], L = 8*4*20*16 + 8*20 + 8 + 8, off = (s*13 + a)*L;
+    out = { paid: new Float64Array(F.subarray(off, off + 10240)), fam: new Float64Array(F.subarray(off + 10240, off + 10400)), un: new Float64Array(F.subarray(off + 10400, off + 10408)), ina: new Float64Array(F.subarray(off + 10408, off + 10416)), agg: true };
+  } else out = empBlockLeaf(MI[key.slice(2)], s, a);
+  return (bcache[ck] = out);
+}
+/* counts for the selected conditions, summed over the selected ages/sexes. sel = { e, lab, sta, ind } (null = all) */
+function empCounts(sel){
+  var key = scope(), R = { J: new Float64Array(3), K: new Float64Array(7), G: new Float64Array(21), Y: new Float64Array(16), total: 0, paidTotal: 0, ready: empReady(key) };
+  if (!R.ready) return R;
+  var e0 = sel.e === null || sel.e === undefined ? 0 : sel.e, e1 = sel.e === null || sel.e === undefined ? 8 : sel.e + 1;
+  function okK(kk){ if (sel.sta !== null && sel.sta !== undefined && sel.sta !== kk) return false; if (sel.lab !== null && sel.lab !== undefined && STA_LAB[kk] !== sel.lab) return false; return true; }
+  function okG(g){ return sel.ind === null || sel.ind === undefined || sel.ind === g; }
+  agesSel().forEach(function(a){ sexesSel().forEach(function(s){
+    var b = empBlock(key, s, a), e, kk, g, y, i, v;
+    for (e = e0; e < e1; e++){
+      for (kk = 0; kk < 4; kk++){ if (!okK(kk)) continue; for (g = 0; g < 20; g++){ if (!okG(g + 1)) continue; i = ((e*4 + kk)*20 + g)*16; for (y = 0; y < 16; y++){ v = b.paid[i + y]; if (!v) continue; R.Y[y] += v; R.G[g + 1] += v; R.K[kk] += v; R.J[0] += v; R.total += v; R.paidTotal += v; } } }
+      if (okK(4)) for (g = 0; g < 20; g++){ if (!okG(g + 1)) continue; v = b.fam[e*20 + g]; R.Y[0] += v; R.G[g + 1] += v; R.K[4] += v; R.J[0] += v; R.total += v; }
+      if (okK(5) && okG(0)){ v = b.un[e]; R.Y[0] += v; R.G[0] += v; R.K[5] += v; R.J[1] += v; R.total += v; }
+      if (okK(6) && okG(0)){ v = b.ina[e]; R.Y[0] += v; R.G[0] += v; R.K[6] += v; R.J[2] += v; R.total += v; }
+    }
+  }); });
+  return R;
+}
+function empSelNow(dim){ return { e: S.edu, lab: dim === 'lab' ? null : S.lab, sta: (dim === 'lab' || dim === 'sta') ? null : S.sta, ind: (dim === 'lab' || dim === 'sta' || dim === 'ind') ? null : S.ind }; }
+/* seed income shape of the current (status, industry) selection: prefecture status shape x industry tilt, before the IPF; for the derivation panel */
+function empSeedShape(){
+  if (!EMPD) return null; var key = scope(), pr = S.muni ? EMP.pref_of_muni[MI[S.muni]] : S.pref ? EMP.prefs.indexOf(S.pref) : -1; if (pr < 0) return null;
+  var p = new Float64Array(16), any = false;
+  agesSel().forEach(function(a){ sexesSel().forEach(function(s){ var kk, g, y; for (kk = 0; kk < 4; kk++){ if (S.sta !== null && S.sta !== kk) continue; if (S.lab !== null && S.lab !== 0) continue; for (g = 0; g < 20; g++){ if (S.ind !== null && S.ind !== g + 1) continue; var cpb = (((pr*2 + s)*13 + a)*4 + kk)*16, tb = ((s*4 + kk)*20 + g)*16, mx = 0, tmp = new Float64Array(16), sm = 0; for (y = 0; y < 16; y++){ var t = Math.min(20, Math.max(0.05, EMPD.tilt[tb + y])); tmp[y] = EMPD.cp[cpb + y]*t; mx = Math.max(mx, tmp[y]); } for (y = 0; y < 16; y++){ tmp[y] = Math.max(tmp[y], 1e-4*mx); sm += tmp[y]; } var w = empCounts({ e: S.edu, lab: 0, sta: kk, ind: g + 1 }).paidTotal; if (!w || !sm) continue; any = true; for (y = 0; y < 16; y++) p[y] += tmp[y]/sm*w; } } }); });
+  if (!any) return null; var tot = 0, y; for (y = 0; y < 16; y++) tot += p[y]; for (y = 0; y < 16; y++) p[y] = tot ? p[y]/tot : 0; return p;
+}
+
 var UNDEF_MSG = '該当する人口が 0 人のため、この条件の分布は定義できません（分母 0）。確率 0 とは異なります。条件を広げるか、別の要素を選んでください。';
+var LOADING_MSG = '就業・産業のデータを読み込んでいます…';
+var NOEMP_MSG = '就業状態・地位・産業の分布は、このデータセットには含まれていません（段階A未配信）。';
 
 /* ---------- list rendering ---------- */
 function row(o){
@@ -522,19 +695,127 @@ function renderEdu(){
   $('list-edu').innerHTML = skipRow('edu') + '<div class="grp">' + esc(pathName()) + '　P(学歴｜…)　学歴不詳 ' + pct(r.R[7]/r.den, 1) + '</div>' + rows.join('') + '<div class="empty" style="padding-top:8px">学歴不詳は他の区分へ配分していません。不詳率が高い条件では、既知の学歴の割合を母集団の学歴分布として読めません。</div>';
   $('cap-edu').innerHTML = S.edu !== null ? '<b>' + EDU[S.edu] + '</b>' : S.skip.edu ? '<b>全学歴</b>（まとめ）' : '全学歴';
 }
+/* ---------- list rendering: employment dimensions ---------- */
+function empListState(dim){
+  if (!empAvailable()) return { html: '<div class="empty undef">' + NOEMP_MSG + '</div>', cap: '<b>未配信</b>' };
+  var R = empCounts(empSelNow(dim));
+  if (!R.ready) return { html: '<div class="empty">' + (EMP_STATE.error ? '読み込みに失敗しました：' + esc(EMP_STATE.error) : LOADING_MSG) + '</div>', cap: '読み込み中' };
+  if (!R.total) return { html: '<div class="empty undef">' + UNDEF_MSG + '</div>', cap: '<b>未定義</b>' };
+  return { R: R };
+}
+function renderLab(){
+  var st = empListState('lab'), rows = [], j, max = 0;
+  if (!st.R){ $('list-lab').innerHTML = skipRow('lab') + st.html; $('cap-lab').innerHTML = st.cap; return; }
+  var R = st.R; for (j = 0; j < 3; j++) max = Math.max(max, R.J[j]);
+  for (j = 0; j < 3; j++) rows.push(row({ id: j, name: LAB[j], sub: LAB_CODE[j], w: max ? R.J[j]/max : 0, val: pct(R.J[j]/R.total, 1), sel: S.lab === j, focus: isFocus('lab', j) }));
+  $('list-lab').innerHTML = skipRow('lab') + '<div class="grp">' + esc(pathName()) + '　P(就業状態｜…)</div>' + rows.join('') + '<div class="empty" style="padding-top:8px">就業者は国勢調査の就業者数（不詳補完後）、完全失業と非労働力の比は同じ地域・性別・年齢の労働力状態から。学歴との関連は都道府県の学歴別労働力状態を初期値に地域の人数へ合わせた推定。</div>';
+  $('cap-lab').innerHTML = S.lab !== null ? '<b>' + LAB[S.lab] + '</b>' : S.skip.lab ? '<b>就業状態計</b>（まとめ）' : '全体';
+}
+function renderSta(){
+  var st = empListState('sta'), rows = [], k, max = 0;
+  if (!st.R){ $('list-sta').innerHTML = skipRow('sta') + st.html; $('cap-sta').innerHTML = st.cap; return; }
+  var R = st.R; for (k = 0; k < 7; k++) max = Math.max(max, R.K[k]);
+  for (k = 0; k < 7; k++){ var zero = S.lab !== null && STA_LAB[k] !== S.lab; rows.push(row({ id: k, name: STA[k], sub: STA_CODE[k], w: max ? R.K[k]/max : 0, val: zero ? '—' : pct(R.K[k]/R.total, 1), sel: S.sta === k, focus: isFocus('sta', k), undef: zero })); }
+  $('list-sta').innerHTML = skipRow('sta') + '<div class="grp">' + esc(pathName()) + '　P(地位・雇用形態｜…)</div>' + rows.join('') + '<div class="empty" style="padding-top:8px">K1–K5 は就業者の内訳（国勢調査の従業上の地位を年齢別に整合した人数）。K6・K7 は就業状態の完全失業・非労働力と同じ区分で、主な仕事の収入はありません。</div>';
+  $('cap-sta').innerHTML = S.sta !== null ? '<b>' + STA_SHORT[S.sta] + '</b>' : S.skip.sta ? '<b>地位計</b>（まとめ）' : '全体';
+}
+function renderInd(){
+  var st = empListState('ind'), rows = [], g, max = 0;
+  if (!st.R){ $('list-ind').innerHTML = skipRow('ind') + st.html; $('cap-ind').innerHTML = st.cap; return; }
+  var R = st.R, emp = R.J[0]; for (g = 0; g < 21; g++) max = Math.max(max, R.G[g]);
+  var order = []; for (g = 0; g < 21; g++) order.push(g);
+  order.forEach(function(g){ var na = (S.lab !== null && S.lab !== 0 && g > 0) || (S.lab === 0 && g === 0) || (S.sta !== null && ((S.sta >= 5 && g > 0) || (S.sta < 5 && g === 0))); rows.push(row({ id: g, name: (g ? IND_LETTER[g] + ' ' : '') + IND[g], sub: IND_CODE[g], w: max ? R.G[g]/max : 0, val: na ? '—' : pct(R.G[g]/R.total, 1), sel: S.ind === g, focus: isFocus('ind', g), undef: na })); });
+  $('list-ind').innerHTML = skipRow('ind') + '<div class="grp">' + esc(pathName()) + '　P(産業｜…)　就業者 ' + pct(R.total ? emp/R.total : 0, 1) + '</div>' + rows.join('') + '<div class="empty" style="padding-top:8px">日本標準産業分類の大分類 A–T。G00 は非就業者（産業に該当なし）。「分類不能の産業」には国勢調査の産業不詳が含まれます。地域の産業構成は国勢調査の常住地の就業者（2020年）で、地位・学歴・年収との関連は就業構造基本調査（2022年、全国・都道府県）の移植です。</div>';
+  $('cap-ind').innerHTML = S.ind !== null ? '<b>' + esc(IND[S.ind]) + '</b>' : S.skip.ind ? '<b>産業計</b>（まとめ）' : '全体';
+}
+/* upstream steps for the employment dimensions (appended by pathSteps) */
+function empPathSteps(idx){
+  var out = [];
+  if (idx > 5){ var R5 = empCounts({ e: S.edu, lab: null, sta: null, ind: null }); if (S.lab !== null) out.push(['就業状態を' + LAB[S.lab] + 'に絞る', R5.ready ? fmtN(R5.J[S.lab]) + ' / ' + fmtN(R5.total) + ' = P(就業状態｜…) <b>' + pct(R5.total ? R5.J[S.lab]/R5.total : 0) + '</b>' : LOADING_MSG, '就業者は国勢調査の就業者数、完全失業・非労働力の比は労働力状態（不詳補完後）。', [['S2', 'employed / unemployed / inactive 列'], ['S8', '学歴別の労働力状態（都道府県）']], 'pre']); else out.push(['就業状態を絞らない（計）', '3区分を合算', '', null, 'pre']); }
+  if (idx > 6){ var R6 = empCounts({ e: S.edu, lab: S.lab, sta: null, ind: null }); if (S.sta !== null) out.push(['地位・雇用形態を' + STA[S.sta] + 'に絞る', R6.ready ? fmtN(R6.K[S.sta]) + ' / ' + fmtN(R6.total) + ' = P(地位｜…) <b>' + pct(R6.total ? R6.K[S.sta]/R6.total : 0) + '</b>' : LOADING_MSG, S.sta < 5 ? '従業上の地位の人数は国勢調査の地域の構成を年齢別に整合した値。学歴との関連は全国の就業構造基本調査から移植。' : '就業状態の区分と同じ。', S.sta < 5 ? [['S3', '従業上の地位（地域計）'], ['S4', '年齢 × 地位の初期値'], ['S12', '学歴 × 地位（全国）']] : [['S2', 'unemployed / inactive 列']], 'pre']); else out.push(['地位・雇用形態を絞らない（計）', '7区分を合算', '', null, 'pre']); }
+  if (idx > 7){ var R7 = empCounts({ e: S.edu, lab: S.lab, sta: S.sta, ind: null }); if (S.ind !== null) out.push(['産業を' + IND[S.ind] + 'に絞る', R7.ready ? fmtN(R7.G[S.ind]) + ' / ' + fmtN(R7.total) + ' = P(産業｜…) <b>' + pct(R7.total ? R7.G[S.ind]/R7.total : 0) + '</b>' : LOADING_MSG, S.ind ? '地域の産業別就業者（国勢調査 6-3）を周辺に、地位 × 産業の関連（都道府県の就業構造基本調査 10-1）を初期値として配分。' : '非就業者は産業に該当しない。', S.ind ? [['S10', 'area・sex・age の ' + IND_CODE[S.ind] + ' 列'], ['S13', '地位 × 産業（都道府県）']] : [['S2', 'unemployed / inactive 列']], 'pre']); else out.push(['産業を絞らない（計）', '21区分を合算', '', null, 'pre']); }
+  return out;
+}
+/* hub descriptions */
+function empHubHtml(dim){
+  var avail = empAvailable() ? '' : '<p class="note">' + NOEMP_MSG + '</p>';
+  if (dim === 'lab') return '<span class="eyebrow">次元ノード</span><h2>就業状態</h2><p class="sub">3 ノード / コード J1–J3</p>' + dl(LAB.map(function(n, j){ return [LAB_CODE[j] + ' ' + n, LAB_NOTE[j]]; })) + '<p>2020年国勢調査の労働力状態（不詳補完後）に基づきます。就業者数は既存モデルの就業率と同じ値で、完全失業と非労働力の比は同じ地域・性別・年齢の公表値です。学歴との関連は都道府県の学歴別労働力状態（表12-1）を初期値に、地域の学歴人数と就業者数に合わせて推定しています。</p>' + avail;
+  if (dim === 'sta') return '<span class="eyebrow">次元ノード</span><h2>地位・雇用形態</h2><p class="sub">7 ノード / コード K1–K7</p>' + dl(STA.map(function(n, k){ return [STA_CODE[k] + ' ' + n, STA_NOTE[k]]; })) + '<p>K1–K5 は国勢調査の従業上の地位（地域計）を年齢別の初期値で整合した既存モデルの内部量で、年収分布の混合重みとして使われてきたものです。学歴 × 地位の関連は全国の就業構造基本調査（04000、地位別）から移植しています。</p>' + avail;
+  return '<span class="eyebrow">次元ノード</span><h2>産業</h2><p class="sub">21 ノード / コード G00–G20</p>' + dl([['区分', '日本標準産業分類 大分類 A–T（G01–G20）と、非就業者の「該当なし」G00'], ['不詳', '国勢調査2020の産業不詳は T 分類不能の産業に含まれる（別区分にできない）'], ['地域の周辺', '国勢調査 表6-3：市区町村 × 性別 × 年齢 × 産業別就業者（常住地）'], ['関連', '地位 × 産業は都道府県（就業構造基本調査 10-1）、産業 × 年収は全国（表24、年齢なし）の移植。学歴 × 産業の直接の関連は公表表がなく仮定（地位・年収を介した条件付き独立）']]) + '<p>産業は年収帯の直前の列で、産業を選ぶと年収帯の分布が産業別の形（所得形状の傾き）に変わります。</p>' + avail;
+}
+/* item panels for lab / sta / ind */
+function empItemHtml(dim, id){
+  var pre = pathSteps(dim), R = empCounts(empSelNow(dim)), h = '', cur = [], nm, code, cnt, share;
+  if (!empAvailable()) return '<span class="eyebrow">' + DIM_LABEL[dim] + '</span><h2>' + esc(dim === 'lab' ? LAB[id] : dim === 'sta' ? STA[id] : IND[id]) + '</h2><p class="note">' + NOEMP_MSG + '</p>';
+  if (!R.ready) return '<span class="eyebrow">' + DIM_LABEL[dim] + '</span><h2>' + esc(dim === 'lab' ? LAB[id] : dim === 'sta' ? STA[id] : IND[id]) + '</h2><p class="note">' + (EMP_STATE.error ? esc(EMP_STATE.error) : LOADING_MSG) + '</p>';
+  if (!R.total) return '<span class="eyebrow">' + DIM_LABEL[dim] + '</span><h2>' + esc(dim === 'lab' ? LAB[id] : dim === 'sta' ? STA[id] : IND[id]) + '</h2><p class="note">' + UNDEF_MSG + '</p>' + calc(pre) + aggActions();
+  var scopeTxt = esc(scopeName()) + '・' + esc(pathName()), den = R.total, mstr = S.muni ? 'area=' + S.muni : scopeKs(scope()).length + ' 地域', agg = !S.muni || G.munis[MI[S.muni]].s === 'aggregated_wards';
+  if (dim === 'lab'){
+    nm = LAB[id]; code = LAB_CODE[id]; cnt = R.J[id]; share = cnt/den;
+    h = '<span class="eyebrow">就業状態</span><h2>' + nm + '</h2><p class="sub">' + code + ' / ' + scopeTxt + '</p>' + dl([['区分', LAB_NOTE[id]], ['推定人数', fmtN(cnt) + '人'], ['P(就業状態｜…)', pct(share)], ['対象モデル人口（分母）', fmtN(den) + '人']]);
+    cur = [
+      ['就業者数を既存モデルから取る', '就業者 ' + fmtN(R.J[0]) + ' 人（分母 ' + fmtN(den) + ' 人の ' + pct(R.J[0]/den, 1) + '）', '国勢調査の就業率（不詳補完後）を年齢別に用いる既存モデル（S2）の就業者数と同じ。学歴を選んでいる場合は、学歴別就業率（表12-1、都道府県）を初期値に地域の学歴人数へ合わせた学歴別の就業者数。', [['S2', mstr + ' の employed 列'], ['S8', '学歴別就業率（' + (S.pref ? esc(PI[S.pref].n) : '都道府県') + '）'], ['M3', '学歴 × 年収の 0 円成分']]],
+      ['非就業者を完全失業と非労働力に分ける', '完全失業 ' + fmtN(R.J[1]) + ' + 非労働力 ' + fmtN(R.J[2]) + ' = ' + fmtN(R.J[1] + R.J[2]) + ' 人', '同じ地域・性別・年齢の完全失業者数と非労働力人口の比（国勢調査 参考表1）を周辺に、学歴別の完全失業割合（表12-1、都道府県、擬似人口100で全学歴へ縮約）を初期値として、学歴 × {完全失業, 非労働力} を反復比例調整で配分。', [['S2', mstr + ' の unemployed / inactive 列'], ['S8', 'labor_status=12（完全失業）と 2（非労働力）の学歴別人数']]],
+      ['P(' + nm + '｜' + scopeTxt + ') を求める', fmtN(cnt) + ' / ' + fmtN(den) + ' = <b>' + pct(share) + '</b>', '完全失業・非労働力と年収の関連は仮定しない（どちらも主な仕事の収入なし）。' + (agg ? '都道府県・全国・政令市は市区町村ブロックの合計。' : '')]
+    ];
+  } else if (dim === 'sta'){
+    nm = STA[id]; code = STA_CODE[id]; cnt = R.K[id]; share = cnt/den;
+    h = '<span class="eyebrow">地位・雇用形態</span><h2>' + nm + '</h2><p class="sub">' + code + ' / ' + scopeTxt + '</p>' + dl([['区分', STA_NOTE[id]], ['推定人数', fmtN(cnt) + '人'], ['P(地位｜…)', pct(share)], ['対象モデル人口（分母）', fmtN(den) + '人'], ['就業者に占める割合', id < 5 && R.J[0] ? pct(R.K[id]/R.J[0]) : '—']]);
+    if (id < 5) cur = [
+      ['地域の従業上の地位の人数を整合する', 'K1 ' + fmtN(R.K[0]) + '、K2 ' + fmtN(R.K[1]) + '、K3 ' + fmtN(R.K[2]) + '、K4 ' + fmtN(R.K[3]) + '、K5 ' + fmtN(R.K[4]) + '（就業者 ' + fmtN(R.J[0]) + ' 人）', '国勢調査の地域計の従業上の地位（参考表5-1）と年齢 × 地位の初期値（表3-1）を、年齢別の就業者数に合わせて反復比例調整した既存モデルの W(m,s,a,k)。', [['S3', mstr + ' の従業上の地位'], ['S4', '年齢 × 地位の初期値'], ['M1', 'employment_status 配列']]],
+      S.edu !== null ? ['学歴 × 地位の関連を移植して学歴別に配分する', '全国の P(地位｜学歴, 性別, 年齢) × 学歴人数 を初期値に、学歴 × 年収（固定）・地位・産業の周辺へ反復比例調整', '就業構造基本調査 04000 を地位別（正規・非正規・雇用者・自営）に集計した全国表。家族従業（K5）は自営（K4）の学歴構成に従い、K5 と非就業の分割は学歴別就業率（表12-1）を初期値にする。', [['S12', 'status=22,23,2,1 × education'], ['S8', '学歴別就業率']]] : null,
+      ['P(' + nm + '｜' + scopeTxt + ') を求める', fmtN(cnt) + ' / ' + fmtN(den) + ' = <b>' + pct(share) + '</b>', '国勢調査（2020年、調査週の就業）と就業構造基本調査（2022年、普段の就業）の地位区分は名称が同じでも定義が異なる。']
+    ]; else cur = [
+      ['非就業者を完全失業と非労働力に分ける', '完全失業 ' + fmtN(R.K[5]) + ' + 非労働力 ' + fmtN(R.K[6]) + ' = ' + fmtN(R.K[5] + R.K[6]) + ' 人', '就業状態 J2・J3 と同じ配分（参考表1 の比率を周辺、表12-1 の学歴別割合を初期値）。', [['S2', mstr + ' の unemployed / inactive 列'], ['S8', 'labor_status=12, 2']]],
+      ['P(' + nm + '｜' + scopeTxt + ') を求める', fmtN(cnt) + ' / ' + fmtN(den) + ' = <b>' + pct(share) + '</b>', '主な仕事の収入はなく、年収帯は「50万円未満（就業収入なしを含む）」に入る。']
+    ];
+  } else {
+    nm = IND[id]; code = IND_CODE[id]; cnt = R.G[id]; share = cnt/den;
+    h = '<span class="eyebrow">産業</span><h2>' + (id ? IND_LETTER[id] + ' ' : '') + esc(nm) + '</h2><p class="sub">' + code + ' / ' + scopeTxt + '</p>' + dl([['区分', id ? '日本標準産業分類 大分類 ' + IND_LETTER[id] + (id === 20 ? '（国勢調査の産業不詳を含む）' : '') : '非就業者（完全失業・非労働力）。産業に該当しない'], ['推定人数', fmtN(cnt) + '人'], ['P(産業｜…)', pct(share)], ['対象モデル人口（分母）', fmtN(den) + '人'], id ? ['就業者に占める割合', R.J[0] ? pct(cnt/R.J[0]) : '—'] : null]);
+    if (id) cur = [
+      ['地域の産業別就業者を国勢調査から取る', (S.muni && !agg ? esc(G.munis[MI[S.muni]].n) : esc(scopeName())) + ' × ' + (S.sex !== null ? SEX[S.sex] : '男女') + ' × ' + (S.age !== null ? AGE[S.age] : '全年齢') + ' の ' + IND_LETTER[id] + ' 列を、モデルの就業者数に比例させる', '国勢調査 表6-3（常住地の就業者、2020年）。就業構造基本調査（2022年、標本）の産業構成とは都市で TV 0.2 程度の差がある。無給家族従業者の産業は都道府県の自営業主の構成で置き、残りを有給の周辺にする。', [['S10', mstr + '、sex、age の ' + IND_CODE[id] + ' 列'], ['S13', '家族従業の産業構成（都道府県の自営）']]],
+      ['地位 × 産業・産業 × 年収の関連を初期値に配分する', '初期値 = 学歴人数 × P(地位｜学歴) × P(産業｜地位, 都道府県) × P(年収｜地位, 産業)；周辺 = 学歴 × 年収（固定）、地位、産業', '都道府県の 10-1（全国へ擬似人口300で縮約、在学中は在学者行）と表24（全国、年齢なし）の傾き。学歴 × 産業の直接の関連は公表表がないため仮定しない。', [['S13', (S.pref ? esc(PI[S.pref].n) : '都道府県') + ' の地位 × 産業 × 年齢'], ['S11', '産業 × 地位 × 所得（全国）'], ['S12', '学歴 × 地位（全国）']]],
+      ['P(' + esc(nm) + '｜' + scopeTxt + ') を求める', fmtN(cnt) + ' / ' + fmtN(den) + ' = <b>' + pct(share) + '</b>', (S.lab === null && S.sta === null ? '分母には非就業者（G00）を含む。' : '') + '産業構成は地域の観測値、学歴・地位・年収との関連は移植した推定。']
+    ]; else cur = [
+      ['非就業者を数える', '完全失業 ' + fmtN(R.K[5]) + ' + 非労働力 ' + fmtN(R.K[6]) + ' = ' + fmtN(cnt) + ' 人', '就業状態 J2・J3 と同じ。', [['S2', mstr + ' の unemployed / inactive 列']]],
+      ['P(該当なし｜' + scopeTxt + ') を求める', fmtN(cnt) + ' / ' + fmtN(den) + ' = <b>' + pct(share) + '</b>', '']
+    ];
+  }
+  if (!cnt) h += '<p class="note">この条件では「' + esc(nm) + '」の推定人数が 0 人のため、右の列の分布は定義できません。</p>' + aggActions();
+  h += '<h3 class="dh">P(' + esc(nm) + '｜' + scopeTxt + ') の導出</h3>' + calc(pre.concat(cur.filter(function(x){ return x; }), jointStep(dim, id)));
+  var nxt = DIMS[DIMS.indexOf(dim) + 1];
+  h += '<button class="action" data-go="' + dim + '" data-id="' + id + '">この区分の' + DIM_LABEL[nxt] + 'を展開</button>';
+  return h;
+}
+/* income derivation when a labour-status / position / industry condition is selected */
+function derivationEmp(y){
+  var ri = incDist(), R = empCounts({ e: S.edu, lab: S.lab, sta: S.sta, ind: S.ind }), h = '', stages = [];
+  var noPaid = R.total > 0 && R.paidTotal === 0;
+  var base = S.edu !== null ? (function(){ var key = scope(), p = new Float64Array(16), den = 0, yy; agesSel().forEach(function(a){ sexesSel().forEach(function(s){ var T = eduTab(key, s, a)[S.edu]; for (yy = 0; yy < 16; yy++){ p[yy] += T[yy]; den += T[yy]; } }); }); for (yy = 0; yy < 16; yy++) p[yy] = den ? p[yy]/den : 0; return p; })() : (function(){ var d = dist(scope()), p = new Float64Array(16), den = 0, yy; agesSel().forEach(function(a){ sexesSel().forEach(function(s){ den += d.pop[s][a]; for (yy = 0; yy < 16; yy++) p[yy] += d.cnt[s][a][yy]; }); }); for (yy = 0; yy < 16; yy++) p[yy] = den ? p[yy]/den : 0; return p; })();
+  stages.push({ dim: 'edu', t: '就業条件なしの年収分布（' + (S.edu !== null ? EDU[S.edu] : '全学歴') + '）', p: base, s: '既存の5属性モデルの分布。就業状態・地位・産業の列を合算するとこの分布に戻る（周辺を固定して配分しているため）。', src: [[S.edu !== null ? 'M3' : 'M2', 'counts 配列']] });
+  if (!noPaid){
+    var seed = empSeedShape();
+    if (seed) stages.push({ dim: 'sta', t: '地位' + (S.ind !== null ? '・産業' : '') + 'の所得形状（初期値）', p: seed, s: '都道府県 × 性別 × 年齢 × 地位の所得形状（就業構造基本調査 02300）に、全国の産業 × 地位 × 所得（表24、年齢なし）から作った産業別の傾き（0.05〜20 倍に制限）を掛けた形。有給の地位（K1–K4）だけが持つ。', src: [['S5', '地位別の所得形状'], ['S11', '産業別の傾き']] });
+    stages.push({ dim: 'ind', t: '周辺への整合後：P(年収帯｜' + esc(pathName()) + ')', p: ri.p, s: '学歴 × 年収（固定）、地位、産業の3つの周辺に合うよう反復比例調整した結果の、選択した条件のセル。' + (R.paidTotal < R.total ? '無給家族従業・完全失業・非労働力の ' + fmtN(R.total - R.paidTotal) + ' 人は「50万円未満」に入る。' : ''), src: [['S10', '産業の周辺'], ['M3', '学歴 × 年収の周辺']] });
+  } else stages.push({ dim: 'ind', t: 'P(年収帯｜' + esc(pathName()) + ')', p: ri.p, s: '選択した区分は主な仕事の収入を持たないため、全員が「50万円未満（就業収入なしを含む）」。', src: [['S2', 'unemployed / inactive 列']] });
+  stages[stages.length - 1].last = true; stages[0].clip = true;
+  h += renderStages(stages, y, '年収分布の段階（就業条件つき）');
+  return h;
+}
+
 function renderInc(){
   var r = incDist(), rows = [], max = 0, y;
-  if (!r.defined){ $('list-inc').innerHTML = '<div class="grp">' + esc(scopeName()) + '・' + esc(pathName()) + '　P(年収帯｜…)</div><div class="empty undef">' + UNDEF_MSG + '</div>'; $('cap-inc').innerHTML = '<b>未定義</b>'; return; }
+  if (!r.defined){ $('list-inc').innerHTML = '<div class="grp">' + esc(scopeName()) + '・' + esc(pathName()) + '　P(年収帯｜…)</div><div class="empty' + (r.loading ? '' : ' undef') + '">' + (r.loading ? LOADING_MSG : UNDEF_MSG) + '</div>'; $('cap-inc').innerHTML = '<b>未定義</b>'; return; }
   for (y = 0; y < 16; y++) max = Math.max(max, r.p[y]);
   for (y = 0; y < 16; y++) rows.push(row({ id: y, name: INC[y], sub: INC_CODE[y], w: max ? r.p[y]/max : 0, val: pct(r.p[y]), sel: S.inc === y, focus: isFocus('inc', y) }));
   $('list-inc').innerHTML = '<div class="grp">' + esc(scopeName()) + '・' + esc(pathName()) + '　P(年収帯｜…)</div>' + rows.join('') + '<div class="empty" style="padding-top:8px">主な仕事から通常得る年収（2022年）。年金・資産所得・副業は含まない。「50万円未満」には非就業者などの就業収入なしを含む。' + unkNote() + '</div>';
-  $('cap-inc').innerHTML = S.inc !== null ? '<b>' + INC[S.inc] + '</b>' : (S.edu !== null ? EDU[S.edu] + 'の分布' : S.sex !== null ? SEX[S.sex] + 'の分布' : S.age !== null ? AGE[S.age] + 'の分布' : '全体の分布');
+  $('cap-inc').innerHTML = S.inc !== null ? '<b>' + INC[S.inc] + '</b>' : (S.ind !== null ? '産業別の分布' : S.sta !== null ? STA_SHORT[S.sta] + 'の分布' : S.lab !== null ? LAB[S.lab] + 'の分布' : S.edu !== null ? EDU[S.edu] + 'の分布' : S.sex !== null ? SEX[S.sex] + 'の分布' : S.age !== null ? AGE[S.age] + 'の分布' : '全体の分布');
 }
 function renderCrumb(){
-  var levels = ['pref','muni','age','sex','edu','inc'], cur = 0, h = '';
+  var levels = DIMS, cur = 0, h = '';
   levels.forEach(function(d, i){ var v = d === 'pref' ? S.pref : d === 'muni' ? S.muni : S[d]; if ((v !== null && v !== undefined) || (d !== 'inc' && S.skip[d])) cur = i + 1; });
   h += '<button data-lv="0" class="' + (cur === 0 ? 'cur' : '') + '" style="--sw:var(--muted)">全国</button>';
-  levels.forEach(function(d, i){ var v = d === 'pref' ? S.pref : d === 'muni' ? S.muni : S[d]; if (v === null || v === undefined){ if (d !== 'inc' && S.skip[d]){ if (i + 1 > cur) cur = i + 1; if (d === 'pref' || (d === 'muni' && !S.pref)) return; h += '<span class="sep">›</span><button data-lv="' + (i + 1) + '" class="skip" style="--sw:' + DIM_VAR[d] + '">' + (d === 'muni' && S.pref ? esc(PI[S.pref].n) + '全体' : AGG_LABEL[d]) + '</button>'; } return; } var name = d === 'pref' ? PI[v].n : d === 'muni' ? G.munis[MI[v]].n : d === 'age' ? AGE[v] : d === 'sex' ? SEX[v] : d === 'edu' ? EDU[v] : INC[v]; h += '<span class="sep">›</span><button data-lv="' + (i + 1) + '" class="' + (i + 1 === cur ? 'cur' : '') + '" style="--sw:' + DIM_VAR[d] + '"><span class="chipdot"></span>' + esc(name) + '</button>'; });
+  levels.forEach(function(d, i){ var v = d === 'pref' ? S.pref : d === 'muni' ? S.muni : S[d]; if (v === null || v === undefined){ if (d !== 'inc' && S.skip[d]){ if (i + 1 > cur) cur = i + 1; if (d === 'pref' || (d === 'muni' && !S.pref)) return; h += '<span class="sep">›</span><button data-lv="' + (i + 1) + '" class="skip" style="--sw:' + DIM_VAR[d] + '">' + (d === 'muni' && S.pref ? esc(PI[S.pref].n) + '全体' : AGG_LABEL[d]) + '</button>'; } return; } var name = d === 'pref' ? PI[v].n : d === 'muni' ? G.munis[MI[v]].n : d === 'age' ? AGE[v] : d === 'sex' ? SEX[v] : d === 'edu' ? EDU[v] : d === 'lab' ? LAB[v] : d === 'sta' ? STA_SHORT[v] : d === 'ind' ? IND[v] : INC[v]; h += '<span class="sep">›</span><button data-lv="' + (i + 1) + '" class="' + (i + 1 === cur ? 'cur' : '') + '" style="--sw:' + DIM_VAR[d] + '"><span class="chipdot"></span>' + esc(name) + '</button>'; });
   $('crumb').innerHTML = h;
 }
 
@@ -551,10 +832,13 @@ var SRC = {
   S7: { fam: 'census', nm: '2020年国勢調査 就業状態等基本集計 表11-2', short: '国勢調査 表11-2', year: 2020, file: 'sources/education/census_education_tidy.csv.gz', url: 'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201217&fileKind=0', what: '市区町村 × 性別 × 年齢 × 在学・最終卒業学校', use: '学歴人数（学歴構成）' },
   S8: { fam: 'census', nm: '2020年国勢調査 就業状態等基本集計 表12-1', short: '国勢調査 表12-1', year: 2020, file: 'sources/education/census_education_labor_tidy.csv.gz', url: 'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&fileKind=0', what: '全国・都道府県・主要都市 × 性別 × 年齢 × 学歴 × 労働力状態', use: '学歴別の就業率の初期値' },
   S9: { fam: 'ess', nm: '2022年就業構造基本調査 全国編 04000', short: '就業構造基本調査 04000', year: 2022, file: 'sources/education/income_education_tidy.csv.gz', url: 'https://www.e-stat.go.jp/dbview?sid=0004008157', what: '全国 × 性別 × 年齢 × 学歴 × 所得（有業者）', use: '学歴と年収の関連の初期分布' },
+  S12: {fam:'ess',nm:'2022年就業構造基本調査 全国編 04000（従業上の地位別）',short:'就業構造基本調査 04000 地位別',year:2022,file:'sources/industry/education_status_income_tidy.csv.gz',url:'https://www.e-stat.go.jp/dbview?sid=0004008157',what:'全国 × 性別 × 年齢 × 学歴 × 所得 × 地位（自営・雇用者・正規・非正規）',use:'学歴 × 地位の関連の初期値（段階A）'},
+  S13: {fam:'ess',nm:'2022年就業構造基本調査 地域編 表10-1',short:'就業構造基本調査 10-1',year:2022,file:'sources/industry/ess_status_industry_age_tidy.csv.gz',url:'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077583&fileKind=0',what:'全国・都道府県・主要都市 × 性別 × 在学/卒業 × 地位 × 産業 × 年齢',use:'地位 × 産業の関連の初期値（都道府県）と都市行での検証（段階A）'},
   G1: { fam: 'gen', nm: 'geography.csv / parent_mapping.csv（生成ファイル）', short: '生成ファイル', year: 2020, file: 'data/geography.csv, data/parent_mapping.csv', url: '', what: '地域コード・区分・都道府県コード、政令市と行政区の対応', use: '所属関係と合算の範囲' },
   M1: { fam: 'model', nm: 'model_arrays.npz（税補助なしの内部配列）', short: '内部配列（税補助なし）', year: 2020, file: 'data/model_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '就業構成を反映した段階の分布' },
   M2: { fam: 'model', nm: 'final_arrays.npz（学歴・産業構成を反映した内部配列）', short: '内部配列（M1+M2）', year: 2022, file: 'data/final_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '年齢・性別までの最終分布' },
-  M3: { fam: 'model', nm: 'education_leaf_arrays.npz / municipality_model_v2.npz', short: '内部配列（学歴別）', year: 2022, file: 'data/education_leaf_arrays.npz, data/municipality_model_v2.npz', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 年収の人数', use: '学歴別の最終分布（このページでは同じ配分計算を再現）' }
+  M3: { fam: 'model', nm: 'education_leaf_arrays.npz / municipality_model_v2.npz', short: '内部配列（学歴別）', year: 2022, file: 'data/education_leaf_arrays.npz, data/municipality_model_v2.npz', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 年収の人数', use: '学歴別の最終分布（このページでは同じ配分計算を再現）' },
+  M4: { fam: 'model', nm: 'employment_a.npz / employment_a_agg.npz（段階A の配分ブロック）', short: '内部配列（就業・産業）', year: 2022, file: 'data/employment_a.npz, web/employment/agg_*.bin, web/employment_inputs.bin', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 地位 × 産業 × 年収の人数（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計済みブロック）', use: '就業状態・地位・産業の条件付き分布（段階A、試験）' }
 };
 function sid(id){ var r = SRC[id]; return '<button type="button" class="sid ' + r.fam + '" data-src="' + id + '" title="' + esc(r.nm) + '">' + id + '</button>'; }
 function ref(list){ if (!list || !list.length) return ''; return '<span class="refs"><span class="lab">参照データ</span>' + list.map(function(it){ var r = SRC[it[0]]; return '<span class="r">' + sid(it[0]) + (r.url ? '<a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.short) + '</a>' : esc(r.short)) + ' <code>' + esc(r.file.split(', ')[0].split('/').pop()) + '</code>' + (it[1] ? '　' + it[1] : '') + '</span>'; }).join('') + '</span>'; }
@@ -564,8 +848,8 @@ function renderScope(){
 }
 function renderSources(hl){
   var P = $('panel'); P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--line-strong)');
-  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','G1','M1','M2','M3'];
-  P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 9 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json と catalog/education/manifest.json に記録。</p>';
+  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','G1','M1','M2','M3','M4'];
+  P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 11 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json、catalog/education/manifest.json、catalog/industry/manifest.json に記録。</p>';
   if (hl){ var el = $('src-' + hl); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }
 }
 function calc(steps, start){ start = start || 0; return '<ol class="calc">' + steps.filter(function(x){ return x; }).map(function(st, i){ return '<li' + (st[4] ? ' class="' + st[4] + '"' : '') + '><span class="no">' + (start + i + 1) + '</span><span class="tt">' + st[0] + '</span>' + (st[1] ? '<span class="f">' + st[1] + '</span>' : '') + (st[2] ? '<span class="ex">' + st[2] + '</span>' : '') + ref(st[3]) + '</li>'; }).join('') + '</ol>'; }
@@ -579,6 +863,9 @@ function aggActions(){
   if (S.age !== null) b.push('<button class="action" data-go="skipdim" data-id="age">年齢をまとめて見る</button>');
   if (S.sex !== null) b.push('<button class="action" data-go="skipdim" data-id="sex">性別をまとめて見る</button>');
   if (S.edu !== null) b.push('<button class="action" data-go="skipdim" data-id="edu">学歴をまとめて見る</button>');
+  if (S.lab !== null) b.push('<button class="action" data-go="skipdim" data-id="lab">就業状態をまとめて見る</button>');
+  if (S.sta !== null) b.push('<button class="action" data-go="skipdim" data-id="sta">地位をまとめて見る</button>');
+  if (S.ind !== null) b.push('<button class="action" data-go="skipdim" data-id="ind">産業をまとめて見る</button>');
   if (S.muni && S.pref) b.push('<button class="action" data-go="skipdim" data-id="muni">' + esc(PI[S.pref].n) + '全体で見る</button>');
   return b.length ? '<p class="l" style="margin-top:8px">広い区分で見る</p><div class="tags">' + b.join(' ') + '</div>' : '';
 }
@@ -632,6 +919,7 @@ function pathSteps(dim){
     if (S.edu !== null) out.push(['学歴を' + EDU[S.edu] + 'に絞る', fmtN(r0.R[S.edu]) + ' / ' + fmtN(r0.den) + ' = P(学歴｜…) <b>' + pct(r0.den ? r0.R[S.edu]/r0.den : 0) + '</b>', '学歴人数は国勢調査の按分。', [['S7', 'E' + ('0' + (S.edu + 1)).slice(-2) + ' 列']], 'pre']);
     else out.push(['学歴を絞らない（全学歴）', '8区分を合算・' + fmtN(r0.den) + ' 人', '', null, 'pre']);
   }
+  if (idx > 5 && empAvailable()) out = out.concat(empPathSteps(idx));
   return out;
 }
 /* closing step: multiply the conditional probabilities selected so far (including the focused item) into a joint probability within the scope */
@@ -642,10 +930,14 @@ function jointStep(dim, id){
   if (a !== null){ var na0 = d0.pop[0][a] + d0.pop[1][a]; add(AGE[a], d0.total ? na0/d0.total : 0); }
   if (DIMS.indexOf(dim) >= 3 && sx !== null){ var n0 = 0, t0 = 0, ages = a === null ? [0,1,2,3,4,5,6,7,8,9,10,11,12] : [a]; ages.forEach(function(aa){ n0 += d0.pop[sx][aa]; t0 += d0.pop[0][aa] + d0.pop[1][aa]; }); add(SEX[sx], t0 ? n0/t0 : 0); }
   if (DIMS.indexOf(dim) >= 4 && e !== null){ var R0 = 0, den0 = 0, ages2 = a === null ? [0,1,2,3,4,5,6,7,8,9,10,11,12] : [a], sexes2 = sx === null ? [0,1] : [sx]; ages2.forEach(function(aa){ sexes2.forEach(function(ss){ den0 += d0.pop[ss][aa]; R0 += d0.edu[ss][aa][e]; }); }); add(EDU[e], den0 ? R0/den0 : 0); }
+  var di = DIMS.indexOf(dim), lb = dim === 'lab' ? id : S.lab, st = dim === 'sta' ? id : S.sta, ind = dim === 'ind' ? id : S.ind;
+  if (di >= 5 && lb !== null && empAvailable()){ var Rl = empCounts({ e: e, lab: null, sta: null, ind: null }); if (Rl.ready && Rl.total) add(LAB[lb], Rl.J[lb]/Rl.total); }
+  if (di >= 6 && st !== null && empAvailable()){ var Rs = empCounts({ e: e, lab: lb, sta: null, ind: null }); if (Rs.ready && Rs.total) add(STA_SHORT[st], Rs.K[st]/Rs.total); }
+  if (di >= 7 && ind !== null && empAvailable()){ var Rg = empCounts({ e: e, lab: lb, sta: st, ind: null }); if (Rg.ready && Rg.total) add(IND[ind], Rg.G[ind]/Rg.total); }
   if (dim === 'inc'){ var ri = incDist(); add(INC[id], ri.p[id]); }
   if (terms.length < 2) return [];
   cnt = prod * d0.total;
-  return [['ここまでの条件付き確率を掛け合わせる', terms.join(' × ') + ' = <b>' + pct(prod, 3) + '</b>　→ × ' + fmtN(d0.total) + ' 人 = <b>' + fmtN(cnt) + '</b> 人', 'P(' + labels.join(', ') + '｜' + esc(scopeName()) + ')。分母は' + esc(scopeName()) + 'の15歳以上人口。' + (dim === 'inc' ? 'CSV の p_age_sex_education_income_given_municipality に相当。' : ''), null, 'tot']];
+  return [['ここまでの条件付き確率を掛け合わせる', terms.join(' × ') + ' = <b>' + pct(prod, 3) + '</b>　→ × ' + fmtN(d0.total) + ' 人 = <b>' + fmtN(cnt) + '</b> 人', 'P(' + labels.join(', ') + '｜' + esc(scopeName()) + ')。分母は' + esc(scopeName()) + 'の15歳以上人口。' + (dim === 'inc' ? (empSel() || di >= 5 && (lb !== null || st !== null || ind !== null) ? '就業条件を含む同時確率。5属性 CSV には含まれない。' : 'CSV の p_age_sex_education_income_given_municipality に相当。') : ''), null, 'tot']];
 }
 function renderPanel(){
   var P = $('panel'), f = S.focus, h = '';
@@ -656,7 +948,7 @@ function renderPanel(){
   P.style.setProperty('--sw', f.dim ? DIM_VAR[f.dim] : 'var(--line-strong)');
   P.style.setProperty('--soft', f.dim ? DIM_SOFT[f.dim] : 'var(--accent-soft)');
   if (!f.dim){
-    h = '<span class="eyebrow">属性パネル</span><h2>ノードを選んでください</h2><p class="sub">P(年齢, 性別, 学歴, 年収帯｜市区町村)</p><p>6つの次元ノードは左から右へ「都道府県に属する市区町村」「地域の年齢構成」「年齢ごとの男女比」「性別・年齢ごとの学歴構成」「その条件での年収帯の分布」という包含関係で繋がっています。</p><p>左のパレットでノードをクリックすると中央に配置され、所属要素の一覧が開きます。もう一度クリック（または列の ×）で外れ、その次元は合算されます。一覧の要素をクリックすると選択され、右隣の列がその要素の内訳に切り替わり、ここに属性が表示されます。各列の先頭にある「…でまとめる」を選ぶと、その次元を飛ばして合算のまま右へ進めます（例：都道府県を選び、市区町村をまとめて都道府県全体の年齢構成を見る）。</p><p>項目をクリックすると、その値（人口の割合、学歴の割合、年収帯の確率など）がどの統計から出発してどう計算されたかが、段階ごとにここに表示されます。年収帯では途中の分布の形も並べます。各ステップには参照したデータ（統計表・ファイル・列）を示し、チップを押すとデータソース一覧で確認できます。ハブ間の点線をクリックすると、次元同士のつながりの説明が出ます。</p><p class="note">2020年国勢調査・2022年就業構造基本調査・市区町村のすがた2024 を組み合わせたモデル推定です。</p>';
+    h = '<span class="eyebrow">属性パネル</span><h2>ノードを選んでください</h2><p class="sub">P(年齢, 性別, 学歴, 就業状態, 地位, 産業, 年収帯｜市区町村)</p><p>9つの次元ノードは左から右へ「都道府県に属する市区町村」「地域の年齢構成」「年齢ごとの男女比」「性別・年齢ごとの学歴構成」「就業状態・従業上の地位・産業」「その条件での年収帯の分布」という包含関係で繋がっています。就業状態・地位・産業（段階A）は5属性の公開値を周辺として固定したまま条件付きで配分した試験的な属性で、' + (empAvailable() ? '地域を選ぶと必要なデータを読み込みます。' : 'このデータセットには含まれていません。') + '</p><p>左のパレットでノードをクリックすると中央に配置され、所属要素の一覧が開きます。もう一度クリック（または列の ×）で外れ、その次元は合算されます。一覧の要素をクリックすると選択され、右隣の列がその要素の内訳に切り替わり、ここに属性が表示されます。各列の先頭にある「…でまとめる」を選ぶと、その次元を飛ばして合算のまま右へ進めます（例：都道府県を選び、市区町村をまとめて都道府県全体の年齢構成を見る）。</p><p>項目をクリックすると、その値（人口の割合、学歴の割合、年収帯の確率など）がどの統計から出発してどう計算されたかが、段階ごとにここに表示されます。年収帯では途中の分布の形も並べます。各ステップには参照したデータ（統計表・ファイル・列）を示し、チップを押すとデータソース一覧で確認できます。ハブ間の点線をクリックすると、次元同士のつながりの説明が出ます。</p><p class="note">2020年国勢調査・2022年就業構造基本調査・市区町村のすがた2024 を組み合わせたモデル推定です。</p>';
   }
   else if (f.id === 'all'){
     var dsk = dist(scope()), lbl = f.dim === 'muni' && S.pref ? esc(PI[S.pref].n) + '全体' : AGG_LABEL[f.dim];
@@ -668,6 +960,7 @@ function renderPanel(){
     else if (f.dim === 'muni') h = '<span class="eyebrow">次元ノード</span><h2>市区町村</h2><p class="sub">1,916 ノード / コード 5桁</p>' + dl([['要素数', '1,741 市区町村 + 175 行政区'], ['境界', '2020年国勢調査時点'], ['未定義', '双葉町 07546（2020年の15歳以上人口が0）'], ['ファイル', '<span class="mono">data/municipalities_v2/{code}.json.gz</span>']]) + '<p>政令指定都市は市全体と各行政区の両方を収録しています。行政区は市の内訳なので、都道府県・全国の合算からは除いています。東京23区は各区を市区町村として扱います。</p>';
     else if (f.dim === 'age') h = '<span class="eyebrow">次元ノード</span><h2>年齢</h2><p class="sub">13 ノード / コード 01–13</p>' + dl([['区分', '15～19歳から70～74歳まで5歳刻み、75歳以上は一括（内部の年齢差は所得の条件に反映されない）'], ['対象', '15歳以上の居住者。15歳未満は含まない'], ['出所', '2020年国勢調査（年齢不詳を補完した値。本モデルでは追加推定しない）'], ['分布', 'P(年齢｜地域) = 人口(地域, 年齢) / 人口(地域)']]) + '<p>年齢は市区町村ごとの人口構成として観測されています。年齢を選ぶと右の列がその年齢の内訳に切り替わります。</p>';
     else if (f.dim === 'sex') h = '<span class="eyebrow">次元ノード</span><h2>性別</h2><p class="sub">2 ノード / コード 1, 2</p>' + dl([['区分', '男・女'], ['出所', '2020年国勢調査（不詳補完結果）、就業構造基本調査の男女別表'], ['分布', 'P(性別｜地域, 年齢) = 人口(地域, 年齢, 性別) / 人口(地域, 年齢)']]) + '<p>公表統計の男女区分をそのまま使っています。性自認の分布や第三の区分を推定するものではありません。年収の推定は最初から男女別に行われており、男女計はその合計です。</p>';
+    else if (f.dim === 'lab' || f.dim === 'sta' || f.dim === 'ind') h = empHubHtml(f.dim);
     else if (f.dim === 'edu') h = '<span class="eyebrow">次元ノード</span><h2>学歴</h2><p class="sub">8 ノード / コード E01–E08</p>' + dl(EDU.map(function(n, e){ return [EDU_CODE[e] + ' ' + n, EDU_NOTE[e]]; })) + '<p>2020年国勢調査の最終卒業学校区分に基づきます。地域 × 性別 × 年齢ごとの学歴人数は観測値、学歴ごとの年収は全国の学歴と年収の関連を移植した推定です。</p>';
     else h = '<span class="eyebrow">次元ノード</span><h2>年収帯</h2><p class="sub">16 ノード / コード I01–I16</p>' + dl([['定義', '主な仕事から通常得る年間収入。給与は賞与込み・税引前、自営は必要経費控除後'], ['含まない', '副業、年金、資産収入、仕送り'], ['境界', '下限以上・上限未満'], ['出所', '2022年就業構造基本調査の所得階級']]) + '<p>「50万円未満」には非就業者・無給家族従業者のモデル上の0円を含みます。年収帯は市区町村では観測されず、都道府県の分布を地域の就業・学歴・産業構成で調整し、さらに学歴別に配分して推定しています。</p>';
   }
@@ -736,18 +1029,19 @@ function renderPanel(){
       ];
       if (!r.R[e]) h += '<p class="note">この条件では「' + EDU[e] + '」の推定人数が 0 人のため、年収帯の分布は定義できません。</p>' + aggActions();
       h += unknownBlock(r, e);
-      h += '<h3 class="dh">P(' + EDU[e] + '｜' + esc(scopeName()) + '・' + pathAS + ') の導出</h3>' + calc(pre.concat(cur, jointStep('edu', e))) + '<button class="action" data-go="edu" data-id="' + e + '">この学歴の年収帯を展開</button>';
+      h += '<h3 class="dh">P(' + EDU[e] + '｜' + esc(scopeName()) + '・' + pathAS + ') の導出</h3>' + calc(pre.concat(cur, jointStep('edu', e))) + '<button class="action" data-go="edu" data-id="' + e + '">この学歴の' + DIM_LABEL[DIMS[5]] + 'を展開</button>';
     }
+    else if (f.dim === 'lab' || f.dim === 'sta' || f.dim === 'ind'){ h = empItemHtml(f.dim, +f.id); }
     else if (f.dim === 'inc' && !incDist().defined){
-      h = '<span class="eyebrow">年収帯</span><h2>' + INC[+f.id] + '</h2><p class="sub">' + esc(scopeName()) + ' / ' + esc(pathName()) + '</p><p class="note">' + UNDEF_MSG + '</p>' + calc(pre) + aggActions();
+      h = '<span class="eyebrow">年収帯</span><h2>' + INC[+f.id] + '</h2><p class="sub">' + esc(scopeName()) + ' / ' + esc(pathName()) + '</p><p class="note">' + (incDist().loading ? LOADING_MSG : UNDEF_MSG) + '</p>' + calc(pre) + aggActions();
     }
     else if (f.dim === 'inc'){
       var y = +f.id, ri = incDist(), cnt = ri.p[y]*ri.den;
       var range = INC_EDGE[y+1] === null ? INC_EDGE[y] + '万円以上' : (y === 0 ? '50万円未満' : INC_EDGE[y] + '万円以上 ' + INC_EDGE[y+1] + '万円未満');
-      h = '<span class="eyebrow">年収帯</span><h2>' + INC[y] + '</h2><p class="sub">' + INC_CODE[y] + ' / ' + esc(scopeName()) + ' / ' + esc(pathName()) + '</p>' + dl([['範囲', range], ['P(年収帯｜' + esc(pathName()) + ')', pct(ri.p[y], 3)], ['推定人数', fmtN(cnt) + '人（期待値）'], ['対象モデル人口（分母）', fmtN(ri.den) + '人。所得調査の標本人数ではない']]) + (y === 0 ? '<p class="note">非就業者・無給家族従業者のモデル上の0円を含みます。厳密な0円確率は提供していません。年金・資産所得は年収に含みません。</p>' : '') + refBlock(ri.den);
-      h += '<h3 class="dh">P(' + INC[y] + '｜' + esc(scopeName()) + '・' + esc(pathName()) + ') の導出</h3>' + calc(pre.concat([[ '年収帯の分布を導出する（続く段階図）', '分母 = ' + esc(pathName()) + 'の人口 ' + fmtN(ri.den) + ' 人', S.edu !== null ? '学歴を選んでいるので、年齢・性別までの年収分布を5段階で作り（参考行）、それを学歴別に配分する3段階で求める。' : '公表されている都道府県の分布から出発し、地域について分かる情報で段階的に形を変える。']]));
-      h += S.edu !== null ? derivationEdu(y) : derivationBase(y);
-      h += calc([['人数へ戻す', pct(ri.p[y], 3) + ' × ' + fmtN(ri.den) + ' = <b>' + fmtN(cnt) + '</b> 人', '期待値であり、実在の人数ではない。', [[S.edu !== null ? 'M3' : 'M2', 'counts 配列の該当セル（CSV の estimated_count 列）']]]].concat(jointStep('inc', y)), pre.length + 1);
+      h = '<span class="eyebrow">年収帯</span><h2>' + INC[y] + '</h2><p class="sub">' + INC_CODE[y] + ' / ' + esc(scopeName()) + ' / ' + esc(pathName()) + '</p>' + dl([['範囲', range], ['P(年収帯｜' + esc(pathName()) + ')', pct(ri.p[y], 3)], ['推定人数', fmtN(cnt) + '人（期待値）'], ['対象モデル人口（分母）', fmtN(ri.den) + '人。所得調査の標本人数ではない']]) + (y === 0 ? '<p class="note">非就業者・無給家族従業者のモデル上の0円を含みます。厳密な0円確率は提供していません。年金・資産所得は年収に含みません。</p>' : '') + (empSel() ? '<p class="note">就業状態・地位・産業を条件にした年収分布は段階Aの試験的な推定です。分母はその条件のモデル人口で、地位・産業と年収の関連は都道府県・全国の統計の移植です。</p>' : '') + refBlock(ri.den);
+      h += '<h3 class="dh">P(' + INC[y] + '｜' + esc(scopeName()) + '・' + esc(pathName()) + ') の導出</h3>' + calc(pre.concat([[ '年収帯の分布を導出する（続く段階図）', '分母 = ' + esc(pathName()) + 'の人口 ' + fmtN(ri.den) + ' 人', empSel() ? '就業状態・地位・産業を選んでいるので、5属性モデルの年収分布（周辺）と地位・産業の所得形状から、条件付きの年収分布を配分で求める。' : S.edu !== null ? '学歴を選んでいるので、年齢・性別までの年収分布を5段階で作り（参考行）、それを学歴別に配分する3段階で求める。' : '公表されている都道府県の分布から出発し、地域について分かる情報で段階的に形を変える。']]));
+      h += empSel() ? derivationEmp(y) : S.edu !== null ? derivationEdu(y) : derivationBase(y);
+      h += calc([['人数へ戻す', pct(ri.p[y], 3) + ' × ' + fmtN(ri.den) + ' = <b>' + fmtN(cnt) + '</b> 人', '期待値であり、実在の人数ではない。', [[empSel() ? 'M4' : S.edu !== null ? 'M3' : 'M2', empSel() ? '再計算したブロックの該当セル' : 'counts 配列の該当セル（CSV の estimated_count 列）']]]].concat(jointStep('inc', y)), pre.length + 1);
     }
   }
   P.innerHTML = h;
@@ -865,10 +1159,22 @@ function renderEdgePanel(key){
     }
     h += ref([['S7', 'E01–E08 列'], ['S1', '年齢不詳を補完した人口']]);
   }
+  else if (typ === 'edu-lab' || typ === 'lab-sta' || typ === 'sta-ind'){
+    var to = e.to, idn = e.kind === 'fan' ? +e.id : null, Rn = empAvailable() ? empCounts(empSelNow(to)) : null, names = to === 'lab' ? LAB : to === 'sta' ? STA : IND, vec = Rn && Rn.ready ? (to === 'lab' ? Rn.J : to === 'sta' ? Rn.K : Rn.G) : null;
+    title = idn !== null ? esc(pathName()) + ' → ' + esc(names[idn]) : DIM_LABEL[e.from] + ' → ' + DIM_LABEL[to]; sub = 'モデル推定（段階A、試験）。5属性の周辺を固定した条件付き配分';
+    if (!empAvailable()) h += '<p>' + NOEMP_MSG + '</p>';
+    else {
+      h += to === 'lab' ? '<p>就業状態は、学歴 × 年収の人数（5属性モデル）のうち「主な仕事の収入なし」の成分を、地域の無給家族従業者数と非就業者数に分け、非就業者をさらに同じ地域・性別・年齢の完全失業／非労働力の比で分けて求めます。学歴との関連は都道府県の学歴別労働力状態を初期値にした反復比例調整です。</p>' : to === 'sta' ? '<p>従業上の地位・雇用形態は、既存モデルが年収分布の混合重みに使っている地域の地位別就業者数 W(地域, 性別, 年齢, 地位) を周辺に、全国の学歴 × 地位の関連（就業構造基本調査 04000）を初期値として、学歴 × 年収 × 地位 × 産業のブロックに配分した結果です。</p>' : '<p>産業は、地域の産業別就業者（国勢調査 表6-3）を周辺に、都道府県の地位 × 産業の関連（表10-1）と全国の産業 × 年収の傾き（表24）を初期値として同じブロックに配分しています。学歴 × 産業の直接の関連は公表表がないため仮定していません（地位・年収・地域を介した条件付き独立）。</p>';
+      if (vec && idn !== null) h += '<div class="vals">' + dl([['推定人数', fmtN(vec[idn]) + '人'], ['分母', fmtN(Rn.total) + '人'], ['P(' + DIM_LABEL[to] + '｜…)', pct(Rn.total ? vec[idn]/Rn.total : 0)]]) + '</div>';
+      else if (Rn && !Rn.ready) h += '<p class="note">' + LOADING_MSG + '</p>';
+    }
+    h += ref(to === 'lab' ? [['S2', 'employed / unemployed / inactive 列'], ['S8', '学歴別の労働力状態']] : to === 'sta' ? [['S3', '従業上の地位'], ['S4', '年齢 × 地位'], ['S12', '学歴 × 地位（全国）']] : [['S10', '産業別就業者'], ['S13', '地位 × 産業（都道府県）'], ['S11', '産業 × 所得（全国）']]);
+  }
   else {
     var y = e.kind === 'fan' ? +e.id : null;
-    title = y !== null ? esc(scopeName()) + '・' + esc(pathName()) + ' → ' + INC[y] : '学歴 → 年収帯';
-    if (S.edu !== null){ sub = 'モデル推定。学歴 × 年収は全国の関連を移植'; h += '<p>学歴ごとの年収分布は、全国の学歴と年収の関連を出発点に、この地域の学歴人数と、年齢・性別ごとに導出済みの年収分布の両方に合うよう配分して求めています。</p>' + derivationEdu(y); }
+    title = y !== null ? esc(scopeName()) + '・' + esc(pathName()) + ' → ' + INC[y] : DIM_LABEL[e.from] + ' → 年収帯';
+    if (empSel()){ sub = 'モデル推定（段階A、試験）。地位・産業 × 年収は都道府県・全国の関連を移植'; h += '<p>就業状態・地位・産業を条件にした年収分布は、5属性モデルの年収分布（周辺として固定）と、地位・産業ごとの所得形状の初期値から、反復比例調整で配分して求めています。</p>' + derivationEmp(y); }
+    else if (S.edu !== null){ sub = 'モデル推定。学歴 × 年収は全国の関連を移植'; h += '<p>学歴ごとの年収分布は、全国の学歴と年収の関連を出発点に、この地域の学歴人数と、年齢・性別ごとに導出済みの年収分布の両方に合うよう配分して求めています。</p>' + derivationEdu(y); }
     else { sub = 'モデル推定。市区町村別の年収は公表されていない'; h += '<p>市区町村の年収分布は直接は観測できません。公表されている都道府県の分布から出発し、その地域について分かっている情報で段階的に形を変えて導いています。学歴を選ぶと、さらに学歴別に配分する段階が表示されます。</p>' + derivationBase(y); }
   }
   var P = $('panel');
@@ -924,11 +1230,11 @@ function unplace(dim){
   if (S.focus.dim === dim || (S.focus.dim === 'edge')) S.focus = { dim: null, id: null };
 }
 function renderPalette(){
-  DIMS.forEach(function(d){ var b = document.querySelector('.pnode[data-dim="' + d + '"]'); b.classList.toggle('on', S.open[d]); var v = d === 'pref' ? (S.pref ? PI[S.pref].n : null) : d === 'muni' ? (S.muni ? G.munis[MI[S.muni]].n : null) : d === 'age' ? (S.age !== null ? AGE[S.age] : null) : d === 'sex' ? (S.sex !== null ? SEX[S.sex] : null) : d === 'edu' ? (S.edu !== null ? EDU[S.edu] : null) : (S.inc !== null ? INC[S.inc] : null); $('pn-' + d).textContent = !S.open[d] ? (d === 'inc' ? '未配置' : '未配置（合算）') : v ? v : (d === 'inc' ? '配置中' : (d === 'pref' ? '全国' : d === 'muni' ? (S.pref ? PI[S.pref].n + '全体' : '全国') : AGG_LABEL[d])); });
+  DIMS.forEach(function(d){ var b = document.querySelector('.pnode[data-dim="' + d + '"]'); b.classList.toggle('on', S.open[d]); var v = d === 'pref' ? (S.pref ? PI[S.pref].n : null) : d === 'muni' ? (S.muni ? G.munis[MI[S.muni]].n : null) : d === 'age' ? (S.age !== null ? AGE[S.age] : null) : d === 'sex' ? (S.sex !== null ? SEX[S.sex] : null) : d === 'edu' ? (S.edu !== null ? EDU[S.edu] : null) : d === 'lab' ? (S.lab !== null ? LAB[S.lab] : null) : d === 'sta' ? (S.sta !== null ? STA_SHORT[S.sta] : null) : d === 'ind' ? (S.ind !== null ? IND[S.ind] : null) : (S.inc !== null ? INC[S.inc] : null); if ((d === 'lab' || d === 'sta' || d === 'ind') && !empAvailable()){ b.disabled = true; $('pn-' + d).textContent = '未配信'; return; } $('pn-' + d).textContent = !S.open[d] ? (d === 'inc' ? '未配置' : '未配置（合算）') : v ? v : (d === 'inc' ? '配置中' : (d === 'pref' ? '全国' : d === 'muni' ? (S.pref ? PI[S.pref].n + '全体' : '全国') : AGG_LABEL[d])); });
   $('board-empty').hidden = placed().length > 0;
 }
 function renderAll(){
-  renderPref(); renderMuni(); renderAge(); renderSex(); renderEdu(); renderInc(); renderCrumb(); renderPalette(); renderPanel();
+  renderPref(); renderMuni(); renderAge(); renderSex(); renderEdu(); renderLab(); renderSta(); renderInd(); renderInc(); renderCrumb(); renderPalette(); renderPanel();
   document.querySelectorAll('.hub').forEach(function(hb){ hb.classList.toggle('focus', S.focus.dim === hb.dataset.hub && S.focus.id === 'hub'); });
   requestAnimationFrame(drawEdges);
 }
@@ -947,13 +1253,17 @@ function select(dim, id){
   else if (dim === 'age'){ S.age = +id; S.focus = { dim: 'age', id: +id }; }
   else if (dim === 'sex'){ S.sex = +id; S.focus = { dim: 'sex', id: +id }; }
   else if (dim === 'edu'){ S.edu = +id; S.focus = { dim: 'edu', id: +id }; }
+  else if (dim === 'lab'){ S.lab = +id; if (S.sta !== null && STA_LAB[S.sta] !== +id) S.sta = null; if (S.ind !== null && ((+id === 0) === (S.ind === 0))) S.ind = null; S.focus = { dim: 'lab', id: +id }; }
+  else if (dim === 'sta'){ S.sta = +id; if (S.lab !== null && STA_LAB[+id] !== S.lab) S.lab = null; if (S.ind !== null && ((+id < 5) === (S.ind === 0))) S.ind = null; S.focus = { dim: 'sta', id: +id }; }
+  else if (dim === 'ind'){ S.ind = +id; if (S.lab !== null && ((S.lab === 0) === (+id === 0))) S.lab = null; if (S.sta !== null && ((S.sta < 5) === (+id === 0))) S.sta = null; S.focus = { dim: 'ind', id: +id }; }
   else if (dim === 'inc'){ S.inc = +id; S.focus = { dim: 'inc', id: +id }; }
   renderAll();
 }
 function resetTo(level){
   DIMS.forEach(function(d, i){ if (d !== 'inc' && i >= level) S.skip[d] = false; });
-  if (level < 1) S.pref = null; if (level < 2) S.muni = null; if (level < 3) S.age = null; if (level < 4) S.sex = null; if (level < 5) S.edu = null; if (level < 6) S.inc = null;
-  S.focus = level === 0 ? { dim: null, id: null } : level === 1 ? { dim: 'pref', id: S.pref } : level === 2 ? { dim: 'muni', id: S.muni } : level === 3 ? { dim: 'age', id: S.age } : level === 4 ? { dim: 'sex', id: S.sex } : level === 5 ? { dim: 'edu', id: S.edu } : { dim: 'inc', id: S.inc };
+  if (level < 1) S.pref = null; if (level < 2) S.muni = null; if (level < 3) S.age = null; if (level < 4) S.sex = null; if (level < 5) S.edu = null; if (level < 6) S.lab = null; if (level < 7) S.sta = null; if (level < 8) S.ind = null; if (level < 9) S.inc = null;
+  var fd = level === 0 ? null : DIMS[level - 1];
+  S.focus = fd === null ? { dim: null, id: null } : { dim: fd, id: fd === 'pref' ? S.pref : fd === 'muni' ? S.muni : S[fd] };
   renderAll();
 }
 document.querySelectorAll('.hub').forEach(function(hb){
@@ -978,7 +1288,7 @@ $('panel').addEventListener('click', function(ev){
   var b = ev.target.closest('.action'); if (!b) return; var d = b.dataset.go, id = b.dataset.id;
   if (d === 'pref'){ setOpen('pref', true); setOpen('muni', true); select('pref', id); scrollTo('pref', id); }
   else if (d === 'muni'){ setOpen('pref', true); setOpen('muni', true); setOpen('age', true); select('muni', id); scrollTo('muni', id); }
-  else if (d === 'age' || d === 'sex' || d === 'edu'){ var nx = DIMS[DIMS.indexOf(d) + 1]; setOpen(d, true); setOpen(nx, true); select(d, id); }
+  else if (d === 'age' || d === 'sex' || d === 'edu' || d === 'lab' || d === 'sta' || d === 'ind'){ var nx = DIMS[DIMS.indexOf(d) + 1]; setOpen(d, true); setOpen(nx, true); select(d, id); }
   else if (d === 'open'){ setOpen(id, true); renderAll(); }
   else if (d === 'skipdim'){ var keep = S.focus; skip(id); if (keep.dim === 'inc' && incDist().defined){ S.focus = keep; renderAll(); } else if (keep.dim && keep.dim !== 'edge' && keep.id !== 'hub' && keep.id !== 'all'){ S.focus = keep; renderAll(); } }
   else { setOpen(d, true); select(d, id); }
@@ -1010,13 +1320,16 @@ window.addEventListener('resize', function(){ requestAnimationFrame(drawEdges); 
 
 /* ---------- search ---------- */
 var q = $('q'), qr = $('q-res'), qi = -1;
+var ATTR_INDEX = [];
+AGE.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'age', id: i, n: n, code: AGE_CODE[i] }); }); SEX.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'sex', id: i, n: n, code: SEX_CODE[i] }); }); EDU.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'edu', id: i, n: n, code: EDU_CODE[i] }); }); LAB.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'lab', id: i, n: n, code: LAB_CODE[i] }); }); STA.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'sta', id: i, n: n, code: STA_CODE[i] }); }); IND.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'ind', id: i, n: n, code: IND_CODE[i] }); }); INC.forEach(function(n, i){ ATTR_INDEX.push({ dim: 'inc', id: i, n: n, code: INC_CODE[i] }); });
 function norm(s){ return s.toLowerCase(); }
 q.addEventListener('input', function(){
   var v = norm(q.value.trim()); qi = -1;
   if (!v){ qr.classList.remove('on'); qr.innerHTML = ''; return; }
   var hits = G.munis.filter(function(m){ return norm(m.n).indexOf(v) >= 0 || m.c.indexOf(v) === 0; }).slice(0, 14);
-  if (!hits.length){ qr.innerHTML = '<button disabled>該当なし</button>'; qr.classList.add('on'); return; }
-  qr.innerHTML = hits.map(function(m){ var pa = m.pa ? G.munis[MI[m.pa]].n + ' ' : ''; return '<button data-c="' + m.c + '" role="option"><span>' + esc(PI[m.c.slice(0,2)].n) + ' ' + esc(pa) + '<b>' + esc(m.n) + '</b></span><span class="sub">' + m.c + '</span></button>'; }).join('');
+  var attrs = ATTR_INDEX.filter(function(x){ return norm(x.n).indexOf(v) >= 0 || norm(x.code).indexOf(v) === 0; }).slice(0, 8);
+  if (!hits.length && !attrs.length){ qr.innerHTML = '<button disabled>該当なし</button>'; qr.classList.add('on'); return; }
+  qr.innerHTML = hits.map(function(m){ var pa = m.pa ? G.munis[MI[m.pa]].n + ' ' : ''; return '<button data-c="' + m.c + '" role="option"><span>' + esc(PI[m.c.slice(0,2)].n) + ' ' + esc(pa) + '<b>' + esc(m.n) + '</b></span><span class="sub">' + m.c + '</span></button>'; }).join('') + attrs.map(function(x){ return '<button data-c="attr" data-dim="' + x.dim + '" data-id="' + x.id + '" role="option"><span>' + DIM_LABEL[x.dim] + ' <b>' + esc(x.n) + '</b></span><span class="sub">' + x.code + '</span></button>'; }).join('');
   qr.classList.add('on');
 });
 q.addEventListener('keydown', function(ev){
@@ -1024,10 +1337,12 @@ q.addEventListener('keydown', function(ev){
   if (ev.key === 'ArrowDown'){ qi = Math.min(bs.length - 1, qi + 1); } else if (ev.key === 'ArrowUp'){ qi = Math.max(0, qi - 1); } else if (ev.key === 'Enter'){ (bs[qi] || bs[0]).click(); return; } else if (ev.key === 'Escape'){ qr.classList.remove('on'); return; } else return;
   ev.preventDefault(); bs.forEach(function(b, i){ b.classList.toggle('hi', i === qi); });
 });
-qr.addEventListener('click', function(ev){ var b = ev.target.closest('button[data-c]'); if (!b) return; var c = b.dataset.c; qr.classList.remove('on'); q.value = ''; setOpen('pref', true); setOpen('muni', true); setOpen('age', true); S.pref = c.slice(0,2); select('muni', c); scrollTo('pref', S.pref); scrollTo('muni', c); });
+qr.addEventListener('click', function(ev){ var b = ev.target.closest('button[data-c]'); if (!b) return; var c = b.dataset.c; qr.classList.remove('on'); q.value = ''; if (c === 'attr'){ var dm = b.dataset.dim; if ((dm === 'lab' || dm === 'sta' || dm === 'ind') && !empAvailable()) return; setOpen(dm, true); select(dm, b.dataset.id); scrollTo(dm, b.dataset.id); return; } setOpen('pref', true); setOpen('muni', true); setOpen('age', true); S.pref = c.slice(0,2); select('muni', c); scrollTo('pref', S.pref); scrollTo('muni', c); });
 document.addEventListener('click', function(ev){ if (!ev.target.closest('.search')) qr.classList.remove('on'); });
 
 renderAll();
+/* test hooks (jsdom verification against the Python arrays) */
+window.__hinomoto = { S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
 })();
 </script>
 </body>

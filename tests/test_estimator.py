@@ -71,8 +71,8 @@ class StageAContractTests(unittest.TestCase):
         import verify_employment as ve
         from unittest.mock import patch
         rng=np.random.default_rng(1);M=3
-        kg=rng.random((M,2,13,6,21));kg[...,5,1:]=0;kg[...,:5,0]=0
-        N=kg.sum((3,4));W=kg[...,:5,:].sum(-1);ke=np.zeros((M,2,13,8,6));ke[...,0,:]=kg.sum(-1)
+        kg=rng.random((M,2,13,7,21));kg[...,5:,1:]=0;kg[...,:5,0]=0
+        N=kg.sum((3,4));W=kg[...,:5,:].sum(-1);ke=np.zeros((M,2,13,8,7));ke[...,0,:]=kg.sum(-1)
         ky=rng.random((M,2,13,4,16));fin=np.zeros((M,2,13,17));fin[...,1:]=ky.sum(3)
         cnt=kg[...,:5,1:].sum(3);gy=rng.random((M,2,13,20,16))
         d={'status_industry':kg,'education_status':ke,'status_income':ky,'industry_income':gy}
