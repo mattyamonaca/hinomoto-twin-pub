@@ -859,13 +859,23 @@ function wpLoad(side, code){
 }
 function wpReady(side, code){ var ok = true; wpLeaves(code).forEach(function(c){ var k = wpFile(side, c); if (!WP_STATE.data[k]){ ok = false; wpLoad(side, c); } }); return ok; }
 /* industry condition for the workplace panel: a fixed industry, or the stage-A industry mixture of the selected age/sex/education */
-function wpCondition(){
-  if (S.ind !== null) return S.ind === 0 ? { kind: 'none' } : { kind: 'industry', g: S.ind - 1, label: IND[S.ind] };
-  if ((S.age !== null || S.sex !== null || S.edu !== null) && empAvailable() && empReady(scope())){
-    var R = empCounts({ e: S.edu, lab: 0, sta: null, ind: null }), w = new Float64Array(20), tot = 0, gg; for (gg = 0; gg < 20; gg++){ w[gg] = R.G[gg + 1]; tot += w[gg]; }
-    if (tot > 0){ for (gg = 0; gg < 20; gg++) w[gg] /= tot; return { kind: 'mix', w: w, label: pathName() + 'の就業者の産業構成で混合' }; }
-  }
-  return { kind: 'all', label: '全産業' };
+function wpCondition(side){
+  /* what the workplace panel can condition on: an industry (both sides); on the residence side also the stage-A
+     employed persons of the selected age / sex / education / labour status / position (mixture over industries);
+     non-employed selections have no workplace; the inflow side applies the industry only */
+  var hasAttr = S.age !== null || S.sex !== null || S.edu !== null || S.lab !== null || S.sta !== null, attrLabel = pathName();
+  if (S.ind === 0 || (S.lab !== null && S.lab !== 0) || (S.sta !== null && S.sta >= 5)) return { kind: 'none', reason: S.ind === 0 ? '産業「該当なし（非就業）」' : S.lab !== null && S.lab !== 0 ? '就業状態「' + LAB[S.lab] + '」' : '地位「' + STA[S.sta] + '」' };
+  var ind = S.ind !== null ? { kind: 'industry', g: S.ind - 1, label: IND[S.ind] } : { kind: 'all', label: '全産業' };
+  if (side === 'workplace'){ ind.ignored = hasAttr ? attrLabel : null; return ind; }
+  if (!hasAttr) return ind;
+  if (!empAvailable()) return { kind: 'unsupported', label: attrLabel };
+  if (!empReady(scope())) return { kind: 'loading', label: attrLabel };
+  var R = empCounts({ e: S.edu, lab: 0, sta: S.sta, ind: null }), w = new Float64Array(20), tot = 0, gg;
+  for (gg = 0; gg < 20; gg++){ w[gg] = R.G[gg + 1]; tot += w[gg]; }
+  if (!(tot > 0)) return { kind: 'undefined', label: attrLabel };
+  if (ind.kind === 'industry'){ ind.n = R.G[S.ind]; ind.attr = attrLabel; ind.nAll = tot; return ind; }
+  for (gg = 0; gg < 20; gg++) w[gg] /= tot;
+  return { kind: 'mix', w: w, n: tot, attr: attrLabel, label: attrLabel + 'の就業者の産業構成で混合' };
 }
 /* same arithmetic as persona_v4.workplace() / residence() */
 function wpCompute(side, code, cond){
@@ -894,26 +904,37 @@ function wpCompute(side, code, cond){
   return { list: list, cats: cats.map(function(v){ return v/tot; }), tot: tot, own: own, home: home, unkShare: unkShare, rows: rows.length };
 }
 function renderWorkplace(code){
-  var P = $('panel'), m = G.munis[MI[code]], side = WP_STATE.mode, h = '', cond = wpCondition();
+  var P = $('panel'), m = G.munis[MI[code]], side = WP_STATE.mode, h = '', cond = wpCondition(side);
   P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--d-ind)'); P.style.setProperty('--soft', 'var(--d-ind-soft)');
   var toggle = '<div class="tags"><button class="action' + (side === 'residence' ? ' on' : '') + '" data-go="wpmode" data-id="residence" data-code="' + code + '"' + (side === 'residence' ? ' aria-pressed="true"' : '') + '>' + esc(m.n) + 'に居住する人の勤務地</button> <button class="action' + (side === 'workplace' ? ' on' : '') + '" data-go="wpmode" data-id="workplace" data-code="' + code + '"' + (side === 'workplace' ? ' aria-pressed="true"' : '') + '>' + esc(m.n) + 'へ働きに来る人の居住地</button></div>';
   h += '<span class="eyebrow">勤務地（段階C・試験）</span><h2>' + esc(m.n) + (side === 'residence' ? 'に住む就業者の勤務地' : 'で働く就業者の居住地') + '</h2><p class="sub">2020年国勢調査 従業地・通学地集計（15歳以上就業者・男女計）から推定した居住地 × 勤務地 × 産業の表</p>' + toggle;
-  if (cond.kind === 'none'){ P.innerHTML = h + '<p class="note">非就業者（産業「該当なし」）には勤務地がありません。産業を選び直すか、産業をまとめてください。</p>'; return; }
+  if (cond.kind === 'none'){ P.innerHTML = h + '<p class="note">選択中の' + esc(cond.reason) + 'には勤務地がありません（就業者だけが勤務地を持つ）。就業状態・地位・産業を選び直すか、まとめてください。</p>'; return; }
+  if (cond.kind === 'unsupported'){ P.innerHTML = h + '<p class="note">年齢・性別・学歴・地位の条件（' + esc(cond.label) + '）を勤務地に結びつけるには段階A のデータが必要ですが、このデータセットには含まれていません。条件をまとめると全産業の分布を表示します。</p>'; return; }
+  if (cond.kind === 'loading'){ P.innerHTML = h + '<p class="note">' + LOADING_MSG + '（選択条件の就業者数を求めています）</p>'; return; }
+  if (cond.kind === 'undefined'){ P.innerHTML = h + '<p class="note">選択条件（' + esc(cond.label) + '）の就業者が 0 人のため、勤務地の分布は定義できません。</p>'; return; }
   if (!wpReady(side, code)){ var fails = Object.keys(WP_STATE.failed).filter(function(k){ return WP_STATE.failed[k]; }); P.innerHTML = h + '<p class="note">' + (fails.length ? '読み込みに失敗しました：' + esc(WP_STATE.failed[fails[0]]) : '勤務地データを読み込んでいます…') + '</p>'; return; }
   var R = wpCompute(side, code, cond);
   if (!R){ P.innerHTML = h + '<p class="note">この条件（' + esc(cond.label || '') + '）に該当する' + (side === 'residence' ? '勤務地既知の就業者' : '就業者') + 'がいないため、分布は定義できません。</p>'; return; }
   var condTxt = cond.kind === 'industry' ? esc(cond.label) : cond.kind === 'mix' ? esc(cond.label) : '全産業';
-  h += '<h3 class="dh">分母</h3><div class="vals">' + dl([[side === 'residence' ? '勤務地が分かる就業者' : 'この市区町村で働く就業者', fmtN(R.tot) + ' 人（' + condTxt + '）'], side === 'residence' ? ['勤務地不詳（分布の外数）', pct(R.unkShare, 1) + '。従業地「不詳」の就業者は分布に含めない'] : ['注意', '従業地による人数は「働きに来る人」で、通学者等を含む昼間人口ではない。勤務地不詳の常住者は除く'], ['単位', '2020年10月の15歳以上就業者（男女計）。年齢・性別・学歴とは' + (cond.kind === 'mix' ? '産業を介してのみ' : '') + '結びつく（条件付き独立の仮定）']]) + '</div>';
+  /* denominator: with an attribute condition the persons are the stage-A employed persons of that condition times the
+     known-workplace rate; the census total of all workers of the municipality is shown separately as a reference */
+  var den = R.tot, denRows = [];
+  if (cond.n !== undefined){ den = cond.n*(1 - R.unkShare); denRows.push(['分母（推定）', fmtN(den) + ' 人 = ' + esc(cond.attr) + 'の就業者 ' + fmtN(cond.n) + ' 人（段階A のモデル人数' + (cond.kind === 'industry' ? '、' + esc(cond.label) : '') + '）× 勤務地既知率 ' + pct(1 - R.unkShare, 1)], ['参考：' + esc(m.n) + 'の勤務地が分かる就業者（全属性' + (cond.kind === 'industry' ? '、' + esc(cond.label) : '') + '）', fmtN(R.tot) + ' 人（2020年国勢調査）。分布の形はこの人数から求め、上の人数は条件の規模を示す']); }
+  else denRows.push([side === 'residence' ? '勤務地が分かる就業者' : 'この市区町村で働く就業者', fmtN(R.tot) + ' 人（' + condTxt + '）']);
+  if (side === 'residence') denRows.push(['勤務地不詳（分布の外数）', pct(R.unkShare, 1) + '。従業地「不詳」の就業者は分布に含めない']); else denRows.push(['注意', '従業地による人数は「働きに来る人」で、通学者等を含む昼間人口ではない。勤務地不詳の常住者は除く']);
+  if (cond.ignored) denRows.push(['適用しない条件', esc(cond.ignored) + '。働きに来る人の居住地は産業でのみ条件付けできる（各居住地の年齢・性別・学歴の構成は流入側では観測されない）']);
+  denRows.push(['単位', '2020年10月の15歳以上就業者（男女計）。' + (cond.attr ? '年齢・性別・学歴・地位とは産業を介してのみ結びつく（条件付き独立の仮定）。段階A は2020年人口・2022年所得のモデルで、人数の母集団が国勢調査の就業者と一致しない' : '年齢・性別・学歴とは産業を介してのみ結びつく（条件付き独立の仮定）')]);
+  h += '<h3 class="dh">分母</h3><div class="vals">' + dl(denRows) + '</div>';
   var top = R.list.slice(0, 15), mx = top.length ? top[0].n : 1;
-  h += '<h3 class="dh">' + (side === 'residence' ? '勤務地の市区町村（上位15）' : '居住地の市区町村（上位15）') + '</h3>' + mini(top.map(function(x){ var mm = G.munis[MI[x.c]]; return [(mm ? esc(mm.n) : x.c) + (mm && mm.pa ? '（' + esc(G.munis[MI[mm.pa]].n) + '）' : ''), x.n, pct(x.n/R.tot, 1)]; }), mx);
+  h += '<h3 class="dh">' + (side === 'residence' ? '勤務地の市区町村（上位15）' : '居住地の市区町村（上位15）') + '</h3>' + mini(top.map(function(x){ var mm = G.munis[MI[x.c]]; return [(mm ? esc(mm.n) : x.c) + (mm && mm.pa ? '（' + esc(G.munis[MI[mm.pa]].n) + '）' : ''), x.n, pct(x.n/R.tot, 1) + (cond.n !== undefined ? '（' + fmtN(x.n/R.tot*den) + '人）' : '')]; }), mx);
   h += '<p class="l" style="margin-top:8px">通勤区分</p>' + mini((side === 'residence' ? WP_CAT : WP_CAT_D).map(function(l, i){ return [l, R.cats[i], pct(R.cats[i], 1)]; }), 1);
   if (side === 'residence' && cond.kind === 'all' && R.own > 0) h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">自市区町村で従業する人のうち自宅で従業：' + pct(R.home/R.own, 1) + '（原表の「自宅」。産業を条件にすると原表にないため表示しない）</p>';
   h += '<h3 class="dh">導出</h3>' + calc([
     ['常住地 × 従業地の就業者数を取る', esc(m.n) + (m.s === 'aggregated_wards' ? '（各区の合計）' : '') + ' の OD 行 ' + fmtN(R.rows) + ' ペア', '第3表（常住地による従業地別就業者数、全市区町村ペア）。従業地「不詳」は別枠。', [['S15', '第3表 15歳以上就業者']]],
     ['居住側・勤務側の産業別人数を通勤区分ごとに合わせる', '自市区町村／自市内他区／県内他市町村／他県 × 産業20 の周辺', '第8表（常住地側と従業地側）。従業地側からは従業地不詳の常住者を差し引く。', [['S15', '第8表 産業（大分類）× 通勤区分']]],
     ['ペアごとの産業内訳を反復比例調整で求める', 'X[居住地, 勤務地, 産業] を OD・居住側周辺・勤務側周辺の3つに整合', '初期値は OD × 区分内の産業比（居住側 × 勤務側）。区分の中でどの市区町村へ行くかの産業差だけを推定する。', [['M6', 'workplace_c.npz']]],
-    cond.kind === 'industry' ? ['産業を' + esc(cond.label) + 'に絞る', 'X[…, ' + IND_CODE[S.ind] + '] の列', '', null] : cond.kind === 'mix' ? ['選択した年齢・性別・学歴の産業構成で混合する', 'P(勤務地｜居住地, 条件) = Σ_g P(g｜居住地, 条件, 勤務地既知) P(勤務地｜居住地, g)', '段階Aの産業構成（全就業者）を勤務地既知者に条件付け直してから混合（産業ごとの不詳率が異なるため）。年齢・性別・学歴と勤務地の直接の関連はどの表にもなく、産業を介した条件付き独立を仮定。', [['M4', '段階A P(産業｜…)']]] : ['産業を合算する', 'Σ_g X[…, g]', '', null],
-    [side === 'residence' ? 'P(勤務地｜居住地' + (cond.kind !== 'all' ? ', 条件' : '') + ') を求める' : 'P(居住地｜勤務地' + (cond.kind !== 'all' ? ', 産業' : '') + ') を求める', '勤務地' + (side === 'residence' ? '既知' : '') + 'の就業者 ' + fmtN(R.tot) + ' 人で割る', '推定に使っていない第9・10表（大都市等 290 地域）との比較は docs/WORKPLACE_C.md §4（P(勤務地｜居住地, 産業) の TV 0.034、産業を無視すると 0.141）。大都市等以外の産業別勤務地は未検証。', [['S15', '第9・10表（検証のみ）']]]
+    cond.kind === 'industry' ? ['産業を' + esc(cond.label) + 'に絞る', 'X[…, ' + IND_CODE[S.ind] + '] の列', cond.attr ? '年齢・性別・学歴・地位（' + esc(cond.attr) + '）は分布の形を変えず（産業を介した条件付き独立）、人数の規模だけを段階A の就業者数で置く。' : '', null] : cond.kind === 'mix' ? ['選択した年齢・性別・学歴の産業構成で混合する', 'P(勤務地｜居住地, 条件) = Σ_g P(g｜居住地, 条件, 勤務地既知) P(勤務地｜居住地, g)', '段階Aの産業構成（全就業者）を勤務地既知者に条件付け直してから混合（産業ごとの不詳率が異なるため）。年齢・性別・学歴と勤務地の直接の関連はどの表にもなく、産業を介した条件付き独立を仮定。', [['M4', '段階A P(産業｜…)']]] : ['産業を合算する', 'Σ_g X[…, g]', '', null],
+    [side === 'residence' ? 'P(勤務地｜居住地' + (cond.kind !== 'all' ? ', 条件' : '') + ') を求める' : 'P(居住地｜勤務地' + (cond.kind !== 'all' ? ', 産業' : '') + ') を求める', '勤務地' + (side === 'residence' ? '既知' : '') + 'の就業者 ' + fmtN(R.tot) + ' 人で割る' + (cond.n !== undefined ? '。人数は条件の就業者 ' + fmtN(cond.n) + ' 人 × 既知率で表示' : ''), '推定に使っていない第9・10表（大都市等 290 地域）との比較は docs/WORKPLACE_C.md §4（P(勤務地｜居住地, 産業) の TV 0.034、産業を無視すると 0.141）。大都市等以外の産業別勤務地は未検証。', [['S15', '第9・10表（検証のみ）']]]
   ]);
   h += '<p class="note">所得と勤務地の関連は未観測で、勤務地を条件にした年収分布は提供しない。勤務地の追加は年齢・性別・学歴・年収・就業の公開分布を変えない。</p><button class="action" data-go="muni" data-id="' + code + '">個人の属性に戻る</button>';
   P.innerHTML = h;

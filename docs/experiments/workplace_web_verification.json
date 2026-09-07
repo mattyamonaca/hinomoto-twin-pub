@@ -121,6 +121,24 @@
       "pop_error": 0.24987420566321816
     }
   ],
+  "review_cases": {
+    "mix_kind": "mix",
+    "mix_n": 10830.808202516184,
+    "mix_n_expected": 10830.808222953332,
+    "mix_denominator": 10458.852414044766,
+    "municipality_all_workers": 89000.74999999681,
+    "regular_kind": "mix",
+    "regular_n": 7885.021726651779,
+    "regular_n_expected": 7885.0161029540195,
+    "regular_G07_kind": "industry",
+    "regular_G07_n": 1892.6161441318968,
+    "regular_G07_expected": 1892.616130085666,
+    "unemployed_kind": "none",
+    "inflow_kind_with_attributes": "all",
+    "inflow_ignored": "35～39歳・男",
+    "inflow_same_as_without_attributes": true
+  },
+  "review_cases_ok": true,
   "panel_residence_ok": true,
   "panel_workplace_ok": true,
   "page_errors": []

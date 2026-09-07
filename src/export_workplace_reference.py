@@ -11,5 +11,8 @@ def main():
         r=m.residence(code,ind,top=15);cases.append({'side':'workplace','code':code,'industry':ind,'result':r})
     e=p3.EmploymentDistribution(OUTPUT,SOURCES).margins('13103',35,'male');mix=e['p_industry_given_employed']
     cases.append({'side':'residence','code':'13103','industry':None,'mix':{'age':35,'sex':'male'},'result':m.workplace('13103',None,mix,top=15)})
-    (REPORTS/'workplace_web_reference.json').write_text(json.dumps({'model_version':m.model_version,'cases':cases},ensure_ascii=False));print('cases',len(cases))
+    import numpy as np
+    d=np.load(OUTPUT/'employment_a.npz');ix=d['areas'].tolist().index('13103');kg=d['status_industry'][ix,0,4]   # 港区, male, 35-39
+    attr={'code':'13103','age':35,'sex':'male','employed_all_positions':float(kg[:5,1:].sum()),'employed_regular':float(kg[0,1:].sum()),'employed_regular_G07':float(kg[0,7]),'unemployed':float(kg[5,0])}
+    (REPORTS/'workplace_web_reference.json').write_text(json.dumps({'model_version':m.model_version,'cases':cases,'stage_a_counts':attr},ensure_ascii=False));print('cases',len(cases))
 if __name__=='__main__':main()
