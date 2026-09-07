@@ -1,0 +1,1321 @@
+{
+ "retrieved_date": "2026-09-07",
+ "publisher": "総務省統計局・e-Stat",
+ "survey": "令和2年国勢調査 従業地・通学地による人口・就業状態等集計（2020年10月1日現在、2020年境界、公開 2022-07-22）",
+ "listing_url": "https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200521&tstat=000001136464&cycle=0&tclass1=000001136469&tclass2val=0",
+ "licence": "政府統計の総合窓口（e-Stat）利用規約（CC BY 4.0 互換、出典明記）: https://www.e-stat.go.jp/terms-of-use",
+ "population": "15歳以上就業者（従業地・通学地による人口）。就業者は常住地ベース（第3・8・9表）と従業地ベース（第8・10表）の両方を持つ。通学者は含めない。",
+ "unit": "人（整数）。「-」は0または該当なし。秘匿はなく、従業地不詳は「従業地・通学地「不詳」」、市区町村を特定できない者は「従業・通学市区町村「不詳・外国」」として常住市区町村に計上（原表注1）。",
+ "sources": [
+  {
+   "table": "3",
+   "title": "男女，就業・通学，従業地・通学地（全国［総数］，都道府県，市区町村）別就業者・通学者数－全国，都道府県，市区町村（常住地）",
+   "role": "OD 行列（常住地 × 従業地 市区町村）。総数（男女）のみ取得。列「15歳以上就業者」を使用。",
+   "files": [
+    {
+     "statInfId": "000032214148",
+     "prefecture_code": "01",
+     "label": "総数（男女）［北海道（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214148&fileKind=0",
+     "raw_file": "raw/workplace/t3_01.xlsx",
+     "raw_sha256": "d0415ae86006cf9e6e1e9f379bbb35dd5aa03b0619bd5ccb5b30036d98de926c",
+     "raw_bytes": 18922009
+    },
+    {
+     "statInfId": "000032214156",
+     "prefecture_code": "02",
+     "label": "総数（男女）［青森県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214156&fileKind=0",
+     "raw_file": "raw/workplace/t3_02.xlsx",
+     "raw_sha256": "86b6cec431677165814caaf6ba8f78438ceb89b91f35dcf46ae70274788f7ca5",
+     "raw_bytes": 4140655
+    },
+    {
+     "statInfId": "000032214151",
+     "prefecture_code": "03",
+     "label": "総数（男女）［岩手県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214151&fileKind=0",
+     "raw_file": "raw/workplace/t3_03.xlsx",
+     "raw_sha256": "32b47b561b2898f577f5bc5f428f1c275c8998d687cb63c3c87ee329dfde4be0",
+     "raw_bytes": 3429262
+    },
+    {
+     "statInfId": "000032214174",
+     "prefecture_code": "04",
+     "label": "総数（男女）［宮城県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214174&fileKind=0",
+     "raw_file": "raw/workplace/t3_04.xlsx",
+     "raw_sha256": "3149d46863e89e2573075ea5e84b8a873b73ff9989f0b93b444c65c7f3014f22",
+     "raw_bytes": 4159694
+    },
+    {
+     "statInfId": "000032214177",
+     "prefecture_code": "05",
+     "label": "総数（男女）［秋田県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214177&fileKind=0",
+     "raw_file": "raw/workplace/t3_05.xlsx",
+     "raw_sha256": "959544c38154cf1350043b9e6c2371773650eaff66c350520a6252c05e7db146",
+     "raw_bytes": 2610291
+    },
+    {
+     "statInfId": "000032214180",
+     "prefecture_code": "06",
+     "label": "総数（男女）［山形県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214180&fileKind=0",
+     "raw_file": "raw/workplace/t3_06.xlsx",
+     "raw_sha256": "b2d86c4b8524709c61a2f921fe341ac1d044a6c226608b3dfdec83da85f10ba8",
+     "raw_bytes": 3616735
+    },
+    {
+     "statInfId": "000032214159",
+     "prefecture_code": "07",
+     "label": "総数（男女）［福島県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214159&fileKind=0",
+     "raw_file": "raw/workplace/t3_07.xlsx",
+     "raw_sha256": "93b9bc938074366b4de2f96a1fcae1bd937e568c3144a913c46b77d25cdcd41d",
+     "raw_bytes": 6025776
+    },
+    {
+     "statInfId": "000032214162",
+     "prefecture_code": "08",
+     "label": "総数（男女）［茨城県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214162&fileKind=0",
+     "raw_file": "raw/workplace/t3_08.xlsx",
+     "raw_sha256": "dff4330bc07cf6c4962bfe565364dcffdf77cc388a34cfb2041d248d2642b13f",
+     "raw_bytes": 4602927
+    },
+    {
+     "statInfId": "000032214165",
+     "prefecture_code": "09",
+     "label": "総数（男女）［栃木県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214165&fileKind=0",
+     "raw_file": "raw/workplace/t3_09.xlsx",
+     "raw_sha256": "36100f617d11d6e46d03693fea7072e80aaa1d979a29e78bebc701a05b66e186",
+     "raw_bytes": 2683011
+    },
+    {
+     "statInfId": "000032214182",
+     "prefecture_code": "10",
+     "label": "総数（男女）［群馬県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214182&fileKind=0",
+     "raw_file": "raw/workplace/t3_10.xlsx",
+     "raw_sha256": "10b9397a1f82f3ec5de0edf23aaa9933cfae115469432eee83f07f2aada813f2",
+     "raw_bytes": 3679581
+    },
+    {
+     "statInfId": "000032214185",
+     "prefecture_code": "11",
+     "label": "総数（男女）［埼玉県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214185&fileKind=0",
+     "raw_file": "raw/workplace/t3_11.xlsx",
+     "raw_sha256": "732380ed0c2e5f98c0c166b691984d6b45089f900e07253cf572f87bfe9123f8",
+     "raw_bytes": 7643628
+    },
+    {
+     "statInfId": "000032214188",
+     "prefecture_code": "12",
+     "label": "総数（男女）［千葉県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214188&fileKind=0",
+     "raw_file": "raw/workplace/t3_12.xlsx",
+     "raw_sha256": "f675e10fa91ce60607e5ad212c943a98edc7710ae9b44214d7d55b82d8828d87",
+     "raw_bytes": 6250398
+    },
+    {
+     "statInfId": "000032214196",
+     "prefecture_code": "13",
+     "label": "総数（男女）［東京都（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214196&fileKind=0",
+     "raw_file": "raw/workplace/t3_13.xlsx",
+     "raw_sha256": "40c40444f76c5aef77221d498c8a8e3baa2be451b9b01a18a9f99c6a5b12776f",
+     "raw_bytes": 6670981
+    },
+    {
+     "statInfId": "000032214199",
+     "prefecture_code": "14",
+     "label": "総数（男女）［神奈川県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214199&fileKind=0",
+     "raw_file": "raw/workplace/t3_14.xlsx",
+     "raw_sha256": "11acd0017d0e12aa481d85813eab0c3e3a77b7eca673a81f106e2eb91534745a",
+     "raw_bytes": 6478831
+    },
+    {
+     "statInfId": "000032214168",
+     "prefecture_code": "15",
+     "label": "総数（男女）［新潟県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214168&fileKind=0",
+     "raw_file": "raw/workplace/t3_15.xlsx",
+     "raw_sha256": "1b140eb8eb83bb3f2fe6f35a8ea7cca44e6730bb469a292a277fbdbedfb9c7e8",
+     "raw_bytes": 3946568
+    },
+    {
+     "statInfId": "000032214171",
+     "prefecture_code": "16",
+     "label": "総数（男女）［富山県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214171&fileKind=0",
+     "raw_file": "raw/workplace/t3_16.xlsx",
+     "raw_sha256": "c9e74d1037ba8807e171a841476bb10290a88119120dc5d839ddb6d62010acfb",
+     "raw_bytes": 1634107
+    },
+    {
+     "statInfId": "000032214214",
+     "prefecture_code": "17",
+     "label": "総数（男女）［石川県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214214&fileKind=0",
+     "raw_file": "raw/workplace/t3_17.xlsx",
+     "raw_sha256": "8e6c270ee1715cc5efeabd3c6369ccef228fd227ef94f372581c1924dbbb5ca6",
+     "raw_bytes": 2031198
+    },
+    {
+     "statInfId": "000032214217",
+     "prefecture_code": "18",
+     "label": "総数（男女）［福井県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214217&fileKind=0",
+     "raw_file": "raw/workplace/t3_18.xlsx",
+     "raw_sha256": "a46ed733baf7d8efbf55b42a033236757ca7079379dc1512c090ce48dafa0615",
+     "raw_bytes": 1831783
+    },
+    {
+     "statInfId": "000032214220",
+     "prefecture_code": "19",
+     "label": "総数（男女）［山梨県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214220&fileKind=0",
+     "raw_file": "raw/workplace/t3_19.xlsx",
+     "raw_sha256": "2c701fb81fd4da365654fb8383cacc310738751400aaa1aea5b963c968a47590",
+     "raw_bytes": 2837731
+    },
+    {
+     "statInfId": "000032214201",
+     "prefecture_code": "20",
+     "label": "総数（男女）［長野県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214201&fileKind=0",
+     "raw_file": "raw/workplace/t3_20.xlsx",
+     "raw_sha256": "222c49e675c1e3ee2d43ec2f18a0d02c4ceadf0113d29313c5a6849df167396a",
+     "raw_bytes": 7855502
+    },
+    {
+     "statInfId": "000032214204",
+     "prefecture_code": "21",
+     "label": "総数（男女）［岐阜県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214204&fileKind=0",
+     "raw_file": "raw/workplace/t3_21.xlsx",
+     "raw_sha256": "dc0e2436abf63e105a4bef2c8d7e702a0ecfe0d16bae3817f201875f360d1af9",
+     "raw_bytes": 4383856
+    },
+    {
+     "statInfId": "000032214207",
+     "prefecture_code": "22",
+     "label": "総数（男女）［静岡県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214207&fileKind=0",
+     "raw_file": "raw/workplace/t3_22.xlsx",
+     "raw_sha256": "6463dab30de9c05c55eca55a55611a0b59ae2a9f779f428452a4d57f9babc0ec",
+     "raw_bytes": 4727313
+    },
+    {
+     "statInfId": "000032214210",
+     "prefecture_code": "23",
+     "label": "総数（男女）［愛知県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214210&fileKind=0",
+     "raw_file": "raw/workplace/t3_23.xlsx",
+     "raw_sha256": "4a5dca515250e3eaa483526b7496284313bc16d9df9984e52d22ed54ac43b858",
+     "raw_bytes": 7306151
+    },
+    {
+     "statInfId": "000032214213",
+     "prefecture_code": "24",
+     "label": "総数（男女）［三重県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214213&fileKind=0",
+     "raw_file": "raw/workplace/t3_24.xlsx",
+     "raw_sha256": "5863023b4ea920e90de3587a27020c5c3e0d975042d53f49f398566b2dd93948",
+     "raw_bytes": 3072414
+    },
+    {
+     "statInfId": "000032214236",
+     "prefecture_code": "25",
+     "label": "総数（男女）［滋賀県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214236&fileKind=0",
+     "raw_file": "raw/workplace/t3_25.xlsx",
+     "raw_sha256": "8b1517748e1b55961fd516007e1d657e7ae26d6ea734af89ab95e0291a277daf",
+     "raw_bytes": 2070517
+    },
+    {
+     "statInfId": "000032214239",
+     "prefecture_code": "26",
+     "label": "総数（男女）［京都府（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214239&fileKind=0",
+     "raw_file": "raw/workplace/t3_26.xlsx",
+     "raw_sha256": "a8b371a553c2c666d5ddea4dacbc315a8a2ebfb36853611975bc89275c80e7c5",
+     "raw_bytes": 3925545
+    },
+    {
+     "statInfId": "000032214242",
+     "prefecture_code": "27",
+     "label": "総数（男女）［大阪府（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214242&fileKind=0",
+     "raw_file": "raw/workplace/t3_27.xlsx",
+     "raw_sha256": "65a4c888c49989df0134d78531e2fcb087f3efe8ba1b96614233d8596121b6d2",
+     "raw_bytes": 7810494
+    },
+    {
+     "statInfId": "000032214245",
+     "prefecture_code": "28",
+     "label": "総数（男女）［兵庫県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214245&fileKind=0",
+     "raw_file": "raw/workplace/t3_28.xlsx",
+     "raw_sha256": "4d0b4ca8c751d2a7024693015713e2e95b9f3ac460d4eaf4f8342c054124dbad",
+     "raw_bytes": 5276248
+    },
+    {
+     "statInfId": "000032214248",
+     "prefecture_code": "29",
+     "label": "総数（男女）［奈良県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214248&fileKind=0",
+     "raw_file": "raw/workplace/t3_29.xlsx",
+     "raw_sha256": "5e17229e8c0d9faa5b72743ad012c18405eed7c44dd39ec19e903b81953f6355",
+     "raw_bytes": 4087204
+    },
+    {
+     "statInfId": "000032214251",
+     "prefecture_code": "30",
+     "label": "総数（男女）［和歌山県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214251&fileKind=0",
+     "raw_file": "raw/workplace/t3_30.xlsx",
+     "raw_sha256": "cff10b273a29226d6b7f7997cee5be4076fa5e6a0e5d0e31e20f02d5748d2fc4",
+     "raw_bytes": 3150545
+    },
+    {
+     "statInfId": "000032214254",
+     "prefecture_code": "31",
+     "label": "総数（男女）［鳥取県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214254&fileKind=0",
+     "raw_file": "raw/workplace/t3_31.xlsx",
+     "raw_sha256": "d59cb3c858fb3cebce1033e9c37aa0bf0fd5f0c82646a0706b904f0e6e1875cf",
+     "raw_bytes": 2033740
+    },
+    {
+     "statInfId": "000032214257",
+     "prefecture_code": "32",
+     "label": "総数（男女）［島根県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214257&fileKind=0",
+     "raw_file": "raw/workplace/t3_32.xlsx",
+     "raw_sha256": "009ebb89b29310abd34eb4f794142f1b0084371976fbe0fcdcb6b52e0ff722b4",
+     "raw_bytes": 2025242
+    },
+    {
+     "statInfId": "000032214260",
+     "prefecture_code": "33",
+     "label": "総数（男女）［岡山県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214260&fileKind=0",
+     "raw_file": "raw/workplace/t3_33.xlsx",
+     "raw_sha256": "bfb427a41937f31c0ca54459ea78b586806efda808896eb68bc907b1ea164eae",
+     "raw_bytes": 3267716
+    },
+    {
+     "statInfId": "000032214263",
+     "prefecture_code": "34",
+     "label": "総数（男女）［広島県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214263&fileKind=0",
+     "raw_file": "raw/workplace/t3_34.xlsx",
+     "raw_sha256": "32cd55b6b7c93af403c7b0909e8838e4fbc0acc75495cf32ce03be83e8d75dc7",
+     "raw_bytes": 3283447
+    },
+    {
+     "statInfId": "000032214266",
+     "prefecture_code": "35",
+     "label": "総数（男女）［山口県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214266&fileKind=0",
+     "raw_file": "raw/workplace/t3_35.xlsx",
+     "raw_sha256": "0fc5c7b48d4c1ebaf099b8b7afa5e6731e85a0ecd8415b585f5d098f468174f8",
+     "raw_bytes": 2045850
+    },
+    {
+     "statInfId": "000032214269",
+     "prefecture_code": "36",
+     "label": "総数（男女）［徳島県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214269&fileKind=0",
+     "raw_file": "raw/workplace/t3_36.xlsx",
+     "raw_sha256": "dc76afd740b7d456139cdb7a5e0fd652749b37be0cda4b83807e7c7aa9a1987d",
+     "raw_bytes": 2537946
+    },
+    {
+     "statInfId": "000032214272",
+     "prefecture_code": "37",
+     "label": "総数（男女）［香川県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214272&fileKind=0",
+     "raw_file": "raw/workplace/t3_37.xlsx",
+     "raw_sha256": "ad8257c82a80b1167a24f1b3ae9f9f3ba29a2120dbd53b7f8d470ebe2d9b2705",
+     "raw_bytes": 1847156
+    },
+    {
+     "statInfId": "000032214275",
+     "prefecture_code": "38",
+     "label": "総数（男女）［愛媛県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214275&fileKind=0",
+     "raw_file": "raw/workplace/t3_38.xlsx",
+     "raw_sha256": "296f78dcd740938d442ecf7a8cc838b5eb0763b4941955205d41d30d0cef8ef4",
+     "raw_bytes": 2142775
+    },
+    {
+     "statInfId": "000032214278",
+     "prefecture_code": "39",
+     "label": "総数（男女）［高知県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214278&fileKind=0",
+     "raw_file": "raw/workplace/t3_39.xlsx",
+     "raw_sha256": "b246de4396c6b218cef4f229a9f581ab1fd2c568654c8a39d41944de56925fa6",
+     "raw_bytes": 3522802
+    },
+    {
+     "statInfId": "000032214281",
+     "prefecture_code": "40",
+     "label": "総数（男女）［福岡県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214281&fileKind=0",
+     "raw_file": "raw/workplace/t3_40.xlsx",
+     "raw_sha256": "48389ed4b041efb8e03733c4717bf993f4df4bca758f27aa5b6078febd6ca852",
+     "raw_bytes": 7663305
+    },
+    {
+     "statInfId": "000032214284",
+     "prefecture_code": "41",
+     "label": "総数（男女）［佐賀県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214284&fileKind=0",
+     "raw_file": "raw/workplace/t3_41.xlsx",
+     "raw_sha256": "2de023e7239db4d57c8206a15c176f90c5b377b4a2722e99aafa0ec2beb92fd1",
+     "raw_bytes": 2146053
+    },
+    {
+     "statInfId": "000032214287",
+     "prefecture_code": "42",
+     "label": "総数（男女）［長崎県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214287&fileKind=0",
+     "raw_file": "raw/workplace/t3_42.xlsx",
+     "raw_sha256": "fd0f05629d6addf2e2ffd7d5afeda09a9d5ba804494cddff4b6734b685ab5b42",
+     "raw_bytes": 2249656
+    },
+    {
+     "statInfId": "000032214290",
+     "prefecture_code": "43",
+     "label": "総数（男女）［熊本県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214290&fileKind=0",
+     "raw_file": "raw/workplace/t3_43.xlsx",
+     "raw_sha256": "2c711db0e4554d90c7f980a01ad1faed520389b89772fc479d24f7e3e12b96fc",
+     "raw_bytes": 5173012
+    },
+    {
+     "statInfId": "000032214293",
+     "prefecture_code": "44",
+     "label": "総数（男女）［大分県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214293&fileKind=0",
+     "raw_file": "raw/workplace/t3_44.xlsx",
+     "raw_sha256": "10371788f0aa55be7ff11508162df4a6b83fac89b4b1e133461369a5cd20024c",
+     "raw_bytes": 1938639
+    },
+    {
+     "statInfId": "000032214296",
+     "prefecture_code": "45",
+     "label": "総数（男女）［宮崎県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214296&fileKind=0",
+     "raw_file": "raw/workplace/t3_45.xlsx",
+     "raw_sha256": "cad328f1e409b80f98f328e1630f95bf8e553d822fa26d31d051bff398f8b501",
+     "raw_bytes": 2734228
+    },
+    {
+     "statInfId": "000032214299",
+     "prefecture_code": "46",
+     "label": "総数（男女）［鹿児島県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214299&fileKind=0",
+     "raw_file": "raw/workplace/t3_46.xlsx",
+     "raw_sha256": "34617f46e13c021033a9704b0ff1262a5b08262b27af889a280cf2d3ad40178a",
+     "raw_bytes": 4423096
+    },
+    {
+     "statInfId": "000032214302",
+     "prefecture_code": "47",
+     "label": "総数（男女）［沖縄県（常住地）］",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214302&fileKind=0",
+     "raw_file": "raw/workplace/t3_47.xlsx",
+     "raw_sha256": "7aef6553e1f48b2aa541314a58919b0356916bd3f4b1be972aa85644e8ad2d45",
+     "raw_bytes": 4230385
+    }
+   ]
+  },
+  {
+   "table": "8",
+   "title": "男女，従業上の地位，産業（大分類），常住地又は従業地・通学地別就業者数（15歳以上）－全国，都道府県，市区町村",
+   "role": "市区町村 × 従業上の地位 × 産業（大分類）の常住地側・従業地側就業者数（自宅・自市内・県内・他県・不詳の内訳つき）。総数（男女）のみ取得。",
+   "files": [
+    {
+     "statInfId": "000032214499",
+     "label": "総数（男女）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214499&fileKind=0",
+     "raw_file": "raw/workplace/t8_total.xlsx",
+     "raw_sha256": "15bda4748c49cef07b3d5d364844ea0a1064a2667e938b27e0a73cc281f3cf6f",
+     "raw_bytes": 30945575
+    }
+   ]
+  },
+  {
+   "table": "9",
+   "title": "産業（大分類），従業地・通学地（全国［総数］，都道府県，市区町村）別就業者数（15歳以上）－全国，都道府県，21大都市，21大都市の区，県庁所在市，人口20万以上の市（常住地）",
+   "role": "ODI（常住地が21大都市・区・県庁所在市・人口20万以上の市 × 従業地 市区町村 × 産業）。推定には使わず復元評価のみ。",
+   "files": [
+    {
+     "statInfId": "000032214503",
+     "prefecture_code": "01",
+     "label": "北海道（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214503&fileKind=0",
+     "raw_file": "raw/workplace/t9_01.xlsx",
+     "raw_sha256": "1779f2e5263516e8303e868eaeb7c572771f6730c34da21bc1e336b607347ee6",
+     "raw_bytes": 3273019
+    },
+    {
+     "statInfId": "000032214504",
+     "prefecture_code": "02",
+     "label": "青森県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214504&fileKind=0",
+     "raw_file": "raw/workplace/t9_02.xlsx",
+     "raw_sha256": "e6601fe0634cab800131ad7c98272e592714a6ddbecb96b35e8dd94ab2d3e387",
+     "raw_bytes": 721601
+    },
+    {
+     "statInfId": "000032214505",
+     "prefecture_code": "03",
+     "label": "岩手県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214505&fileKind=0",
+     "raw_file": "raw/workplace/t9_03.xlsx",
+     "raw_sha256": "d1e694639550b27472e52b48b5fbfdad74f415bc64ed94cb9c5f08e14c7fc707",
+     "raw_bytes": 489987
+    },
+    {
+     "statInfId": "000032214506",
+     "prefecture_code": "04",
+     "label": "宮城県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214506&fileKind=0",
+     "raw_file": "raw/workplace/t9_04.xlsx",
+     "raw_sha256": "f74c2c56fdc3c25352002a5f6b625c81d691735a2f168d434f9471d5a5499c36",
+     "raw_bytes": 1667395
+    },
+    {
+     "statInfId": "000032214507",
+     "prefecture_code": "05",
+     "label": "秋田県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214507&fileKind=0",
+     "raw_file": "raw/workplace/t9_05.xlsx",
+     "raw_sha256": "2983a1839204d97f30ede9a517015377cc2bd38b42b44403dff2520e181bd072",
+     "raw_bytes": 485784
+    },
+    {
+     "statInfId": "000032214508",
+     "prefecture_code": "06",
+     "label": "山形県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214508&fileKind=0",
+     "raw_file": "raw/workplace/t9_06.xlsx",
+     "raw_sha256": "c28d773b8b57c6a90a7804a9cbceadef8a6dce546a89380f304b2a6fe8d66fd9",
+     "raw_bytes": 487517
+    },
+    {
+     "statInfId": "000032214509",
+     "prefecture_code": "07",
+     "label": "福島県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214509&fileKind=0",
+     "raw_file": "raw/workplace/t9_07.xlsx",
+     "raw_sha256": "0817dd5d36fbad42fff9bda3a2a833f3763ec356131d4509bd71dfcc284404c6",
+     "raw_bytes": 956250
+    },
+    {
+     "statInfId": "000032214510",
+     "prefecture_code": "08",
+     "label": "茨城県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214510&fileKind=0",
+     "raw_file": "raw/workplace/t9_08.xlsx",
+     "raw_sha256": "68c969d640b550dae9bd8a54214b15db93af77afa17d9259466c53727074a794",
+     "raw_bytes": 739918
+    },
+    {
+     "statInfId": "000032214511",
+     "prefecture_code": "09",
+     "label": "栃木県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214511&fileKind=0",
+     "raw_file": "raw/workplace/t9_09.xlsx",
+     "raw_sha256": "91ab7f6a0f0c5732482ca21cf08e17f2fc64f2ef60a8065fdc630c3bbbb82b7a",
+     "raw_bytes": 503268
+    },
+    {
+     "statInfId": "000032214512",
+     "prefecture_code": "10",
+     "label": "群馬県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214512&fileKind=0",
+     "raw_file": "raw/workplace/t9_10.xlsx",
+     "raw_sha256": "e7de3ada5041dcf5663e78da3712e56021e7efc19be4c50678b05217befa3c5d",
+     "raw_bytes": 1198838
+    },
+    {
+     "statInfId": "000032214480",
+     "prefecture_code": "11",
+     "label": "埼玉県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214480&fileKind=0",
+     "raw_file": "raw/workplace/t9_11.xlsx",
+     "raw_sha256": "9e8e607720908af1886656d89b5fb36b6edc166540f329f18b570d7899be11e5",
+     "raw_bytes": 4551013
+    },
+    {
+     "statInfId": "000032214481",
+     "prefecture_code": "12",
+     "label": "千葉県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214481&fileKind=0",
+     "raw_file": "raw/workplace/t9_12.xlsx",
+     "raw_sha256": "db4cf609f89a9a5102e85b3d1233f6a61b1643ed70dc739bb9a734df43f5377a",
+     "raw_bytes": 3118369
+    },
+    {
+     "statInfId": "000032214482",
+     "prefecture_code": "13",
+     "label": "東京都（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214482&fileKind=0",
+     "raw_file": "raw/workplace/t9_13.xlsx",
+     "raw_sha256": "c3f157835a361b3391621527b124a615f34d79f7b09023e6c5a8f5391bbbca65",
+     "raw_bytes": 7234041
+    },
+    {
+     "statInfId": "000032214483",
+     "prefecture_code": "14",
+     "label": "神奈川県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214483&fileKind=0",
+     "raw_file": "raw/workplace/t9_14.xlsx",
+     "raw_sha256": "00209c4ebe82dc601bd5022495c2901c00044bd21eee9f85374d583e6ae31cb8",
+     "raw_bytes": 9060657
+    },
+    {
+     "statInfId": "000032214484",
+     "prefecture_code": "15",
+     "label": "新潟県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214484&fileKind=0",
+     "raw_file": "raw/workplace/t9_15.xlsx",
+     "raw_sha256": "89c152fb4da7bbfcbd879d9a395a25733005563802737b430e3000d09fc7ebfb",
+     "raw_bytes": 2550659
+    },
+    {
+     "statInfId": "000032214485",
+     "prefecture_code": "16",
+     "label": "富山県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214485&fileKind=0",
+     "raw_file": "raw/workplace/t9_16.xlsx",
+     "raw_sha256": "baca8c12b03a7af8225e5eef1c0d0a2d07ebb5fb1227a411fdc8fa809ca20a11",
+     "raw_bytes": 486630
+    },
+    {
+     "statInfId": "000032214486",
+     "prefecture_code": "17",
+     "label": "石川県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214486&fileKind=0",
+     "raw_file": "raw/workplace/t9_17.xlsx",
+     "raw_sha256": "c585bfa3205227df9b5eebaf2f8b221e6bebce0410786b37f279ad8201f31641",
+     "raw_bytes": 488750
+    },
+    {
+     "statInfId": "000032214487",
+     "prefecture_code": "18",
+     "label": "福井県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214487&fileKind=0",
+     "raw_file": "raw/workplace/t9_18.xlsx",
+     "raw_sha256": "93750d871e43020ebea683078263bc8e357f2629abe2eb74e1e048729e0dba2f",
+     "raw_bytes": 485114
+    },
+    {
+     "statInfId": "000032214488",
+     "prefecture_code": "19",
+     "label": "山梨県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214488&fileKind=0",
+     "raw_file": "raw/workplace/t9_19.xlsx",
+     "raw_sha256": "0466a94364a952717e01071c06c358a49ac964a203b54f1bdc172d06392f7f9a",
+     "raw_bytes": 490425
+    },
+    {
+     "statInfId": "000032214489",
+     "prefecture_code": "20",
+     "label": "長野県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214489&fileKind=0",
+     "raw_file": "raw/workplace/t9_20.xlsx",
+     "raw_sha256": "b4215ca52e2d09ad4218d03cc09d12f56b14deaaf101f3268ba0cc699fff0ec6",
+     "raw_bytes": 729528
+    },
+    {
+     "statInfId": "000032214490",
+     "prefecture_code": "21",
+     "label": "岐阜県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214490&fileKind=0",
+     "raw_file": "raw/workplace/t9_21.xlsx",
+     "raw_sha256": "86644e64e8da632c71aef80fca74643cd993807bb7df9bd0b142722194e249fd",
+     "raw_bytes": 500728
+    },
+    {
+     "statInfId": "000032214491",
+     "prefecture_code": "22",
+     "label": "静岡県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214491&fileKind=0",
+     "raw_file": "raw/workplace/t9_22.xlsx",
+     "raw_sha256": "9445418f972f7e81f5fc64b6ae654c820e69f7ccd8e39d4a3a834c4344c7e810",
+     "raw_bytes": 3277980
+    },
+    {
+     "statInfId": "000032214492",
+     "prefecture_code": "23",
+     "label": "愛知県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214492&fileKind=0",
+     "raw_file": "raw/workplace/t9_23.xlsx",
+     "raw_sha256": "f71974efd56971f127904a0cf6091e20d7b76d551e94ffc3dc21ed75e62acb88",
+     "raw_bytes": 5425747
+    },
+    {
+     "statInfId": "000032214493",
+     "prefecture_code": "24",
+     "label": "三重県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214493&fileKind=0",
+     "raw_file": "raw/workplace/t9_24.xlsx",
+     "raw_sha256": "2ba99129513d0676ea74ecc47e7167f4d71060fa908605c1c3f4e2e857485b05",
+     "raw_bytes": 731481
+    },
+    {
+     "statInfId": "000032214514",
+     "prefecture_code": "25",
+     "label": "滋賀県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214514&fileKind=0",
+     "raw_file": "raw/workplace/t9_25.xlsx",
+     "raw_sha256": "5712197f6f7074d87919199876d43c6e76c2e6b4ea68683f2f4cb87f73f91d6a",
+     "raw_bytes": 502585
+    },
+    {
+     "statInfId": "000032214515",
+     "prefecture_code": "26",
+     "label": "京都府（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214515&fileKind=0",
+     "raw_file": "raw/workplace/t9_26.xlsx",
+     "raw_sha256": "a3556bcdb9efd0ff6431b3e36d9e54dbf562ecd390d016702ec6fbbb6eb96910",
+     "raw_bytes": 3082537
+    },
+    {
+     "statInfId": "000032214516",
+     "prefecture_code": "27",
+     "label": "大阪府（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214516&fileKind=0",
+     "raw_file": "raw/workplace/t9_27.xlsx",
+     "raw_sha256": "e17d9fe80e9dbf7f28e00570d646c162e2af77f9e2a0675012f3be5b2ef9543e",
+     "raw_bytes": 9924466
+    },
+    {
+     "statInfId": "000032214517",
+     "prefecture_code": "28",
+     "label": "兵庫県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214517&fileKind=0",
+     "raw_file": "raw/workplace/t9_28.xlsx",
+     "raw_sha256": "cc3061549fc413895e27e2d60ccf637b8ac0406e6bca087c9bfad267241e2ca4",
+     "raw_bytes": 4054048
+    },
+    {
+     "statInfId": "000032214518",
+     "prefecture_code": "29",
+     "label": "奈良県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214518&fileKind=0",
+     "raw_file": "raw/workplace/t9_29.xlsx",
+     "raw_sha256": "a7bf077e7d8a4e73fd3265d3f1ab0d3190ce93944149b2b6e68cf952ea51ecda",
+     "raw_bytes": 504453
+    },
+    {
+     "statInfId": "000032214519",
+     "prefecture_code": "30",
+     "label": "和歌山県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214519&fileKind=0",
+     "raw_file": "raw/workplace/t9_30.xlsx",
+     "raw_sha256": "78c75d672821f00ab0886bd807fd176a0022aef199bd2502a33e5dc50dd8f6b4",
+     "raw_bytes": 493937
+    },
+    {
+     "statInfId": "000032214520",
+     "prefecture_code": "31",
+     "label": "鳥取県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214520&fileKind=0",
+     "raw_file": "raw/workplace/t9_31.xlsx",
+     "raw_sha256": "b47727e17fad83a581a9519aae3ee24a3edcb5af5b87964fa84689652a9ddf90",
+     "raw_bytes": 482740
+    },
+    {
+     "statInfId": "000032214521",
+     "prefecture_code": "32",
+     "label": "島根県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214521&fileKind=0",
+     "raw_file": "raw/workplace/t9_32.xlsx",
+     "raw_sha256": "60579fa93440ea7364676131d5376253bdf336d12d3f4f9bf442482a92327909",
+     "raw_bytes": 482291
+    },
+    {
+     "statInfId": "000032214522",
+     "prefecture_code": "33",
+     "label": "岡山県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214522&fileKind=0",
+     "raw_file": "raw/workplace/t9_33.xlsx",
+     "raw_sha256": "411e194f8737c86e35fad9baf1377b32c2133ce8b7eb24ab51e1e08203fc92a6",
+     "raw_bytes": 1654790
+    },
+    {
+     "statInfId": "000032214523",
+     "prefecture_code": "34",
+     "label": "広島県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214523&fileKind=0",
+     "raw_file": "raw/workplace/t9_34.xlsx",
+     "raw_sha256": "a9b870f61ad9f5bbcd78ecec6d70b6db6b0f819751522f37ce6990322a481bc7",
+     "raw_bytes": 2807707
+    },
+    {
+     "statInfId": "000032214524",
+     "prefecture_code": "35",
+     "label": "山口県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214524&fileKind=0",
+     "raw_file": "raw/workplace/t9_35.xlsx",
+     "raw_sha256": "810380663fe6025765c6905c8d55a0ffccfa3a9dc865d6732c92aeac204f01ef",
+     "raw_bytes": 717427
+    },
+    {
+     "statInfId": "000032214525",
+     "prefecture_code": "36",
+     "label": "徳島県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214525&fileKind=0",
+     "raw_file": "raw/workplace/t9_36.xlsx",
+     "raw_sha256": "7f1fbc2f7f2c3acdc85300afec774173c41bbe1feaea0c0662351ef7909cadbb",
+     "raw_bytes": 485836
+    },
+    {
+     "statInfId": "000032214526",
+     "prefecture_code": "37",
+     "label": "香川県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214526&fileKind=0",
+     "raw_file": "raw/workplace/t9_37.xlsx",
+     "raw_sha256": "7bc2415c2530eaf1b1f478437262cc84f5faf92b72f6e7636c7b26f5e7ee9ab4",
+     "raw_bytes": 489936
+    },
+    {
+     "statInfId": "000032214527",
+     "prefecture_code": "38",
+     "label": "愛媛県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214527&fileKind=0",
+     "raw_file": "raw/workplace/t9_38.xlsx",
+     "raw_sha256": "1159664496d985a4c0d183ba7314d9cc7a8c8bf64d68c4cfc5dfa2c75eb15fb1",
+     "raw_bytes": 489322
+    },
+    {
+     "statInfId": "000032214528",
+     "prefecture_code": "39",
+     "label": "高知県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214528&fileKind=0",
+     "raw_file": "raw/workplace/t9_39.xlsx",
+     "raw_sha256": "ac7d31f9d93a4bf19a6a4e93990bca3adf054cb943c7f264895e56e7225a69a0",
+     "raw_bytes": 486557
+    },
+    {
+     "statInfId": "000032214529",
+     "prefecture_code": "40",
+     "label": "福岡県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214529&fileKind=0",
+     "raw_file": "raw/workplace/t9_40.xlsx",
+     "raw_sha256": "3a8b1370b08a0df6c13a10e314d6120b0bc76b1e33da8ca432e2b6dbb36c852f",
+     "raw_bytes": 4242547
+    },
+    {
+     "statInfId": "000032214530",
+     "prefecture_code": "41",
+     "label": "佐賀県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214530&fileKind=0",
+     "raw_file": "raw/workplace/t9_41.xlsx",
+     "raw_sha256": "8628a36c586e22db7cbcb123a69aad72408aae3f9c40e9d464ebee38b7e01a38",
+     "raw_bytes": 489543
+    },
+    {
+     "statInfId": "000032214531",
+     "prefecture_code": "42",
+     "label": "長崎県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214531&fileKind=0",
+     "raw_file": "raw/workplace/t9_42.xlsx",
+     "raw_sha256": "7ab02adc8234d5d2c06cf478120ab01dd7df83e3bb1846860377b6922cb5d973",
+     "raw_bytes": 722794
+    },
+    {
+     "statInfId": "000032214532",
+     "prefecture_code": "43",
+     "label": "熊本県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214532&fileKind=0",
+     "raw_file": "raw/workplace/t9_43.xlsx",
+     "raw_sha256": "82d4242e93c679daa2ba2b36b27c7218a2c318693f6f5e4a3c2e315300df987b",
+     "raw_bytes": 1651583
+    },
+    {
+     "statInfId": "000032214533",
+     "prefecture_code": "44",
+     "label": "大分県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214533&fileKind=0",
+     "raw_file": "raw/workplace/t9_44.xlsx",
+     "raw_sha256": "62861ff1199559ea8d64c1fe373f84714bfbd846c58464c4fa222a5e580c4cef",
+     "raw_bytes": 490352
+    },
+    {
+     "statInfId": "000032214534",
+     "prefecture_code": "45",
+     "label": "宮崎県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214534&fileKind=0",
+     "raw_file": "raw/workplace/t9_45.xlsx",
+     "raw_sha256": "5521411b3d92f6183525f84bd69c6581a6da4ff75ee82b1ebf48c12b6ef17869",
+     "raw_bytes": 488118
+    },
+    {
+     "statInfId": "000032214535",
+     "prefecture_code": "46",
+     "label": "鹿児島県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214535&fileKind=0",
+     "raw_file": "raw/workplace/t9_46.xlsx",
+     "raw_sha256": "3a81e3eaadd5e39f80f0967d17114b6d67c49704b273770e03ed6971bc358d50",
+     "raw_bytes": 491642
+    },
+    {
+     "statInfId": "000032214536",
+     "prefecture_code": "47",
+     "label": "沖縄県（常住地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214536&fileKind=0",
+     "raw_file": "raw/workplace/t9_47.xlsx",
+     "raw_sha256": "2e6c7e618b8477797762d2c50281df676b72e38e6d61355dfc17eda1cb56782e",
+     "raw_bytes": 484457
+    }
+   ]
+  },
+  {
+   "table": "10",
+   "title": "産業（大分類），常住地（全国，都道府県，市区町村）別就業者数（15歳以上）－全国［総数］，都道府県，21大都市，21大都市の区，県庁所在市，人口20万以上の市（従業地・通学地）",
+   "role": "ODI 転置（従業地が21大都市・区・県庁所在市・人口20万以上の市 × 常住地 市区町村 × 産業）。「働きに来る人」側の復元評価のみ。",
+   "files": [
+    {
+     "statInfId": "000032214538",
+     "prefecture_code": "01",
+     "label": "北海道（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214538&fileKind=0",
+     "raw_file": "raw/workplace/t10_01.xlsx",
+     "raw_sha256": "3db59d7fd4d1b8a9bdac69255d4d0f0201fec5290e0e42ef2860a685849a47a7",
+     "raw_bytes": 3246229
+    },
+    {
+     "statInfId": "000032214539",
+     "prefecture_code": "02",
+     "label": "青森県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214539&fileKind=0",
+     "raw_file": "raw/workplace/t10_02.xlsx",
+     "raw_sha256": "14d035c18d154215fab55487a10f09dee1bb983966aa98f73fe273f3ccea0ff1",
+     "raw_bytes": 715889
+    },
+    {
+     "statInfId": "000032214540",
+     "prefecture_code": "03",
+     "label": "岩手県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214540&fileKind=0",
+     "raw_file": "raw/workplace/t10_03.xlsx",
+     "raw_sha256": "a9446698754a5fa8e0f1ba37e48c9b9deb208202a491d9d678bf2f98602f9330",
+     "raw_bytes": 489824
+    },
+    {
+     "statInfId": "000032214541",
+     "prefecture_code": "04",
+     "label": "宮城県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214541&fileKind=0",
+     "raw_file": "raw/workplace/t10_04.xlsx",
+     "raw_sha256": "4c942e114a4de8dc50221a4831ad279790f8a0945d16c98f2d2a40479c23c5ea",
+     "raw_bytes": 1672627
+    },
+    {
+     "statInfId": "000032214542",
+     "prefecture_code": "05",
+     "label": "秋田県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214542&fileKind=0",
+     "raw_file": "raw/workplace/t10_05.xlsx",
+     "raw_sha256": "02e2e5796ec0355ed93972b19f1aa7791a21876a92446f7990552e98d50c657b",
+     "raw_bytes": 485411
+    },
+    {
+     "statInfId": "000032214543",
+     "prefecture_code": "06",
+     "label": "山形県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214543&fileKind=0",
+     "raw_file": "raw/workplace/t10_06.xlsx",
+     "raw_sha256": "2b3cbb0dec6006085c20758435eda4001685254a3caf9008949f939547a8928e",
+     "raw_bytes": 487178
+    },
+    {
+     "statInfId": "000032214544",
+     "prefecture_code": "07",
+     "label": "福島県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214544&fileKind=0",
+     "raw_file": "raw/workplace/t10_07.xlsx",
+     "raw_sha256": "f3bbaba3c4bc65ba25b378bc153c4ea5bdc614142f75c38e038e5bb0e83cd147",
+     "raw_bytes": 968868
+    },
+    {
+     "statInfId": "000032214545",
+     "prefecture_code": "08",
+     "label": "茨城県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214545&fileKind=0",
+     "raw_file": "raw/workplace/t10_08.xlsx",
+     "raw_sha256": "fbeed9f055cd35c39547921e527310f477cb620bc9bdb068f88177ef2f3a0303",
+     "raw_bytes": 742580
+    },
+    {
+     "statInfId": "000032214546",
+     "prefecture_code": "09",
+     "label": "栃木県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214546&fileKind=0",
+     "raw_file": "raw/workplace/t10_09.xlsx",
+     "raw_sha256": "36fb4b81d7e11e38393a23dda66e3db6643c2e737f3775d9676132fcc5a3ad0c",
+     "raw_bytes": 506229
+    },
+    {
+     "statInfId": "000032214547",
+     "prefecture_code": "10",
+     "label": "群馬県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214547&fileKind=0",
+     "raw_file": "raw/workplace/t10_10.xlsx",
+     "raw_sha256": "d1987798d84e01c5164215c04107015347e1d43d9be38cd3a0b4847e8e93fd48",
+     "raw_bytes": 1198974
+    },
+    {
+     "statInfId": "000032214513",
+     "prefecture_code": "11",
+     "label": "埼玉県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214513&fileKind=0",
+     "raw_file": "raw/workplace/t10_11.xlsx",
+     "raw_sha256": "e3942c2302857a59c2e7c9982b98592abb054758f6434c966af72edffbffdad7",
+     "raw_bytes": 4521875
+    },
+    {
+     "statInfId": "000032214554",
+     "prefecture_code": "12",
+     "label": "千葉県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214554&fileKind=0",
+     "raw_file": "raw/workplace/t10_12.xlsx",
+     "raw_sha256": "85d68b028788ffb3fcf559990977fd4d185038cf5840f6302e7f3926254a3193",
+     "raw_bytes": 3104825
+    },
+    {
+     "statInfId": "000032214555",
+     "prefecture_code": "13",
+     "label": "東京都（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214555&fileKind=0",
+     "raw_file": "raw/workplace/t10_13.xlsx",
+     "raw_sha256": "d99c6856809664f35ced8e930507589ec857a016fd6d95f1d414f2670f4d830e",
+     "raw_bytes": 7459611
+    },
+    {
+     "statInfId": "000032214556",
+     "prefecture_code": "14",
+     "label": "神奈川県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214556&fileKind=0",
+     "raw_file": "raw/workplace/t10_14.xlsx",
+     "raw_sha256": "cb846b6f4799c2037f6f0c539f6eb2f2ae295fd39b62f156c949585797cf15fd",
+     "raw_bytes": 9041527
+    },
+    {
+     "statInfId": "000032214557",
+     "prefecture_code": "15",
+     "label": "新潟県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214557&fileKind=0",
+     "raw_file": "raw/workplace/t10_15.xlsx",
+     "raw_sha256": "ee69792525da5d6607dec7b421d93497e7dd3c9f335c020884a41e08ef174477",
+     "raw_bytes": 2549141
+    },
+    {
+     "statInfId": "000032214558",
+     "prefecture_code": "16",
+     "label": "富山県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214558&fileKind=0",
+     "raw_file": "raw/workplace/t10_16.xlsx",
+     "raw_sha256": "5c44497f29473a1cc405ae2bb678deba0818e8bc79c0edbb813523e1cfbad836",
+     "raw_bytes": 489765
+    },
+    {
+     "statInfId": "000032214559",
+     "prefecture_code": "17",
+     "label": "石川県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214559&fileKind=0",
+     "raw_file": "raw/workplace/t10_17.xlsx",
+     "raw_sha256": "b3695638fa3b77a4943549579141b30a2a35bb73b39ce28c56e849eb0882eff0",
+     "raw_bytes": 492009
+    },
+    {
+     "statInfId": "000032214560",
+     "prefecture_code": "18",
+     "label": "福井県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214560&fileKind=0",
+     "raw_file": "raw/workplace/t10_18.xlsx",
+     "raw_sha256": "b30fc60f2abff909b5858d91d6ac6706ac6e74c0a1146a484baed4fcf1b862d2",
+     "raw_bytes": 492076
+    },
+    {
+     "statInfId": "000032214561",
+     "prefecture_code": "19",
+     "label": "山梨県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214561&fileKind=0",
+     "raw_file": "raw/workplace/t10_19.xlsx",
+     "raw_sha256": "c010066eb3ee36826a88ec8a7707dcbc569dc7b5e415d909fca3f89f8139dd93",
+     "raw_bytes": 491952
+    },
+    {
+     "statInfId": "000032214562",
+     "prefecture_code": "20",
+     "label": "長野県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214562&fileKind=0",
+     "raw_file": "raw/workplace/t10_20.xlsx",
+     "raw_sha256": "ff6c3c8a853b9426fd89c3663d5ff0444a3f6e19c45491c648669024ce7d692e",
+     "raw_bytes": 735662
+    },
+    {
+     "statInfId": "000032214563",
+     "prefecture_code": "21",
+     "label": "岐阜県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214563&fileKind=0",
+     "raw_file": "raw/workplace/t10_21.xlsx",
+     "raw_sha256": "1da8ccbf367a2a8d1fda7172805b0a15a88d86159d26eac66055a8c63431d3db",
+     "raw_bytes": 500142
+    },
+    {
+     "statInfId": "000032214564",
+     "prefecture_code": "22",
+     "label": "静岡県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214564&fileKind=0",
+     "raw_file": "raw/workplace/t10_22.xlsx",
+     "raw_sha256": "7666358a89c460c50998aa087f4f92cc161b879ae548f8bc341db1549c38169b",
+     "raw_bytes": 3290963
+    },
+    {
+     "statInfId": "000032214565",
+     "prefecture_code": "23",
+     "label": "愛知県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214565&fileKind=0",
+     "raw_file": "raw/workplace/t10_23.xlsx",
+     "raw_sha256": "080e514d22f08066f893fa59a521d5da32c832ff83e8a0b83fb2c162a53ee86c",
+     "raw_bytes": 5478072
+    },
+    {
+     "statInfId": "000032214566",
+     "prefecture_code": "24",
+     "label": "三重県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214566&fileKind=0",
+     "raw_file": "raw/workplace/t10_24.xlsx",
+     "raw_sha256": "d1f4219d5ee70779cc400f2d6880fda6b523cca2b5423301ff4985e64c9bd5b5",
+     "raw_bytes": 736778
+    },
+    {
+     "statInfId": "000032214567",
+     "prefecture_code": "25",
+     "label": "滋賀県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214567&fileKind=0",
+     "raw_file": "raw/workplace/t10_25.xlsx",
+     "raw_sha256": "adc8d82efa23a55876d090b58d4261fa0730df7e8343d30b99d86db4950eaa5e",
+     "raw_bytes": 499870
+    },
+    {
+     "statInfId": "000032214568",
+     "prefecture_code": "26",
+     "label": "京都府（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214568&fileKind=0",
+     "raw_file": "raw/workplace/t10_26.xlsx",
+     "raw_sha256": "f50c54f9ff87dd34220a16687091e8066d6cfb9dbbddd4013227e04be8718ad0",
+     "raw_bytes": 3095380
+    },
+    {
+     "statInfId": "000032214548",
+     "prefecture_code": "27",
+     "label": "大阪府（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214548&fileKind=0",
+     "raw_file": "raw/workplace/t10_27.xlsx",
+     "raw_sha256": "abd6915e281d08524a77371ee06379087c34185fb4c8cf4770b2d35996423db0",
+     "raw_bytes": 9994812
+    },
+    {
+     "statInfId": "000032214549",
+     "prefecture_code": "28",
+     "label": "兵庫県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214549&fileKind=0",
+     "raw_file": "raw/workplace/t10_28.xlsx",
+     "raw_sha256": "c21af5a877f493b90cd23b9123052e2c420b59f3f6390740b251f8f85a274988",
+     "raw_bytes": 4032171
+    },
+    {
+     "statInfId": "000032214550",
+     "prefecture_code": "29",
+     "label": "奈良県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214550&fileKind=0",
+     "raw_file": "raw/workplace/t10_29.xlsx",
+     "raw_sha256": "24f85921232f2069faf10a354f4c97990b2c939bf6ab37ce9563515318143dfd",
+     "raw_bytes": 496192
+    },
+    {
+     "statInfId": "000032214551",
+     "prefecture_code": "30",
+     "label": "和歌山県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214551&fileKind=0",
+     "raw_file": "raw/workplace/t10_30.xlsx",
+     "raw_sha256": "bbbede9ce39dffad79268cc6f2f24887a54b303628ad50a795c57f7ccefbd0ae",
+     "raw_bytes": 492902
+    },
+    {
+     "statInfId": "000032214552",
+     "prefecture_code": "31",
+     "label": "鳥取県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214552&fileKind=0",
+     "raw_file": "raw/workplace/t10_31.xlsx",
+     "raw_sha256": "caa6258bf1f7779159c83ef0f5c224e55a8b8ad6dee3ae20ad2454f7733b6432",
+     "raw_bytes": 483703
+    },
+    {
+     "statInfId": "000032214553",
+     "prefecture_code": "32",
+     "label": "島根県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214553&fileKind=0",
+     "raw_file": "raw/workplace/t10_32.xlsx",
+     "raw_sha256": "1be7df89124ba2390fbdf0b4d630e149c61ec1c6717ed8ae6bc476ce3cec855b",
+     "raw_bytes": 484560
+    },
+    {
+     "statInfId": "000032214574",
+     "prefecture_code": "33",
+     "label": "岡山県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214574&fileKind=0",
+     "raw_file": "raw/workplace/t10_33.xlsx",
+     "raw_sha256": "39be041e84ffc45527f7ba55c05b25555844eca7b551c340fb73a5af4006622f",
+     "raw_bytes": 1657141
+    },
+    {
+     "statInfId": "000032214575",
+     "prefecture_code": "34",
+     "label": "広島県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214575&fileKind=0",
+     "raw_file": "raw/workplace/t10_34.xlsx",
+     "raw_sha256": "6f10a8bf6807413881d6e19db248335ac0bd294ec43bd022d1879454881f8073",
+     "raw_bytes": 2815570
+    },
+    {
+     "statInfId": "000032214576",
+     "prefecture_code": "35",
+     "label": "山口県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214576&fileKind=0",
+     "raw_file": "raw/workplace/t10_35.xlsx",
+     "raw_sha256": "2caa732b817aa5c1585115e06739d09e21a603bcb78efb93067e0f748343755a",
+     "raw_bytes": 721576
+    },
+    {
+     "statInfId": "000032214577",
+     "prefecture_code": "36",
+     "label": "徳島県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214577&fileKind=0",
+     "raw_file": "raw/workplace/t10_36.xlsx",
+     "raw_sha256": "89fa75d1b368ae9821a72bc8bb303a915c5d418902b937b4e66cca2d5f45fa55",
+     "raw_bytes": 487826
+    },
+    {
+     "statInfId": "000032214578",
+     "prefecture_code": "37",
+     "label": "香川県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214578&fileKind=0",
+     "raw_file": "raw/workplace/t10_37.xlsx",
+     "raw_sha256": "02fcc15eb10d8cb08beee1ffbd4e1f02a85f21942dd9f6f74cc40a196b738c3b",
+     "raw_bytes": 491910
+    },
+    {
+     "statInfId": "000032214579",
+     "prefecture_code": "38",
+     "label": "愛媛県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214579&fileKind=0",
+     "raw_file": "raw/workplace/t10_38.xlsx",
+     "raw_sha256": "8ea270e8fbc1f0e66e8b3c9d8f3530c5e360a896e53950267dd472d2a3c56f59",
+     "raw_bytes": 492701
+    },
+    {
+     "statInfId": "000032214580",
+     "prefecture_code": "39",
+     "label": "高知県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214580&fileKind=0",
+     "raw_file": "raw/workplace/t10_39.xlsx",
+     "raw_sha256": "ebe490683b27097e78c363074e28e2c3108fa828becb5589b308a4f1043c64e5",
+     "raw_bytes": 485427
+    },
+    {
+     "statInfId": "000032214581",
+     "prefecture_code": "40",
+     "label": "福岡県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214581&fileKind=0",
+     "raw_file": "raw/workplace/t10_40.xlsx",
+     "raw_sha256": "614acf3ce58bda577f2cb95c00b60b16b5c3d2328467122d888a66648baceec7",
+     "raw_bytes": 4245270
+    },
+    {
+     "statInfId": "000032214582",
+     "prefecture_code": "41",
+     "label": "佐賀県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214582&fileKind=0",
+     "raw_file": "raw/workplace/t10_41.xlsx",
+     "raw_sha256": "6d5f02f576d0994126ce595df0688372627bbd9fcc616cb733d68792fe08a27d",
+     "raw_bytes": 487902
+    },
+    {
+     "statInfId": "000032214583",
+     "prefecture_code": "42",
+     "label": "長崎県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214583&fileKind=0",
+     "raw_file": "raw/workplace/t10_42.xlsx",
+     "raw_sha256": "1bc4de9ad1f78e2a9dd544e7e53f5aae1b40e55ed26fb1bcabe94a9430132fc6",
+     "raw_bytes": 715225
+    },
+    {
+     "statInfId": "000032214584",
+     "prefecture_code": "43",
+     "label": "熊本県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214584&fileKind=0",
+     "raw_file": "raw/workplace/t10_43.xlsx",
+     "raw_sha256": "af51d3817f4f5680f144be55ac0c8785e841595b522c152c89082cb1ff0daf98",
+     "raw_bytes": 1647345
+    },
+    {
+     "statInfId": "000032214585",
+     "prefecture_code": "44",
+     "label": "大分県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214585&fileKind=0",
+     "raw_file": "raw/workplace/t10_44.xlsx",
+     "raw_sha256": "ec3e8a394e8fa21d758ee9344ef6151b9976a6532016c533d2b26218fa23760b",
+     "raw_bytes": 489987
+    },
+    {
+     "statInfId": "000032214586",
+     "prefecture_code": "45",
+     "label": "宮崎県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214586&fileKind=0",
+     "raw_file": "raw/workplace/t10_45.xlsx",
+     "raw_sha256": "c6f194634356a951dcea9c5c429a3db01fb96376da1bdc8b99fc4278321b1a00",
+     "raw_bytes": 485292
+    },
+    {
+     "statInfId": "000032214587",
+     "prefecture_code": "46",
+     "label": "鹿児島県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214587&fileKind=0",
+     "raw_file": "raw/workplace/t10_46.xlsx",
+     "raw_sha256": "d4bbf8f6df72f57d4356f15f824248e1419a44a5705f0a160cadc9ea8758b318",
+     "raw_bytes": 490453
+    },
+    {
+     "statInfId": "000032214588",
+     "prefecture_code": "47",
+     "label": "沖縄県（従業地・通学地）",
+     "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032214588&fileKind=0",
+     "raw_file": "raw/workplace/t10_47.xlsx",
+     "raw_sha256": "e9b94c3770cb37073b6e86a97f52019de123bf5649d696ff0a1419a50cd3865a",
+     "raw_bytes": 487395
+    }
+   ]
+  }
+ ],
+ "notes": [
+  "第3表の従業地は全国の市区町村（政令指定都市は市計と区の両方）を列挙する。モデルの葉（1,896地域：政令市は区、その他は市町村）に写像し、市計行は使わない。",
+  "第9・10表の常住地／従業地側は人口20万以上の市等に限られ、それ以外の市町村の産業別OD は公表されていない（Murata et al. 2023 が指摘する ODI の公開制限）。",
+  "男女別の第3表（各都道府県 男・女）は取得していない。性別は産業別周辺（第8表 男・女）でしか観測しないため、本段階の分布は男女計である。"
+ ]
+}
