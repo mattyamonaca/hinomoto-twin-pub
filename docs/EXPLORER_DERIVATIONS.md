@@ -20,10 +20,10 @@
 
 | 参照 | 成果物 | 上流 | 生成コード | 値の取得元（ページ内） |
 |---|---|---|---|---|
-| M1 基準所得配列 | `model_arrays.npz` counts_by_sex | なし | `build.py` / `estimator.py` fit_status, status_income_shapes, mixture | `dist()` の cC（就業構成で混合した分布）、`G.ess`（公表分布）、段階A があれば地位別人数 |
-| M2 最終所得配列 | `final_arrays.npz` counts_by_sex | M1 | `build_production.py` / `estimator.py` composition_tilt, industry_tilt, calibrate | `dist()` の cD、`incDist()`（非就業を含む） |
+| M1 基準所得配列 | `model_arrays.npz` counts_by_sex | なし | `build.py`（地位別形状の混合 q → 県 × 性別 × 年齢の公表構成へ IPF で校正）/ `estimator.py` fit_status, status_income_shapes, mixture, calibrate | `dist()` の cC（校正後の M1）、`G.ess`（公表分布＝校正の目標）。混合直後の q は未収録と表示 |
+| M2 最終所得配列 | `final_arrays.npz` counts_by_sex | M1（比較の基準。入力ではない） | `estimator.run`：同じ混合 q に学歴・産業の傾きを掛けてから校正（`mixture(inp, W, cp, tilt)` → `calibrate` → `tax_project(β=0)`） | `dist()` の cD（校正後の M2）、`incDist()`（非就業を含む）。傾けた混合 q_tilt と傾きの中間値は未収録と表示。比較は「校正後どうし（M1 基準 → M2）」と明記 |
 | M3 学歴別 | `education_leaf_arrays.npz` / `municipality_model_v2.npz` | M2 | `build_education.py` | `eduPop()`、`seedTab()`、`eduTab()`（ページ内の同じ IPF） |
-| M4 就業・産業 | `employment_a.npz` ほか | M3, M1 | `build_employment.py` block | `empCounts()`、`empBlock()`（葉は再計算、反復回数と周辺誤差を表示）、`empSeedShape()` |
+| M4 就業・産業（出力の行は適用した条件だけをラベルにし、就業状態・地位・産業を選んだときはその条件付き確率を別行で表示） | `employment_a.npz` ほか | M3, M1 | `build_employment.py` block | `empCounts()`、`empBlock()`（葉は再計算、反復回数と周辺誤差を表示）、`empSeedShape()` |
 | M5 世帯 | `household_b/<code>.npz`, `<code>_population.csv.gz` | M4 | `build_household.py`, `household_sample.py`, `export_household_web.py` | `web/household/<code>.json`（3 地域のみ） |
 | M6 勤務地 | `workplace_c.npz`, `web/workplace/*` | M4 | `build_workplace.py`, `persona_v4.py`, `export_workplace_web.py` | `wpCompute()`、`wpCondition()`（両モード） |
 
@@ -35,10 +35,10 @@
 
 ## 4. 検証（`tests/web_derivation_check.cjs`、`docs/experiments/explorer_derivations_verification*.json`）
 
-7 つの文脈（港区 35〜39歳・男・大学等、遠軽町の全年齢、大阪市（政令市）、双葉町（人口 0）、港区の学歴不詳、港区の完全失業、東京都の県集計）× M1〜M6 で、表示、全工程のクリックとフォーカス、値の一致（M2 の出力＝ページの年収分布、M3 の出力＝学歴を選んだ年収分布、差 1e-12 以内）、上流 M への移動と戻り、フォーカスの復帰、閲覧前後の条件・分布の不変を確認。M チップからの遷移と戻りでフォーカスがチップに戻ること、循環（M4→M3→M2→M1→M4）でスタックが巻き戻ること、参照一覧に 6 つの「導出を見る」があること、段階A/B/C のない schema 2 データでも同じ検証が通ることを確認。既存の再現検証（`web_employment_check.cjs`、`web_workplace_check.cjs`、操作シナリオ）も合格。ヘッドレス Chrome で PC と 390px 幅の表示（流れ図は縦並び）を確認。
+7 つの文脈（港区 35〜39歳・男・大学等、遠軽町の全年齢、大阪市（政令市）、双葉町（人口 0）、港区の学歴不詳、港区の完全失業、東京都の県集計）× M1〜M6 で、表示、全工程のクリックとフォーカス、値の一致（M2 の出力＝ページの年収分布、M3 の出力＝学歴を選んだ年収分布、差 1e-12 以内）、M4 の出力の行が適用した条件だけをラベルに持ち、値がページの条件付き人数と一致すること（港区・35〜39歳・男・完全失業：P(就業者｜35〜39歳・男) 96.7% と P(完全失業者｜…) 1.9%、正規 × 情報通信業の行）、M1 の工程順（混合＝未収録 → 校正）と M2 の工程順（傾きを混合に掛ける → 校正、M1 は入力でなく比較の基準）、上流 M への移動と戻り、フォーカスの復帰、閲覧前後の条件・分布の不変を確認。M チップからの遷移と戻りでフォーカスがチップに戻ること、循環（M4→M3→M2→M1→M4）でスタックが巻き戻ること、参照一覧に 6 つの「導出を見る」があること、段階A/B/C のない schema 2 データでも同じ検証が通ることを確認。既存の再現検証（`web_employment_check.cjs`、`web_workplace_check.cjs`、操作シナリオ）も合格。ヘッドレス Chrome で PC と 390px 幅の表示（流れ図は縦並び）を確認。
 
 追加容量：`index.html` +37 KB（データの追加なし）。処理時間：値はキャッシュ済みの配列・計算から取り出すため、段階A/B/C のファイル取得を除き即時。世帯・勤務地の値は該当パネルと同じファイルを必要時に取得します。
 
 ## 5. 範囲外
 
-精度改善・新属性の追加は行いません。本番反映後の M1〜M6 の操作確認は、次回のデータ公開時に行います（この変更はコードのみで、既存の公開データで動作します）。
+精度改善・新属性の追加は行いません。main へのマージで Pages が配信されるため、マージ後に公開ページで M1〜M6 の操作を確認します。

@@ -1,6 +1,14 @@
 {
  "passed": true,
  "no_emp_dataset": true,
+ "review_cases": {
+  "m1_order_ok": true,
+  "m1_mixture_marked_missing": true,
+  "m2_order_ok": true,
+  "m2_tilted_mixture_missing": true,
+  "m2_compare_labelled_calibrated": true
+ },
+ "review_cases_ok": true,
  "results": [
   {
    "context": "港区 35-39 男 大学等",

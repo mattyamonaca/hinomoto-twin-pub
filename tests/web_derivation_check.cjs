@@ -44,6 +44,27 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
     }
     results.push({ context: c.name, state_unchanged_after_viewing: snap() === before }); checks.push(snap() === before);
   }
+  // review cases (PR #31): (a) M4 output labels carry only the applied conditions and the values are the page's own
+  // conditional counts; (b) M1/M2 stage order matches build.py / estimator.run: mixture (not distributed) -> calibration
+  // for M1, and M2 tilts the mixture before calibration (M1's calibrated array is a comparison baseline, not an input)
+  H.setOpen('pref', true); H.setOpen('muni', true); H.setOpen('age', true); H.setOpen('sex', true); H.setOpen('lab', true); H.select('muni', '13103'); H.select('age', 4); H.select('sex', 0); if (H.S.edu !== null) H.unplace('edu'); H.select('lab', 1); H.empReady('m:13103'); await wait(2500);
+  const rev = {};
+  if (!noEmp && H.S.lab === 1){ H.derOpen('M4', null); d.querySelector('.fstep[data-step="3"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const t4 = txt();
+    const R = H.empCounts({ e: null, lab: null, sta: null, ind: null }); const pj1 = (R.J[0]/R.total*100).toFixed(1) + '%', pj2 = (R.J[1]/R.total*100).toFixed(1) + '%';
+    rev.m4_marginal_label_ok = t4.indexOf('P(就業者｜35～39歳・男)') >= 0 && t4.indexOf('P(就業者｜35～39歳・男・完全失業者)') < 0;
+    rev.m4_marginal_value_ok = t4.indexOf('P(就業者｜35～39歳・男)' + pj1) >= 0;
+    rev.m4_selected_condition_row_ok = t4.indexOf('P(完全失業者｜35～39歳・男)' + pj2) >= 0;
+    rev.m4_income_undefined_marked = t4.indexOf('未定義') >= 0 || t4.indexOf('≥500万円｜35～39歳・男・完全失業者') >= 0;
+    H.derBack(); }
+  H.unplace('lab'); if (!noEmp){ H.setOpen('sta', true); H.setOpen('ind', true); H.select('sta', 0); H.select('ind', 7); H.derOpen('M4', null); d.querySelector('.fstep[data-step="3"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const t4b = txt();
+  { const Rs = H.empCounts({ e: null, lab: null, sta: null, ind: null }); const Rg = H.empCounts({ e: null, lab: null, sta: 0, ind: null }); rev.m4_position_row_ok = t4b.indexOf('P(正規｜35～39歳・男)' + (Rs.K[0]/Rs.total*100).toFixed(1) + '%') >= 0; rev.m4_industry_row_ok = t4b.indexOf('P(情報通信業｜35～39歳・男・正規)' + (Rg.G[7]/Rg.total*100).toFixed(1) + '%') >= 0; rev.m4_income_row_conditioned = t4b.indexOf('≥500万円｜35～39歳・男・正規・情報通信業') >= 0; }
+  H.derBack(); H.unplace('sta'); H.unplace('ind'); }
+  const M1 = H.MODEL_DERIVATIONS.M1, M2 = H.MODEL_DERIVATIONS.M2;
+  rev.m1_order_ok = M1.stages.map(x => x.kind).join('>') === 'input>process>estimate>process>output' && /混合/.test(M1.stages[2].title) && /校正/.test(M1.stages[3].title);
+  H.derOpen('M1', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m1_mixture_marked_missing = txt().indexOf('この配布版には未収録') >= 0; H.derBack();
+  rev.m2_order_ok = /傾き.*校正前/.test(M2.stages[1].title) && /公表構成への校正/.test(M2.stages[2].title) && /M1 の校正済み配列は入力ではなく/.test(M2.stages[0].plain);
+  H.derOpen('M2', null); d.querySelector('.fstep[data-step="1"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_tilted_mixture_missing = txt().indexOf('この配布版には未収録') >= 0; d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_compare_labelled_calibrated = txt().indexOf('校正後どうし') >= 0; H.derBack();
+  const revOk = Object.values(rev).every(Boolean);
   // the M chip inside an item panel opens the derivation and back returns focus to the chip
   H.select('muni', '13103'); H.setOpen('inc', true); H.select('inc', 9); const chip = d.querySelector('#panel .sid[data-src="M2"]'); let chipOk = false;
   if (chip){ chip.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const opened = H.S.focus.dim === 'model' && H.S.focus.id === 'M2'; H.derBack(); chipOk = opened && H.S.focus.dim === 'inc' && d.activeElement === d.querySelector('#panel .sid[data-src="M2"]'); }
@@ -51,7 +72,7 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.derOpen('M4', null); H.derOpen('M3', null); H.derOpen('M2', null); H.derOpen('M1', null); const depthBefore = H.NAV.length; H.derOpen('M4', null); const cycleOk = H.NAV.length < depthBefore; while (H.NAV.length) H.derBack();
   // sources list has derivation buttons
   d.getElementById('srcbtn').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const srcBtns = d.querySelectorAll('#panel .action[data-go="model"]').length;
-  const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && errs.length === 0;
-  const report = { passed, no_emp_dataset: noEmp, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
+  const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && errs.length === 0;
+  const report = { passed, no_emp_dataset: noEmp, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
   console.log(JSON.stringify(report, null, 1)); if (!passed) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });

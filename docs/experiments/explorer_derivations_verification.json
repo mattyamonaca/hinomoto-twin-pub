@@ -1,6 +1,21 @@
 {
  "passed": true,
  "no_emp_dataset": false,
+ "review_cases": {
+  "m4_marginal_label_ok": true,
+  "m4_marginal_value_ok": true,
+  "m4_selected_condition_row_ok": true,
+  "m4_income_undefined_marked": true,
+  "m4_position_row_ok": true,
+  "m4_industry_row_ok": true,
+  "m4_income_row_conditioned": true,
+  "m1_order_ok": true,
+  "m1_mixture_marked_missing": true,
+  "m2_order_ok": true,
+  "m2_tilted_mixture_missing": true,
+  "m2_compare_labelled_calibrated": true
+ },
+ "review_cases_ok": true,
  "results": [
   {
    "context": "港区 35-39 男 大学等",
