@@ -60,3 +60,13 @@ python src/verify.py
 表定義・原ファイル・加工済みファイルのSHA-256は `catalog/education/manifest.json` に記録しています。再取得は `src/fetch_education.py`、加工は `src/parse_education.py`、モデルは `src/build_education.py`、出力は `src/export_education.py`、検証は `src/verify_education.py` です。
 
 学歴の対応付けは[国勢調査公式ユーザーズガイド](https://www.stat.go.jp/data/kokusei/2020/kekka/pdf/u_guide_2020.pdf)と[就業構造基本調査用語解説](https://www.stat.go.jp/data/shugyou/2022/pdf/yougo.pdf)を参照しました。専門学校の修業年数・卒業時期等の対応に近似があることはMETHOD_V2.mdに記載しています。調査結果を加工・推定したもので、政府による市区町村別学歴・所得推計ではありません。
+
+## M2・段階A：産業・就業状態の追加で使用した統計
+
+10. **2020国勢調査・就業状態等基本集計6-3**：男女、年齢（5歳階級）、産業（大分類）別就業者数、全国・都道府県・市区町村。[原Excel](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201184&fileKind=0)。`raw/industry/census_industry_age.xlsx`、加工後 `sources/industry/census_industry_age_tidy.csv.gz`。産業不詳は「分類不能の産業」に含まれる（別列なし）。
+11. **2022就業構造基本調査・地域編 表24**：男女、従業上の地位・雇用形態、所得、産業別人口（有業者）、全国・都道府県・主要都市。[原Excel](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077604&fileKind=0)。`raw/industry/ess_industry_income.xlsx`、加工後 `sources/industry/income_industry_tidy.csv.gz`。年齢区分なし。
+12. **2022就業構造基本調査・地域編 表10-1**：男女、在学・卒業、従業上の地位・雇用形態、産業、年齢別人口（有業者）、全国・都道府県・主要都市。[原Excel](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077583&fileKind=0)。加工後 `sources/industry/ess_status_industry_age_tidy.csv.gz`。都道府県行は初期値、都市行は検証（開発で使用済み）。
+13. **2022就業構造基本調査・全国編04000（従業上の地位別）**：9. と同じ表を自営業主（1）・雇用者（2）・正規（22）・非正規（23）で取得。`raw/industry/education_status_income_*.json.gz`、加工後 `sources/industry/education_status_income_tidy.csv.gz`。
+14. **2020国勢調査・就業状態等基本集計 不詳補完結果 参考表1**（2. と同じ表）の完全失業者数・非労働力人口：段階Aの就業状態 J2/J3（地位 K6/K7）の市区町村 × 性別 × 年齢の周辺。学歴との関連の初期値は 8. の労働力状態 12（完全失業者）・2（非労働力人口）。
+
+表定義・原ファイル・加工済みファイルのSHA-256は `catalog/industry/manifest.json` に記録しています。取得は `make fetch-industry`（6-3、表24）と `make fetch-employment`（10-1、04000 地位別）。段階Aの設計・検証・配布形式は `docs/EMPLOYMENT_A.md`。

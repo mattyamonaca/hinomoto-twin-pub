@@ -153,3 +153,23 @@ class HouseholdMixedSlotCases(unittest.TestCase):
         with patch.object(pd,'read_csv',return_value=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])):
             res=bh.evaluate(x,N,T)
         self.assertAlmostEqual(res['_presence_debug']['elderly_size10p'],40.,places=6)
+
+
+class StageAPublicationTests(unittest.TestCase):
+    """Issue #22: labour-status split and the API contract of persona_v3."""
+    def test_unemployed_split_preserves_row_and_column_margins(self):
+        from model_math import ipf
+        non=np.array([50.,120.,30.,200.,40.,10.,5.,90.]);pu=np.array([.1,.08,.06,.05,.04,.2,.05,.07]);K6=non.sum();u=.07
+        z,_,_=ipf(np.stack([np.maximum(pu,1e-6),np.maximum(1-pu,1e-6)],-1)*non[:,None],non,np.array([K6*u,K6*(1-u)]),tol=1e-9)
+        self.assertTrue(np.allclose(z.sum(1),non,atol=1e-6));self.assertAlmostEqual(z[:,0].sum()/K6,u,places=8)
+        self.assertGreater(z[5,0]/non[5],z[3,0]/non[3])   # the education with the higher seed keeps the higher unemployment share
+    def test_persona_rejects_six_status_artifact(self):
+        import persona_v3 as pv,tempfile,pathlib
+        with tempfile.TemporaryDirectory() as d:
+            p=pathlib.Path(d);np.savez(p/'employment_a.npz',areas=np.array(['13103']),population=np.ones((1,2,13)),status_industry=np.zeros((1,2,13,6,21)),education_status=np.zeros((1,2,13,8,6)),status_income=np.zeros((1,2,13,4,16)),industry_income=np.zeros((1,2,13,20,16)),education_industry=np.zeros((1,2,13,8,21)),model_version='3.0-M12',variant='base')
+            (p/'parent_mapping.csv').write_text('parent_code,area\n')
+            with self.assertRaises(ValueError):pv.EmploymentDistribution(p,p)
+    def test_status_codes_and_labor_mapping(self):
+        import persona_v3 as pv,build_employment as bm
+        self.assertEqual(pv.K,bm.K);self.assertEqual(len(pv.K),7);self.assertEqual(pv.J,bm.J)
+        self.assertEqual(bm.BLOCK,8*4*20*16+8*20+8+8)

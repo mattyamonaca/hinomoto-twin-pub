@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "schema_version": 3,
+  "dataset_version": "2020-2022-3.0-M12-20260906+A",
+  "model_version": "3.0-M12",
+  "inputs_bytes": 5323968,
+  "agg_files": 68,
+  "agg_bytes_total": 73661952,
+  "graph_bytes": 32451073,
+  "national_status_income_vs_pairwise_max_error_persons": 0.004181873868219554
+}

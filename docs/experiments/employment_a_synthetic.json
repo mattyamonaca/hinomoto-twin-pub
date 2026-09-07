@@ -1,0 +1,609 @@
+{
+  "areas": 250,
+  "prefectures": [
+    "01",
+    "13"
+  ],
+  "ages": [
+    "02",
+    "05",
+    "08",
+    "11"
+  ],
+  "cells": 2000,
+  "scenarios": {
+    "consistent": {
+      "tv_joint": {
+        "weighted_mean": 0.0,
+        "equal_area_mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.0,
+        "equal_area_mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.0,
+        "equal_area_mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.0,
+        "equal_area_mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.0,
+        "equal_area_mean": 0.0,
+        "median": 0.0,
+        "p90": 0.0,
+        "max": 0.0
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.3743070198007604,
+        "equal_area_mean": 0.3780312510246163,
+        "median": 0.3819022321427903,
+        "p90": 0.4776575439630457,
+        "max": 0.6108544801172557
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.0662204262450865,
+        "equal_area_mean": 0.0508175730455898,
+        "median": 0.03892915442935129,
+        "p90": 0.09531393371829328,
+        "max": 0.314406927497168
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.11277455967736902,
+        "equal_area_mean": 0.09081754615289327,
+        "median": 0.06735311932094071,
+        "p90": 0.16382360229203777,
+        "max": 0.42340483428110265
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.26801109937593026,
+        "equal_area_mean": 0.2779047914835186,
+        "median": 0.2776967249794664,
+        "p90": 0.3628056382019287,
+        "max": 0.44091397887478717
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11146522388631624,
+        "equal_area_mean": 0.0780184533297655,
+        "median": 0.06926576148052252,
+        "p90": 0.15886819816978395,
+        "max": 0.24099813569153664
+      },
+      "max_abs_edu_income_margin_persons": 0.0
+    },
+    "edu_industry": {
+      "tv_joint": {
+        "weighted_mean": 0.07409518751770587,
+        "equal_area_mean": 0.06317175624929362,
+        "median": 0.0657831824502014,
+        "p90": 0.08329151338018975,
+        "max": 0.16116614303545573
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.07374313426374628,
+        "equal_area_mean": 0.0627004934978166,
+        "median": 0.06528960328248282,
+        "p90": 0.08262381493477318,
+        "max": 0.16116134001921228
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.005050894695716183,
+        "equal_area_mean": 0.00660537313685166,
+        "median": 0.005657880527715604,
+        "p90": 0.011719435991478531,
+        "max": 0.04827688747566015
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.009145594773126757,
+        "equal_area_mean": 0.00840175104103338,
+        "median": 0.007573187036943183,
+        "p90": 0.01484879242581124,
+        "max": 0.02821577604135198
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.005501964709378049,
+        "equal_area_mean": 0.0035503802475616527,
+        "median": 0.002027306879511459,
+        "p90": 0.009374620221658577,
+        "max": 0.023861820018210318
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.38399007279314384,
+        "equal_area_mean": 0.3845852713562653,
+        "median": 0.3877071559180999,
+        "p90": 0.48211490511163374,
+        "max": 0.6118032516001914
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.11586090325371523,
+        "equal_area_mean": 0.09350898654167134,
+        "median": 0.09058088665300618,
+        "p90": 0.1331319325078491,
+        "max": 0.314249052467207
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.1118654475438228,
+        "equal_area_mean": 0.09063338212933869,
+        "median": 0.066486555868469,
+        "p90": 0.16250827898948914,
+        "max": 0.4228624109120406
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.26771668557811,
+        "equal_area_mean": 0.2774798689650059,
+        "median": 0.2771460841590332,
+        "p90": 0.3625352339088176,
+        "max": 0.43999082418544616
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11153902596644029,
+        "equal_area_mean": 0.07794438985820187,
+        "median": 0.06912369007522137,
+        "p90": 0.15831011190392072,
+        "max": 0.24135103567467367
+      },
+      "max_abs_edu_income_margin_persons": 0.002350536089991806
+    },
+    "edu_status_income": {
+      "tv_joint": {
+        "weighted_mean": 0.01773348314403575,
+        "equal_area_mean": 0.020038352581355744,
+        "median": 0.019367391439550526,
+        "p90": 0.030237150582263013,
+        "max": 0.03987161851135544
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.003884188878161953,
+        "equal_area_mean": 0.005013920145194778,
+        "median": 0.004532576525054385,
+        "p90": 0.008526935948437783,
+        "max": 0.020163868833956614
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.012013441684953855,
+        "equal_area_mean": 0.01421327388762243,
+        "median": 0.014249381431970774,
+        "p90": 0.022187104739260617,
+        "max": 0.03706006990759481
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.014225219773639042,
+        "equal_area_mean": 0.015756123949897123,
+        "median": 0.015298658613233242,
+        "p90": 0.023423259652246297,
+        "max": 0.031263188567684695
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.007513436907050044,
+        "equal_area_mean": 0.005362174399423091,
+        "median": 0.003930132111364927,
+        "p90": 0.01499952753919289,
+        "max": 0.02508166092918589
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.3725997625145169,
+        "equal_area_mean": 0.37402932017380736,
+        "median": 0.3776857272981987,
+        "p90": 0.4747518068712013,
+        "max": 0.6103765692526626
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.06619231057287343,
+        "equal_area_mean": 0.04983617215043206,
+        "median": 0.03870419560826919,
+        "p90": 0.09305612386612659,
+        "max": 0.3144085489647125
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.10927852086098343,
+        "equal_area_mean": 0.08374668021610311,
+        "median": 0.06341041815413637,
+        "p90": 0.14646403940861327,
+        "max": 0.427812625016169
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.2674766411629805,
+        "equal_area_mean": 0.2754898428622381,
+        "median": 0.27304439512351203,
+        "p90": 0.3615989404599576,
+        "max": 0.43797767681710087
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11270437273994593,
+        "equal_area_mean": 0.07833160263348535,
+        "median": 0.07032345538438053,
+        "p90": 0.15888735059268272,
+        "max": 0.24505236163540384
+      },
+      "max_abs_edu_income_margin_persons": 0.004659849530298743
+    },
+    "national_kg": {
+      "tv_joint": {
+        "weighted_mean": 0.08674989668504066,
+        "equal_area_mean": 0.1162457045888143,
+        "median": 0.11031290355556067,
+        "p90": 0.1803714288864189,
+        "max": 0.37949393597017256
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.020995307302596113,
+        "equal_area_mean": 0.031828827893092985,
+        "median": 0.024770383691661124,
+        "p90": 0.06324810231162875,
+        "max": 0.20500327138064434
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.001315501927605669,
+        "equal_area_mean": 0.0010631927161830585,
+        "median": 0.0007159085070983896,
+        "p90": 0.0020986499257962445,
+        "max": 0.0630194958450282
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.005363220097252281,
+        "equal_area_mean": 0.010903265675508315,
+        "median": 0.008007490418483934,
+        "p90": 0.020606633131049577,
+        "max": 0.0894657337059364
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.0013728214804419585,
+        "equal_area_mean": 0.0022907300397362585,
+        "median": 0.0016008377778319884,
+        "p90": 0.004855080361141219,
+        "max": 0.049016808482574975
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.3574040301062626,
+        "equal_area_mean": 0.35857752151950173,
+        "median": 0.3655253166786129,
+        "p90": 0.4327777225563107,
+        "max": 0.5748476808558435
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.06211859667548291,
+        "equal_area_mean": 0.04579538124543122,
+        "median": 0.03448887654022027,
+        "p90": 0.09362106788019582,
+        "max": 0.2661679074410643
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.11320278941194045,
+        "equal_area_mean": 0.09115475942010164,
+        "median": 0.06748525280891235,
+        "p90": 0.1644727563688338,
+        "max": 0.4281837976642834
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.26868638160531777,
+        "equal_area_mean": 0.27775349876215694,
+        "median": 0.27802321542194164,
+        "p90": 0.35732321286197477,
+        "max": 0.44163194412774365
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11236371942876597,
+        "equal_area_mean": 0.07830467343624861,
+        "median": 0.06879459273985582,
+        "p90": 0.1598924285207233,
+        "max": 0.24299424858184382
+      },
+      "max_abs_edu_income_margin_persons": 0.009590841616045509
+    },
+    "unknown_informative": {
+      "tv_joint": {
+        "weighted_mean": 0.0471906317962996,
+        "equal_area_mean": 0.019994865684080293,
+        "median": 0.012835571119352334,
+        "p90": 0.051116138203011606,
+        "max": 0.08829552418874148
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.011082005176036665,
+        "equal_area_mean": 0.0052713210447207556,
+        "median": 0.0035982622641833033,
+        "p90": 0.012778642204857643,
+        "max": 0.02872623648811605
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.04420285632772153,
+        "equal_area_mean": 0.018817645887147474,
+        "median": 0.01215247350653075,
+        "p90": 0.048285565356514015,
+        "max": 0.08590894348459131
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.028448792814950684,
+        "equal_area_mean": 0.011593966126026764,
+        "median": 0.007149746932076184,
+        "p90": 0.029257410351983287,
+        "max": 0.05938792214667752
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.010117544364616635,
+        "equal_area_mean": 0.0030406335247185243,
+        "median": 0.0007381564117471064,
+        "p90": 0.011537593619985404,
+        "max": 0.028461013067667296
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.3773932457790052,
+        "equal_area_mean": 0.37932536438912134,
+        "median": 0.38365274252130543,
+        "p90": 0.4781426479339827,
+        "max": 0.6108544801172556
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.07041319363490436,
+        "equal_area_mean": 0.05254540406673308,
+        "median": 0.0405003683239223,
+        "p90": 0.09809425521205989,
+        "max": 0.31440692749716836
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.13482153015025897,
+        "equal_area_mean": 0.09831892379950846,
+        "median": 0.07511700523468708,
+        "p90": 0.17240439832903726,
+        "max": 0.41190394103318156
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.26599728401358075,
+        "equal_area_mean": 0.2771536982737515,
+        "median": 0.27670452483196417,
+        "p90": 0.3627921664293593,
+        "max": 0.4404917573125285
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11171219226224295,
+        "equal_area_mean": 0.07813855011476599,
+        "median": 0.069498448584362,
+        "p90": 0.15918755130365378,
+        "max": 0.23759179341922615
+      },
+      "max_abs_edu_income_margin_persons": 0.004629281422467102
+    },
+    "random_seed_1": {
+      "tv_joint": {
+        "weighted_mean": 0.2308493227892087,
+        "equal_area_mean": 0.2170596400106829,
+        "median": 0.21572066691331315,
+        "p90": 0.2565855019453835,
+        "max": 0.2920583557516554
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.14816445092917263,
+        "equal_area_mean": 0.12997961977114267,
+        "median": 0.13141976702755045,
+        "p90": 0.1694997111289154,
+        "max": 0.21088068283230668
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.06400369296215923,
+        "equal_area_mean": 0.0631951534944308,
+        "median": 0.0591191762925067,
+        "p90": 0.10540837817347982,
+        "max": 0.17920070312397846
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.16325383919035497,
+        "equal_area_mean": 0.15874013580496757,
+        "median": 0.16135456760567987,
+        "p90": 0.18201774537011525,
+        "max": 0.2005576713214245
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.03288966682818177,
+        "equal_area_mean": 0.021690118242354627,
+        "median": 0.017702448285421536,
+        "p90": 0.0486408544465142,
+        "max": 0.06387662394226498
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.44408828701826614,
+        "equal_area_mean": 0.43692174116837523,
+        "median": 0.44028217995638597,
+        "p90": 0.5174321001819893,
+        "max": 0.6188391147221678
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.17586802447471656,
+        "equal_area_mean": 0.1470357678275233,
+        "median": 0.14701247120439237,
+        "p90": 0.18686657421071584,
+        "max": 0.33012470647792563
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.14312570627273688,
+        "equal_area_mean": 0.11292512066240147,
+        "median": 0.10079821076337278,
+        "p90": 0.16695335583222864,
+        "max": 0.44463558486355065
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.31664796546346796,
+        "equal_area_mean": 0.32190555826572687,
+        "median": 0.3183896351596872,
+        "p90": 0.3983793761162933,
+        "max": 0.4471273103325105
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11685560765246751,
+        "equal_area_mean": 0.08035336053527112,
+        "median": 0.06679351931983676,
+        "p90": 0.17463040460031073,
+        "max": 0.24317122116524026
+      },
+      "max_abs_edu_income_margin_persons": 0.00587436093370286
+    },
+    "random_seed_2": {
+      "tv_joint": {
+        "weighted_mean": 0.24628714608860766,
+        "equal_area_mean": 0.228264381946395,
+        "median": 0.2317999851396435,
+        "p90": 0.2683401129916834,
+        "max": 0.31195155665743945
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.16685036820358967,
+        "equal_area_mean": 0.14728381601563312,
+        "median": 0.1523744406844125,
+        "p90": 0.19599690630593522,
+        "max": 0.24877791439998553
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.06613762326587054,
+        "equal_area_mean": 0.06101224159164258,
+        "median": 0.05790823815894908,
+        "p90": 0.10721642322125749,
+        "max": 0.17310376761094756
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.16616347990477437,
+        "equal_area_mean": 0.1602025170843862,
+        "median": 0.163394016963602,
+        "p90": 0.18200984228472475,
+        "max": 0.2057660705405498
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.03408644899117098,
+        "equal_area_mean": 0.021688051400039075,
+        "median": 0.015838884841004996,
+        "p90": 0.049797005738531804,
+        "max": 0.0856203987172464
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.4461930541641307,
+        "equal_area_mean": 0.4386659805168579,
+        "median": 0.4372942235694129,
+        "p90": 0.5104829536879173,
+        "max": 0.6222433444105869
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.19200622573386164,
+        "equal_area_mean": 0.15966627763044375,
+        "median": 0.16319269509776674,
+        "p90": 0.20870557437094964,
+        "max": 0.3256792065511991
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.13829353535744196,
+        "equal_area_mean": 0.11041698573225812,
+        "median": 0.08912736237857458,
+        "p90": 0.1998842052499591,
+        "max": 0.4196532238230675
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.3146961768385088,
+        "equal_area_mean": 0.3183470232545045,
+        "median": 0.3175061612366445,
+        "p90": 0.3899122759485403,
+        "max": 0.46328078925541755
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11293375298946069,
+        "equal_area_mean": 0.07770687957391322,
+        "median": 0.07118624791916253,
+        "p90": 0.15418699467567162,
+        "max": 0.25429931301778974
+      },
+      "max_abs_edu_income_margin_persons": 0.008576503956476245
+    },
+    "random_seed_3": {
+      "tv_joint": {
+        "weighted_mean": 0.24486079229310867,
+        "equal_area_mean": 0.22368974240025988,
+        "median": 0.22498896337170593,
+        "p90": 0.26543468534201925,
+        "max": 0.29987439839657376
+      },
+      "tv_industry_given_edu": {
+        "weighted_mean": 0.1595796338597474,
+        "equal_area_mean": 0.1357330446348903,
+        "median": 0.13670350440016785,
+        "p90": 0.178805918265604,
+        "max": 0.23534817342666595
+      },
+      "tv_status_given_edu": {
+        "weighted_mean": 0.06354228833856991,
+        "equal_area_mean": 0.06575275398370313,
+        "median": 0.05788307021629563,
+        "p90": 0.11814929565338914,
+        "max": 0.18183408462711886
+      },
+      "tv_income_given_ekg": {
+        "weighted_mean": 0.1735676253177059,
+        "equal_area_mean": 0.160490856339906,
+        "median": 0.16233156096040352,
+        "p90": 0.1895150116251014,
+        "max": 0.2009860281191509
+      },
+      "abs_err_p500_given_ekg": {
+        "weighted_mean": 0.0391458550818535,
+        "equal_area_mean": 0.025357757509078416,
+        "median": 0.015583218426969657,
+        "p90": 0.0630772345308553,
+        "max": 0.09041395771750593
+      },
+      "independent_tv_joint": {
+        "weighted_mean": 0.4452862610770238,
+        "equal_area_mean": 0.4374039150760364,
+        "median": 0.43833762369096,
+        "p90": 0.5155308505899147,
+        "max": 0.6096803867458742
+      },
+      "independent_tv_industry_given_edu": {
+        "weighted_mean": 0.1780239721775596,
+        "equal_area_mean": 0.15136961366652302,
+        "median": 0.1509396092193884,
+        "p90": 0.2152376695618675,
+        "max": 0.33120717744041217
+      },
+      "independent_tv_status_given_edu": {
+        "weighted_mean": 0.13236988187899232,
+        "equal_area_mean": 0.11403305794120573,
+        "median": 0.10160260053588932,
+        "p90": 0.18863765466603533,
+        "max": 0.40345788889120393
+      },
+      "independent_tv_income_given_ekg": {
+        "weighted_mean": 0.32150469436410734,
+        "equal_area_mean": 0.31862600816105796,
+        "median": 0.31780456340493624,
+        "p90": 0.39565498188498904,
+        "max": 0.46962738155683853
+      },
+      "independent_abs_err_p500_given_ekg": {
+        "weighted_mean": 0.11699318749301425,
+        "equal_area_mean": 0.08139612364569658,
+        "median": 0.0677744125561324,
+        "p90": 0.17002112536070801,
+        "max": 0.2376216219641424
+      },
+      "max_abs_edu_income_margin_persons": 0.008314782467550685
+    }
+  },
+  "pre_registered": {
+    "question": "recovery of P(k,g,y|e) inside the block when the true association differs from the transported seed; published (e,y) margins must be preserved exactly",
+    "baselines": [
+      "independent draw: product of the block margins",
+      "estimator under the consistent scenario"
+    ],
+    "reading": "a scenario TV is the size of the unverifiable error for that kind of departure; it is not an estimate of the actual error, which cannot be measured without municipal cross tables"
+  },
+  "elapsed_seconds": 132.9
+}
