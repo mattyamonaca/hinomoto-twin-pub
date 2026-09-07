@@ -1,6 +1,7 @@
 """Contract tests for the array-level estimator on a small virtual population (no national data needed)."""
 import sys,unittest
 from pathlib import Path
+import base64
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 import estimator as es
@@ -187,8 +188,11 @@ class EmploymentWebExportTests(unittest.TestCase):
         class Z(dict):
             files=property(lambda self:list(self.keys()))
         d=Z(areas=np.array(['13103','13104']),model_version=np.array(ver_a),variant=np.array(variant));agg=Z(codes=np.array(['00000']),blocks=blk,model_version=np.array(ver_agg),variant=np.array('base'))
-        x={'model_version':ver_inputs,'areas':['13103','13104'],'cube':cube,'N':N}
-        payload={'model':{'model_version':ver_graph},'graph':{'munis':[{'c':'13103'},{'c':'13104'}],'pop':N.tolist()}}
+        edu_rate=rng.random((M,2,13,8));edu_q=rng.random((2,13,8,16)).tolist()
+        x={'model_version':ver_inputs,'areas':['13103','13104'],'cube':cube,'N':N,'inp':{'edu_rate':edu_rate,'edu_q':edu_q,'edu_share':np.full((M,2,13,8),1/8)}}
+        comp=cube.sum(3);nz=lambda a:np.divide(a,a.sum(-1,keepdims=True),out=np.zeros_like(a),where=a.sum(-1,keepdims=True)>0)
+        enc=lambda a:base64.b64encode(np.ascontiguousarray(a,dtype='<f8').tobytes()).decode('ascii')
+        payload={'model':{'model_version':ver_graph},'graph':{'munis':[{'c':'13103'},{'c':'13104'}],'pop':N.tolist(),'xd':enc(nz(comp[...,1:])),'e':enc(comp[...,1:].sum(-1)/N),'rs':enc(nz(cube.sum(4))),'rates':{'13103':edu_rate[0].tolist(),'13104':edu_rate[1].tolist()},'q':__import__('copy').deepcopy(edu_q)}}
         return ew,payload,d,agg,x
     def test_consistent_world_passes(self):
         ew,p,d,a,x=self._world();c=ew.check_consistency(p,d,a,x);self.assertLess(c['national_block_vs_inputs_paid_max_error_persons'],1e-6)
@@ -197,6 +201,21 @@ class EmploymentWebExportTests(unittest.TestCase):
         with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
         ew,p,d,a,x=self._world(ver_graph='2.0')
         with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+    def test_stale_graph_arrays_with_same_population_are_refused(self):
+        import base64
+        for key in ['xd','e','rs']:
+            ew,p,d,a,x=self._world();arr=np.frombuffer(base64.b64decode(p['graph'][key]),dtype='<f8').copy()
+            arr[len(arr)//3]+=0.01 if key!='e' else 0.01    # one municipality's income / employment / education value changes; population, version and national totals unchanged
+            p['graph'][key]=base64.b64encode(arr.tobytes()).decode('ascii')
+            with self.assertRaises(ValueError,msg=key):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world();p['graph']['rates']['13104'][1][4][2]+=0.05
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world();p['graph']['q'][0][0][0][3]+=0.05
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world();p['graph']['munis']=p['graph']['munis'][:1];p['graph']['pop']=p['graph']['pop'][:1]
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)   # a missing municipality code
+        ew,p,d,a,x=self._world();zero=np.zeros_like(np.frombuffer(base64.b64decode(p['graph']['xd']),dtype='<f8'));p['graph']['xd']=base64.b64encode(zero.tobytes()).decode('ascii')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)   # the reviewer's all-zero income distribution
     def test_non_base_variant_and_margin_drift_are_refused(self):
         ew,p,d,a,x=self._world(variant='national_kg')
         with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)

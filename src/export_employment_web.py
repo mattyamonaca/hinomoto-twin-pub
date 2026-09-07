@@ -37,10 +37,28 @@ def check_consistency(payload,d,agg,x,tol_persons=0.5):
     nat=agg['blocks'][0].astype(float);B=8*4*20*16;paid=nat[...,:B].reshape(2,13,8,4,20,16).sum((3,4));zero=nat[...,B:B+160].reshape(2,13,8,20).sum(-1)+nat[...,B+160:B+168]+nat[...,B+168:B+176]
     cube=x['cube'].sum(0)   # (2,13,8,17)
     err_paid=float(np.abs(paid-cube[...,1:]).max());err_zero=float(np.abs(zero-cube[...,0]).max())
-    g=payload['graph'];pops=np.asarray(g['pop']);leaf=[i for i,m in enumerate(g['munis']) if m['c'] in set(areas)];ix={a:i for i,a in enumerate(areas)}
-    err_pop=float(np.abs(pops[leaf]-x['N'][[ix[g['munis'][i]['c']] for i in leaf]]).max())
-    checks={'versions':versions,'variants':variants,'national_block_vs_inputs_paid_max_error_persons':err_paid,'national_block_vs_inputs_zero_component_max_error_persons':err_zero,'graph_population_vs_inputs_max_error_persons':err_pop}
+    g=payload['graph'];ix={a:i for i,a in enumerate(areas)}
+    # the browser dataset must carry exactly the leaf municipalities of the model, and its per-municipality arrays
+    # (population, income distribution xd, employment rate e, education shares rs, education employment-rate seeds
+    # rates, income shapes q) must be the ones derived from the same final_arrays / education inputs as x
+    leaf_codes=[m['c'] for m in g['munis'] if m['c'] in ix]
+    if set(leaf_codes)!=set(areas) or len(leaf_codes)!=len(areas):raise ValueError(f'graph.json municipalities differ from the model areas: {len(leaf_codes)} vs {len(areas)} (missing: {sorted(set(areas)-set(leaf_codes))[:5]})')
+    order=[ix[c] for c in leaf_codes];rows=[i for i,m in enumerate(g['munis']) if m['c'] in ix]
+    def dec(key,shape):
+        arr=np.frombuffer(base64.b64decode(g[key]),dtype='<f8');return arr.reshape(shape)
+    M=len(g['munis']);pops=np.asarray(g['pop'],float)[rows];N=x['N'][order]
+    comp=x['cube'][order].sum(3)                                             # (leaf,2,13,17) income components of the 5-attribute model
+    paid_counts=comp[...,1:];E=paid_counts.sum(-1)
+    xd=dec('xd',(M,2,13,16))[rows];e=dec('e',(M,2,13))[rows];rs=dec('rs',(M,2,13,8))[rows]
+    def nz(a):return np.divide(a,a.sum(-1,keepdims=True),out=np.zeros_like(a),where=a.sum(-1,keepdims=True)>0)
+    err_pop=float(np.abs(pops-N).max());err_xd=float(np.abs(xd-nz(paid_counts)).max());err_e=float(np.abs(e-np.divide(E,N,out=np.zeros_like(E),where=N>0)).max())
+    err_rs=float(np.abs(rs-nz(x['cube'][order].sum(4))).max())
+    rates=np.array([g['rates'][c] for c in leaf_codes]);has=(x['inp']['edu_share'][order]*N[...,None])>0   # export_web stores 0 where the education count is 0
+    err_rates=float(np.abs(rates-x['inp']['edu_rate'][order])[has].max())
+    err_q=float(np.abs(np.asarray(g['q'],float)-np.asarray(x['inp']['edu_q'],float)).max())
+    checks={'versions':versions,'variants':variants,'leaf_municipalities':len(leaf_codes),'national_block_vs_inputs_paid_max_error_persons':err_paid,'national_block_vs_inputs_zero_component_max_error_persons':err_zero,'graph_population_vs_inputs_max_error_persons':err_pop,'graph_income_distribution_max_abs_error':err_xd,'graph_employment_rate_max_abs_error':err_e,'graph_education_share_max_abs_error':err_rs,'graph_education_rate_seed_max_abs_error':err_rates,'graph_income_shape_max_abs_error':err_q}
     if max(err_paid,err_zero,err_pop)>tol_persons:raise ValueError(f'aggregated blocks / inputs / graph disagree on the 5-attribute margins: {checks}')
+    if max(err_xd,err_e,err_rs,err_rates,err_q)>1e-6:raise ValueError(f'graph.json 5-attribute arrays were not derived from the same inputs as the stage-A recomputation: {checks}')
     return checks
 
 def main():
