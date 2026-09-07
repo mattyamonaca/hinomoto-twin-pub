@@ -1,0 +1,473 @@
+{
+ "passed": true,
+ "no_emp_dataset": false,
+ "review_cases": {
+  "m4_marginal_label_ok": true,
+  "m4_marginal_value_ok": true,
+  "m4_selected_condition_row_ok": true,
+  "m4_income_undefined_marked": true,
+  "m4_position_row_ok": true,
+  "m4_industry_row_ok": true,
+  "m4_income_row_conditioned": true,
+  "m1_order_ok": true,
+  "m1_mixture_marked_missing": true,
+  "m2_order_ok": true,
+  "m2_tilted_mixture_missing": true,
+  "m2_compare_labelled_calibrated": true
+ },
+ "review_cases_ok": true,
+ "results": [
+  {
+   "context": "港区 35-39 男 大学等",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 35-39 男 大学等",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 35-39 男 大学等",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 35-39 男 大学等",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 35-39 男 大学等",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 35-39 男 大学等",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 35-39 男 大学等",
+   "state_unchanged_after_viewing": true
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "遠軽町 全年齢",
+   "state_unchanged_after_viewing": true
+  },
+  {
+   "context": "大阪市（政令市）",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "大阪市（政令市）",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "大阪市（政令市）",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "大阪市（政令市）",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "大阪市（政令市）",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "大阪市（政令市）",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "大阪市（政令市）",
+   "state_unchanged_after_viewing": true
+  },
+  {
+   "context": "双葉町（人口0）",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "双葉町（人口0）",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "双葉町（人口0）",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "双葉町（人口0）",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "双葉町（人口0）",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "双葉町（人口0）",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "双葉町（人口0）",
+   "state_unchanged_after_viewing": true
+  },
+  {
+   "context": "港区 学歴不詳",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 学歴不詳",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 学歴不詳",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 学歴不詳",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 学歴不詳",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 学歴不詳",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 学歴不詳",
+   "state_unchanged_after_viewing": true
+  },
+  {
+   "context": "港区 完全失業",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 完全失業",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 完全失業",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "港区 完全失業",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 完全失業",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 完全失業",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "港区 完全失業",
+   "state_unchanged_after_viewing": true
+  },
+  {
+   "context": "東京都（県集計）",
+   "model": "M1",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "東京都（県集計）",
+   "model": "M2",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "東京都（県集計）",
+   "model": "M3",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": true
+  },
+  {
+   "context": "東京都（県集計）",
+   "model": "M4",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "東京都（県集計）",
+   "model": "M5",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "東京都（県集計）",
+   "model": "M6",
+   "rendered": true,
+   "stages_clickable": true,
+   "values_match": true,
+   "upstream_and_back": true,
+   "focus_restored": true,
+   "missing_marked": false
+  },
+  {
+   "context": "東京都（県集計）",
+   "state_unchanged_after_viewing": true
+  }
+ ],
+ "chip_back_focus_ok": true,
+ "cycle_guard_ok": true,
+ "source_list_buttons": 6,
+ "page_errors": []
+}
