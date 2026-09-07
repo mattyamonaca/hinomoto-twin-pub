@@ -23,6 +23,9 @@ help:
 	@echo "build-household  Generate household compositions for selected municipalities (stage B, experimental)"
 	@echo "sample-household  Integer households + linked members for the selected municipalities (stage B, Issue #23)"
 	@echo "export-household-web Household summaries for the Explorer (web/household/<code>.json)"
+	@echo "fetch-workplace  Fetch/normalize census commuting OD/ODI tables for stage C (142 workbooks, about 400 MB)"
+	@echo "build-workplace  Fit residence x workplace x industry for all municipalities (stage C, experimental)"
+	@echo "verify-workplace Check margins and evaluate on the held-out ODI tables"
 	@echo "experiment     Compare M0 with M1/M2 (education-composition income re-estimation) on held-out cities"
 	@echo "synthetic      Recovery experiment on virtual populations with known joint distributions"
 	@echo "synthetic-m12  Same with industry: M0/M1/M2/M12 recovery under generating processes that violate the estimator assumptions (Issue #21)"
@@ -87,6 +90,13 @@ fetch-household:
 	$(PYTHON) src/pipeline.py fetch-household
 build-household:
 	$(PYTHON) src/pipeline.py build-household
+.PHONY: fetch-workplace build-workplace verify-workplace
+fetch-workplace:
+	$(PYTHON) src/pipeline.py fetch-workplace
+build-workplace:
+	$(PYTHON) src/pipeline.py build-workplace
+verify-workplace:
+	$(PYTHON) src/pipeline.py verify-workplace
 synthetic-m12:
 	$(PYTHON) src/pipeline.py synthetic-m12
 fetch-tax-status:
