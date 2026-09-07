@@ -21,6 +21,8 @@ help:
 	@echo "verify-web-employment jsdom check: the page reproduces the Python stage-A blocks (needs node + jsdom)"
 	@echo "fetch-household  Fetch/normalize census household tables for stage B"
 	@echo "build-household  Generate household compositions for selected municipalities (stage B, experimental)"
+	@echo "sample-household  Integer households + linked members for the selected municipalities (stage B, Issue #23)"
+	@echo "export-household-web Household summaries for the Explorer (web/household/<code>.json)"
 	@echo "fetch-workplace  Fetch/normalize census commuting OD/ODI tables for stage C (142 workbooks, about 400 MB)"
 	@echo "build-workplace  Fit residence x workplace x industry for all municipalities (stage C, experimental)"
 	@echo "verify-workplace Check margins and evaluate on the held-out ODI tables"
@@ -101,3 +103,9 @@ fetch-tax-status:
 	$(PYTHON) src/pipeline.py fetch-tax-status
 validate-m12:
 	$(PYTHON) src/pipeline.py validate-m12
+
+.PHONY: sample-household export-household-web
+sample-household:
+	for c in 13103 47201 01555; do $(PYTHON) src/household_sample.py --municipality $$c --population --sa --link-population --seed 1; done
+export-household-web:
+	$(PYTHON) src/pipeline.py export-household-web

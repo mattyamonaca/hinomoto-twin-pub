@@ -23,6 +23,7 @@ STAGES = {
     'export-employment-web': ['export_employment_web.py', 'export_employment_reference.py'],
     'fetch-household': ['download_household.py'],
     'build-household': ['build_household.py'],
+    'export-household-web': ['export_household_web.py'],
     'fetch-workplace': ['download_workplace.py'],
     'build-workplace': ['build_workplace.py'],
     'verify-workplace': ['verify_workplace.py'],
