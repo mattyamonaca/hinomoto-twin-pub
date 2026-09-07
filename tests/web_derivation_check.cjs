@@ -148,8 +148,32 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.asmOpen('A03', null); const tA3b = txt(); w36.assumption_summary_first = tA3b.indexOf('分かっていること') < tA3b.indexOf('どの方法でどこまで確かめたか') && tA3b.indexOf('正解が分かる仮想的な人口') >= 0 && tA3b.indexOf('seed') < 0 || tA3b.indexOf('この仮想的な人口の実験について') >= 0; H.derBack();
   H.select('muni', '01555'); H.asmOpen('A01', null); w36.area_not_evaluated_plain = txt().indexOf('遠軽町は評価対象外') >= 0; H.derBack();
   w36.undefined_message_plain = H.S.muni ? true : true; H.select('muni', '07546'); const tU = txt(); w36.undefined_message_plain = true; H.setOpen('sex', true); const tS = d.getElementById('list-sex').textContent; w36.zero_population_explained = tS.indexOf('0 人のため、割合を計算できません') >= 0 && tS.indexOf('分母 0') < 0;
-  const w36Ok = Object.values(w36).every(Boolean);
-  const passed = w36Ok && checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
-  const report = { passed, no_emp_dataset: noEmp, plain_wording: w36, plain_wording_ok: w36Ok, reproduction: rp, reproduction_ok: rpOk, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
+  // PR #37 review: the '100% とした値' label names exactly the conditions used for the denominator of each attribute panel
+  const lab36 = {};
+  H.select('muni', '13103'); H.setOpen('age', true); H.setOpen('sex', true); H.setOpen('lab', true); H.setOpen('sta', true); H.setOpen('ind', true); H.select('age', 4); H.select('sex', 0); if (H.S.edu !== null) H.unplace('edu'); H.select('lab', 1); H.empReady('m:13103'); await wait(2500);
+  function panelDen(){ const m = txt().match(/割合の計算対象（100% にあたる人数）([\d,]+) 人/); return m ? parseInt(m[1].replace(/,/g, ''), 10) : null; }
+  function condLabel(){ const m = txt().match(/(港区・[^ ]*?)に当てはまる人を 100% とした値/); return m ? m[1] : null; }
+  H.S.focus = { dim: 'lab', id: 1 }; H.renderPanel(); lab36.lab_den = panelDen(); lab36.lab_den_expected = Math.round(H.empCounts({ e: null, lab: null, sta: null, ind: null }).total); lab36.lab_label = condLabel(); lab36.lab_ok = lab36.lab_den === lab36.lab_den_expected && lab36.lab_label === '港区・35～39歳・男';
+  H.select('lab', 0); H.select('sta', 0); H.S.focus = { dim: 'sta', id: 0 }; H.renderPanel(); lab36.sta_den = panelDen(); lab36.sta_den_expected = Math.round(H.empCounts({ e: null, lab: 0, sta: null, ind: null }).total); lab36.sta_label = condLabel(); lab36.sta_ok = lab36.sta_den === lab36.sta_den_expected && lab36.sta_label === '港区・35～39歳・男・就業者';
+  H.select('ind', 7); H.S.focus = { dim: 'ind', id: 7 }; H.renderPanel(); lab36.ind_den = panelDen(); lab36.ind_den_expected = Math.round(H.empCounts({ e: null, lab: 0, sta: 0, ind: null }).total); lab36.ind_label = condLabel(); lab36.ind_ok = lab36.ind_den === lab36.ind_den_expected && lab36.ind_label === '港区・35～39歳・男・就業者・正規';
+  H.unplace('ind'); H.unplace('sta'); H.unplace('lab');
+  w36.attribute_labels_match_denominators = lab36.lab_ok && lab36.sta_ok && lab36.ind_ok; w36.attribute_label_detail = lab36;
+  const w36Ok = Object.values(w36).filter(v => typeof v === 'boolean').every(Boolean);
+  // loading state: with the employment inputs delayed, the income column caption must say 読み込み中, never 対象 0 人
+  let loadOk = true, loadDetail = {};
+  if (!noEmp){
+    const dom2 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/', beforeParse(w2){
+      w2.fetch = async (url) => { const rel = String(url).replace(/^http:\/\/localhost\//, ''); const f = path.join(site, rel); if (!fs.existsSync(f)) return { ok: false, status: 404 }; if (/employment_inputs\.bin$/.test(rel)) await new Promise(r => setTimeout(r, 1500)); const buf = fs.readFileSync(f); return { ok: true, status: 200, json: async () => JSON.parse(buf.toString('utf8')), arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) }; };
+      w2.Element.prototype.scrollIntoView = function(){};
+    } });
+    const d2 = dom2.window.document; await wait(4000); const H2 = dom2.window.__hinomoto;
+    H2.setOpen('pref', true); H2.setOpen('muni', true); H2.setOpen('age', true); H2.setOpen('lab', true); H2.setOpen('inc', true); H2.select('muni', '13103'); H2.select('age', 4); H2.select('lab', 0);
+    const capWhileLoading = d2.getElementById('cap-inc').textContent, listWhileLoading = d2.getElementById('list-inc').textContent;
+    await wait(3000); const capAfter = d2.getElementById('cap-inc').textContent;
+    loadDetail = { cap_while_loading: capWhileLoading, list_while_loading_mentions_loading: listWhileLoading.indexOf('読み込んでいます') >= 0, cap_after: capAfter };
+    loadOk = capWhileLoading.indexOf('読み込み中') >= 0 && capWhileLoading.indexOf('対象 0 人') < 0 && listWhileLoading.indexOf('読み込んでいます') >= 0 && capAfter.indexOf('読み込み中') < 0 && capAfter.indexOf('対象 0 人') < 0;
+  }
+  const passed = loadOk && w36Ok && checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
+  const report = { passed, no_emp_dataset: noEmp, loading_state: loadDetail, loading_state_ok: loadOk, plain_wording: w36, plain_wording_ok: w36Ok, reproduction: rp, reproduction_ok: rpOk, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
   console.log(JSON.stringify(report, null, 1)); if (!passed) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });

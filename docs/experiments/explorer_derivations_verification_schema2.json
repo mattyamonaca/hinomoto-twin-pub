@@ -1,6 +1,8 @@
 {
- "passed": true,
+ "passed": false,
  "no_emp_dataset": true,
+ "loading_state": {},
+ "loading_state_ok": true,
  "plain_wording": {
   "intro_plain": true,
   "income_share_plain": true,
@@ -9,9 +11,24 @@
   "assumption_summary_first": true,
   "area_not_evaluated_plain": true,
   "undefined_message_plain": true,
-  "zero_population_explained": true
+  "zero_population_explained": true,
+  "attribute_labels_match_denominators": false,
+  "attribute_label_detail": {
+   "lab_den": null,
+   "lab_den_expected": 0,
+   "lab_label": null,
+   "lab_ok": false,
+   "sta_den": null,
+   "sta_den_expected": 0,
+   "sta_label": null,
+   "sta_ok": false,
+   "ind_den": null,
+   "ind_den_expected": 0,
+   "ind_label": null,
+   "ind_ok": false
+  }
  },
- "plain_wording_ok": true,
+ "plain_wording_ok": false,
  "reproduction": {
   "code_ref": "b4a03510df6e39d87ce6b77e89a88276ca688f3e",
   "pinned": true,
