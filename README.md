@@ -130,7 +130,7 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 | `site/` | 分布を埋め込まない画面コード | 対象 |
 | `$HINOMOTO_DATA_ROOT/raw/` | 元Excel・所得表レスポンス | 対象外 |
 | `$HINOMOTO_DATA_ROOT/sources/` | 正規化済み入力 | 対象外 |
-| `$HINOMOTO_DATA_ROOT/data/` | 全分布・計算用配列・推定例 | 対象外 |
+| `$HINOMOTO_DATA_ROOT/data/` | 全分布・計算用配列・推定例。`data/stages/` に所得モデルの中間成果物（status / mixture / calibrated、来歴付き。[docs/PIPELINE.md](docs/PIPELINE.md)） | 対象外 |
 | `$HINOMOTO_DATA_ROOT/validation/` | 検証結果・処理品質 | 対象外 |
 | `$HINOMOTO_DATA_ROOT/web/` | 公開ページ用データ | 対象外 |
 
