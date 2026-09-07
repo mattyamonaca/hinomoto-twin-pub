@@ -21,13 +21,34 @@ import build_employment as bm
 def b64f32(x):return base64.b64encode(np.ascontiguousarray(np.asarray(x,dtype='<f4')).tobytes()).decode('ascii')
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def check_consistency(payload,d,agg,x,tol_persons=0.5):
+    """Refuse to publish unless the recomputation inputs (x), the saved artifacts (employment_a.npz, employment_a_agg.npz)
+    and the 5-attribute web dataset (graph.json) come from the same model and agree on the education x income margins.
+    Returns the checks dict; raises ValueError on any mismatch."""
+    versions={'inputs':str(x['model_version']),'employment_a':str(d['model_version']),'employment_a_agg':str(agg['model_version']),'graph':str((payload.get('model') or {}).get('model_version','unknown'))}
+    if len(set(versions.values()))!=1:raise ValueError(f'model versions differ: {versions}')
+    variants={'employment_a':str(d['variant']) if 'variant' in d.files else 'base','employment_a_agg':str(agg['variant']) if 'variant' in agg.files else 'base'}
+    if any(v!='base' for v in variants.values()):raise ValueError(f'only the base variant can be published: {variants}')
+    areas=d['areas'].tolist()
+    if x['areas']!=areas:raise ValueError('sources/output arrays do not match employment_a.npz')
+    if agg['codes'].tolist()[0]!='00000':raise ValueError('employment_a_agg.npz must start with the national block')
+    # 5-attribute margins: the national aggregated block must reproduce the education x income-component counts of x
+    # (built from final_arrays.npz, the same arrays the graph was exported from) and the graph's population per municipality
+    nat=agg['blocks'][0].astype(float);B=8*4*20*16;paid=nat[...,:B].reshape(2,13,8,4,20,16).sum((3,4));zero=nat[...,B:B+160].reshape(2,13,8,20).sum(-1)+nat[...,B+160:B+168]+nat[...,B+168:B+176]
+    cube=x['cube'].sum(0)   # (2,13,8,17)
+    err_paid=float(np.abs(paid-cube[...,1:]).max());err_zero=float(np.abs(zero-cube[...,0]).max())
+    g=payload['graph'];pops=np.asarray(g['pop']);leaf=[i for i,m in enumerate(g['munis']) if m['c'] in set(areas)];ix={a:i for i,a in enumerate(areas)}
+    err_pop=float(np.abs(pops[leaf]-x['N'][[ix[g['munis'][i]['c']] for i in leaf]]).max())
+    checks={'versions':versions,'variants':variants,'national_block_vs_inputs_paid_max_error_persons':err_paid,'national_block_vs_inputs_zero_component_max_error_persons':err_zero,'graph_population_vs_inputs_max_error_persons':err_pop}
+    if max(err_paid,err_zero,err_pop)>tol_persons:raise ValueError(f'aggregated blocks / inputs / graph disagree on the 5-attribute margins: {checks}')
+    return checks
+
 def main():
     payload=json.loads((WEB/'graph.json').read_text(encoding='utf-8'));g=payload['graph']
     d=np.load(OUTPUT/'employment_a.npz');areas=d['areas'].tolist();ix={a:i for i,a in enumerate(areas)}
     agg=np.load(OUTPUT/'employment_a_agg.npz')
-    if str(agg['model_version'])!=str(d['model_version']):raise ValueError('employment_a_agg.npz and employment_a.npz were built for different models')
     x=bm.load_inputs(SOURCES,OUTPUT)
-    if x['areas']!=areas:raise ValueError('sources/output arrays do not match employment_a.npz')
+    checks=check_consistency(payload,d,agg,x)
     M=x['M'];kg=d['status_industry']
     # per-municipality inputs: W1..W5, K6+K7, unemployed share, 20 industry counts (scaled) -> (M,2,13,27)
     inp=np.concatenate([x['W'],x['K6'][...,None],x['u_share'][...,None],x['gm']],-1).astype('<f4')
@@ -52,7 +73,7 @@ def main():
     # consistency: national aggregate equals the sum of the pairwise joints
     nat=agg['blocks'][agg['codes'].tolist().index('00000')].astype(float);paid=nat[...,:8*4*20*16].reshape(2,13,8,4,20,16)
     err=float(np.abs(paid.sum((2,4))-d['status_income'].sum(0)).max())
-    rep={'passed':err<1.0,'schema_version':3,'dataset_version':payload['dataset_version'],'model_version':emp['version'],'inputs_bytes':(WEB/'employment_inputs.bin').stat().st_size,'agg_files':len(files),'agg_bytes_total':sum((ed/f'agg_{c}.bin').stat().st_size for c in files),'graph_bytes':(WEB/'graph.json').stat().st_size,'national_status_income_vs_pairwise_max_error_persons':err}
+    rep={'passed':err<1.0,'consistency':checks,'schema_version':3,'dataset_version':payload['dataset_version'],'model_version':emp['version'],'inputs_bytes':(WEB/'employment_inputs.bin').stat().st_size,'agg_files':len(files),'agg_bytes_total':sum((ed/f'agg_{c}.bin').stat().st_size for c in files),'graph_bytes':(WEB/'graph.json').stat().st_size,'national_status_income_vs_pairwise_max_error_persons':err}
     (REPORTS/'employment_web_export.json').write_text(json.dumps(rep,ensure_ascii=False,indent=2));print(json.dumps(rep,ensure_ascii=False,indent=1))
     if not rep['passed']:raise SystemExit(1)
 if __name__=='__main__':main()

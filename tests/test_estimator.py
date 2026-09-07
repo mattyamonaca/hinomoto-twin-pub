@@ -173,3 +173,32 @@ class StageAPublicationTests(unittest.TestCase):
         import persona_v3 as pv,build_employment as bm
         self.assertEqual(pv.K,bm.K);self.assertEqual(len(pv.K),7);self.assertEqual(pv.J,bm.J)
         self.assertEqual(bm.BLOCK,8*4*20*16+8*20+8+8)
+
+
+class EmploymentWebExportTests(unittest.TestCase):
+    """Issue #22 review: the export refuses artifacts, inputs and graph that do not come from the same model."""
+    def _world(self,ver_inputs='3.0-M12',ver_a='3.0-M12',ver_agg='3.0-M12',ver_graph='3.0-M12',variant='base',shift=0.):
+        import export_employment_web as ew
+        rng=np.random.default_rng(0);M=2;cube=rng.random((M,2,13,8,17))*100;N=cube.sum((3,4))
+        B=8*4*20*16;blk=np.zeros((1,2,13,B+160+16))
+        paid=rng.random((2,13,8,4,20,16));paid*= (cube.sum(0)[...,1:]/paid.sum((3,4)))[:,:,:,None,None,:]
+        fam=rng.random((2,13,8,20));zero=cube.sum(0)[...,0];fam*=(0.5*zero/fam.sum(-1))[...,None];un=0.2*zero;ina=0.3*zero
+        blk[0,...,:B]=paid.reshape(2,13,B);blk[0,...,B:B+160]=fam.reshape(2,13,160);blk[0,...,B+160:B+168]=un;blk[0,...,B+168:]=ina+shift
+        class Z(dict):
+            files=property(lambda self:list(self.keys()))
+        d=Z(areas=np.array(['13103','13104']),model_version=np.array(ver_a),variant=np.array(variant));agg=Z(codes=np.array(['00000']),blocks=blk,model_version=np.array(ver_agg),variant=np.array('base'))
+        x={'model_version':ver_inputs,'areas':['13103','13104'],'cube':cube,'N':N}
+        payload={'model':{'model_version':ver_graph},'graph':{'munis':[{'c':'13103'},{'c':'13104'}],'pop':N.tolist()}}
+        return ew,payload,d,agg,x
+    def test_consistent_world_passes(self):
+        ew,p,d,a,x=self._world();c=ew.check_consistency(p,d,a,x);self.assertLess(c['national_block_vs_inputs_paid_max_error_persons'],1e-6)
+    def test_version_mismatch_is_refused(self):
+        ew,p,d,a,x=self._world(ver_inputs='different-model')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world(ver_graph='2.0')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+    def test_non_base_variant_and_margin_drift_are_refused(self):
+        ew,p,d,a,x=self._world(variant='national_kg')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world(shift=5.)
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
