@@ -16,6 +16,8 @@ help:
 	@echo "fetch-employment  Fetch/normalize stage-A employment tables (ESS 10-1, 04000 by status)"
 	@echo "build-employment  Allocate employment status x industry conditional on the production model"
 	@echo "verify-employment Verify margins and evaluate on held-out city tables"
+	@echo "fetch-household  Fetch/normalize census household tables for stage B"
+	@echo "build-household  Generate household compositions for selected municipalities (stage B, experimental)"
 	@echo "experiment     Compare M0 with M1/M2 (education-composition income re-estimation) on held-out cities"
 	@echo "synthetic      Recovery experiment on virtual populations with known joint distributions"
 	@echo "site           Assemble UI code and the configured web dataset into dist/site"

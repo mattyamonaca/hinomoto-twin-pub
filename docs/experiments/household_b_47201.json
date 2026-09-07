@@ -1,0 +1,142 @@
+{
+  "code": "47201",
+  "name": "那覇市",
+  "prefecture_seed": "47000",
+  "households": 144011.0,
+  "published_households": 144011.0,
+  "unknown_age_head_share": 0.06114116282783954,
+  "aggregate_ipf": {
+    "iterations": 41,
+    "error": 7.467726448369028e-08,
+    "nonhead_target": 165705.99999999997,
+    "nonhead_fitted": 165705.99999991336
+  },
+  "plan": {
+    "size_ipf": {
+      "iterations": 500,
+      "error": 0.0007417586645350867
+    },
+    "spouse_probability": {
+      "F1": 0.9999999999999998,
+      "F2": 1.0,
+      "F3": 2.054338871067409e-12,
+      "F4": 0.4340860689189075,
+      "F5": 0.09080579108565025,
+      "F6": 0.0,
+      "F7": 0.14583333333333354
+    }
+  },
+  "evaluation": {
+    "persons_vs_target_tv": 0.0047731187306923285,
+    "members_total": {
+      "generated": 309608.45257812634,
+      "published_12_4": 309717.0
+    },
+    "size_distribution_tv_vs_6_3": 0.00032037527471381796,
+    "heldout_13_2_role_sex_age": {
+      "tv_joint": 0.03267411419663774,
+      "tv_role_margin": 0.017431845394112345,
+      "tv_age_given_role": {
+        "R01": 0.007703738777344885,
+        "R02": 0.04945327952904684,
+        "R03": 0.018379890052759296,
+        "R05": 0.19895694888587528,
+        "R07": 0.04871265762870704,
+        "R09": 0.0790981013486217,
+        "R12": 0.10157803596786218
+      },
+      "observed_general_members": 300212.0
+    },
+    "persons_scaling_check": {
+      "tv_pop_scaled_vs_13_2_members": 0.01533298414286518
+    },
+    "married_persons_check": {
+      "generated_couple_members": 113811.31322209569,
+      "published_married_4_3": 127645.0,
+      "tv_by_sex_age": 0.02095309416108369,
+      "note": "generated counts couple households (F1,F2) heads+spouses only; published married persons include married members in other roles"
+    },
+    "heldout_8_1_under6_by_size": {
+      "generated": [
+        0.0,
+        2231.1,
+        3951.8,
+        3962.5,
+        2230.5,
+        781.0,
+        336.6
+      ],
+      "observed": [
+        0.0,
+        437.0,
+        4031.0,
+        4104.0,
+        2519.0,
+        1002.0,
+        455.0
+      ],
+      "tv": 0.13052175924207932,
+      "total_ratio": 1.0753509648636324,
+      "total_ratio_adjusted_for_unknown_age_heads": 1.0096027564238306
+    },
+    "heldout_26_1_elderly_by_size": {
+      "generated": [
+        20450.7,
+        17544.0,
+        6374.9,
+        4368.5,
+        2235.5,
+        775.6,
+        324.2
+      ],
+      "observed": [
+        17779.0,
+        18683.0,
+        7895.0,
+        2983.0,
+        1058.0,
+        476.0,
+        283.0
+      ],
+      "tv": 0.08134590562310094,
+      "total_ratio": 1.0593291864739833,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9945605681954948,
+      "note": "Published presence counts exclude age-unknown members; generated households allocate unknown-age heads to known ages, so the unadjusted ratio is expected to exceed 1 by about the unknown-age share."
+    },
+    "heldout_9_1_under15_by_family_type": {
+      "F1": {
+        "generated_households_with_under15": 0.0,
+        "observed": 0.0,
+        "total_households": 21137.0
+      },
+      "F2": {
+        "generated_households_with_under15": 18685.5,
+        "observed": 19228.0,
+        "total_households": 34053.0
+      },
+      "F4": {
+        "generated_households_with_under15": 2588.5,
+        "observed": 2282.0,
+        "total_households": 7475.0
+      },
+      "F5": {
+        "generated_households_with_under15": 204.7,
+        "observed": 116.0,
+        "total_households": 1552.0
+      },
+      "F6": {
+        "generated_households_with_under15": 0.0,
+        "observed": 0.0,
+        "total_households": 62298.0
+      }
+    }
+  },
+  "elapsed_seconds": 0.8,
+  "assumptions": [
+    "Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).",
+    "Unknown-age heads are spread within sex x family type in proportion to known ages.",
+    "Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.",
+    "Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).",
+    "No within-household correlation of income or other individual attributes is modelled."
+  ]
+}

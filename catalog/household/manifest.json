@@ -1,0 +1,75 @@
+{
+  "retrieved_date": "2026-09-07",
+  "publisher": "総務省統計局・e-Stat",
+  "survey": "令和2年国勢調査 人口等基本集計",
+  "sources": [
+    {
+      "title": "12-3 世帯主の男女，世帯主の年齢（5歳階級），世帯の家族類型別一般世帯数",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142506&fileKind=0",
+      "raw_file": "raw/household/head_age_family_type.xlsx",
+      "raw_sha256": "dd81de0636fcac8f4a662dc5f1e542b3dbd802c3cde7ff67d6c73adc076e1c1c",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "12-4 同 一般世帯人員",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142507&fileKind=0",
+      "raw_file": "raw/household/head_age_family_type_persons.xlsx",
+      "raw_sha256": "51320a06f642e4ad0b1d810d0520b0f82f70477fd29cce9d32d4523b0bedecb0",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "6-3 世帯人員の人数別一般世帯数",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142483&fileKind=0",
+      "raw_file": "raw/household/household_size.xlsx",
+      "raw_sha256": "77d2590c8282e111a30e5fde76d5908e5fcc86a0f1b491a7c3d403ae180072cc",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "4-3 男女，年齢（5歳階級），配偶関係別人口（15歳以上）",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142476&fileKind=0",
+      "raw_file": "raw/household/marital_status.xlsx",
+      "raw_sha256": "a47c307058b3ed154cc8791c423a10d632ad67c6a51d7cced1152d462149ed84",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "13-2 男女，年齢（5歳階級），世帯主との続き柄，世帯の家族類型別一般世帯人員（全国，都道府県，大都市等）",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142511&fileKind=0",
+      "raw_file": "raw/household/relationship.xlsx",
+      "raw_sha256": "39a8fcccdb6bddcaf64e3c5b012d34ac8c1598749f4e346f27e5f701708db588",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "9-1 世帯の家族類型，世帯員の年齢による世帯の種類別一般世帯数",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142495&fileKind=0",
+      "raw_file": "raw/household/family_type_age_class.xlsx",
+      "raw_sha256": "343c7a2797071cb63215bcaee640e2b43c6b212efb3b31dd379cd84206981f25",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "26-1 65歳以上世帯員の有無による世帯の類型，世帯人員の人数別一般世帯数",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142637&fileKind=0",
+      "raw_file": "raw/household/elderly_size.xlsx",
+      "raw_sha256": "736e937aa1b15d352e0dff3bea350bca57ea54709e0d4cf176a4add4e8539cdd",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "8-1 世帯員の年齢による世帯の種類，世帯人員の人数別一般世帯数",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142492&fileKind=0",
+      "raw_file": "raw/household/age_class_size.xlsx",
+      "raw_sha256": "2a00719ed1417fdea5f8e5f8a779d22c867f931ef675ec4b4732666621467791",
+      "tidy_dir": "sources/household/"
+    },
+    {
+      "title": "6-1 世帯の種類・施設等の世帯の種類，世帯人員の人数別世帯数",
+      "url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032142481&fileKind=0",
+      "raw_file": "raw/household/household_kind.xlsx",
+      "raw_sha256": "c989ebac453547173c09f33aca9b1568b0c30a8f22786d157177715bb20e0dd5",
+      "tidy_dir": "sources/household/"
+    }
+  ],
+  "notes": [
+    "Household tables are the original tabulation (no 不詳補完): age-unknown heads/members exist and are kept as UNK in the tidy files.",
+    "Population by sex x age (incl. 0-14) is taken from the already fetched census_population.xlsx (参考表1-4, 不詳補完).",
+    "13-2 is published for prefectures and large cities only; it seeds the relationship structure and serves as a held-out check where a city row exists."
+  ]
+}

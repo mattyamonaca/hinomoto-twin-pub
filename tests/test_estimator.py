@@ -82,3 +82,15 @@ class StageAContractTests(unittest.TestCase):
         with patch.object(ve,'evaluate',return_value={'passed':False}):
             with self.assertRaises(SystemExit) as cm:ve.main()
             self.assertEqual(cm.exception.code,1)
+
+class HouseholdTests(unittest.TestCase):
+    def test_ipf_nd_matches_all_margins(self):
+        import build_household as bh
+        rng=np.random.default_rng(5);seed=rng.random((3,4,5,6))+0.1
+        z0=rng.random((3,4,5,6));A=z0.sum((0,1));B=z0.sum((2,3))
+        z,it,err=bh.ipf_nd(seed,[((2,3),A),((0,1),B)],iters=2000,tol=1e-10)
+        self.assertTrue(np.allclose(z.sum((0,1)),A,atol=1e-6));self.assertTrue(np.allclose(z.sum((2,3)),B,atol=1e-6))
+    def test_gap_prior_rows_normalized_and_ordered(self):
+        import build_household as bh
+        P=bh.gap_prior(bh.AGE_MID,30,6,+1)
+        self.assertTrue(np.allclose(P.sum(1),1));self.assertLess(np.argmax(P[8]),8)   # children of a 40-44 head are younger
