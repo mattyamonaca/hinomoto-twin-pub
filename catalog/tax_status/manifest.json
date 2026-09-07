@@ -1,0 +1,36 @@
+{
+  "retrieved_date": "2026-09-07",
+  "publisher": "総務省自治税務局（市町村税課税状況等の調）",
+  "licence": "政府標準利用規約（第2.0版）；CC BY 4.0 と互換",
+  "purpose": "Issue #21 independent evaluation only. Not an input of M0/M1/M2/M12 (the model's tax proxy is 市区町村のすがた2024 = FY2022, 2021 income; production M12 uses beta=0).",
+  "sources": [
+    {
+      "title": "令和5年度 市町村税課税状況等の調 第2表〔市町村別内訳〕個人の市町村民税の納税義務者等に関する調",
+      "url": "https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/xls/J51-23-a.xlsx",
+      "index_page": "https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/ichiran09_23.html",
+      "raw_file": "raw/tax_status/J51-23-a.xlsx",
+      "raw_sha256": "da859a82c4358976358579ac8bed1eb4699a8e0988e83dcde562a271ef5858f3",
+      "fiscal_year": 2023,
+      "income_year": 2022,
+      "unit": "persons; 千円",
+      "population": "個人住民税の納税義務者（賦課期日 2023-01-01 の住所地）; non-taxable persons are not counted",
+      "tidy_file": "sources/tax_status/tax_status_2023_tidy.csv"
+    },
+    {
+      "title": "令和5年度 市町村税課税状況等の調 第11表〔市町村別内訳〕課税標準額段階別所得割額等に関する調（合計）",
+      "url": "https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/xls/J51-23-b.xlsx",
+      "index_page": "https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/ichiran09_23.html",
+      "raw_file": "raw/tax_status/J51-23-b.xlsx",
+      "raw_sha256": "8870e86a398f3cd4ac48fa8e9e72de075c9304fbfe2cf7da3c63745e1cc9c8f5",
+      "fiscal_year": 2023,
+      "income_year": 2022,
+      "unit": "persons; 千円",
+      "note": "The municipal breakdown carries totals only; the 課税標準額段階別 bracket counts exist at the national/prefecture level (第5表〜第11表 総括表), not by municipality.",
+      "tidy_file": "sources/tax_status/tax_status_2023_tidy.csv"
+    }
+  ],
+  "notes": [
+    "課税対象所得 / 課税標準額 are income after deductions of all taxpayers (including pension and property income earners); they are not the ESS 主な仕事からの年間収入 of workers, so only within-prefecture relative levels are compared.",
+    "Designated-city wards are not separate municipalities in this survey; the model's ward arrays are aggregated to the city. Tokyo's 23 特別区 are separate entries."
+  ]
+}

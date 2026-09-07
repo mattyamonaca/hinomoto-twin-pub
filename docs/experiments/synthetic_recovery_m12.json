@@ -1,0 +1,1977 @@
+{
+  "protocol": "Virtual populations with education AND industry: recovery of M0 / M1 / M2 / M12 on the same denominator (Issue #21).\n\nExtends synthetic_population.py (M0/M1 only). Each world has a known P(status, education, industry, income | area, sex, age)\nand is observed only through tables of the granularity that exists for Japan:\n  census population / employed / status totals per area, prefecture age x status seeds, the sampled income survey\n  (prefecture, national, largest cities), a tax proxy, census education counts, prefecture education x labour tables,\n  census 6-3 (area x sex x age x industry, full count, with an \"unclassifiable\" class) and ESS table 24\n  (national sex x industry x income of paid workers, no age, survey-sampled).\nThe generating processes deliberately include mechanisms the estimators do not model: an education x industry\ninteraction on income (the multiplicative tilt assumes none), industry effects that change with age (table 24 has no\nage) or with the region (national shapes are transplanted), informative unknowns, very small areas with empty cells,\nand a world where industry has no direct income effect. Recovery is measured against the hidden truth on ALL areas\nwith the same denominator for every model. Results describe recovery under the stated generating conditions only.\nOutputs: validation/synthetic_recovery_m12.json, synthetic_recovery_m12.csv (one row per scenario x seed x model).\n",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "grid": {
+    "gamma_edu": [
+      0.0,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      6.0
+    ],
+    "gamma_ind": [
+      0.0,
+      1.0,
+      2.0,
+      3.0,
+      4.0
+    ],
+    "beta": [
+      0.0,
+      0.5,
+      1.0,
+      2.0,
+      3.0
+    ]
+  },
+  "selection": "population-weighted cross entropy on the 3 largest municipalities per prefecture (as the 86-city selection); evaluation on all municipalities x sex x age against the hidden truth, weighted by paid workers (same denominator for every model)",
+  "scenarios": {
+    "base_constant_effects": {
+      "config": {},
+      "M0": {
+        "tv_weighted": 0.08215178933277824,
+        "tv_equal_area_mean": 0.08514139929701664,
+        "tv_median": 0.0843644682367412,
+        "tv_p90": 0.12157047619805761,
+        "tv_max": 0.23646960160226116,
+        "abs_error_share_ge300": 0.032525027107481105,
+        "abs_error_share_ge500": 0.025752783531308804,
+        "abs_error_share_ge700": 0.019126407510924797,
+        "tv_small_areas_equal_mean": 0.08694609485342872,
+        "tv_large_areas_equal_mean": 0.08498239073953387,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05692866991801885,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.08123762348843974,
+        "tv_equal_area_mean": 0.084453862145068,
+        "tv_median": 0.08365321512798769,
+        "tv_p90": 0.12103006706013157,
+        "tv_max": 0.23582540455228984,
+        "abs_error_share_ge300": 0.030616684366323116,
+        "abs_error_share_ge500": 0.02351722928501082,
+        "abs_error_share_ge700": 0.01726338332750732,
+        "tv_small_areas_equal_mean": 0.08417348941941852,
+        "tv_large_areas_equal_mean": 0.08448538676574875,
+        "tv_income_given_area_sex_age_edu_weighted": 0.0570710530891,
+        "area_tv_change_vs_M0_max_worsening": 0.017087717536239742,
+        "fraction_areas_improved_vs_M0": 0.5650000000000001,
+        "selected": [
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            4.0,
+            0.0,
+            2.0
+          ],
+          [
+            2.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.07995590072241095,
+        "tv_equal_area_mean": 0.08321347540785494,
+        "tv_median": 0.08242005027304622,
+        "tv_p90": 0.11899195336732102,
+        "tv_max": 0.22109913806494924,
+        "abs_error_share_ge300": 0.029081895446788027,
+        "abs_error_share_ge500": 0.022489979799944087,
+        "abs_error_share_ge700": 0.016614396833374574,
+        "tv_small_areas_equal_mean": 0.08361730314812287,
+        "tv_large_areas_equal_mean": 0.0832001431839133,
+        "tv_income_given_area_sex_age_edu_weighted": 0.056648261088818395,
+        "area_tv_change_vs_M0_max_worsening": 0.0282317625487681,
+        "fraction_areas_improved_vs_M0": 0.5716666666666667,
+        "selected": [
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.07952578830628473,
+        "tv_equal_area_mean": 0.0826881595939039,
+        "tv_median": 0.08169017493478922,
+        "tv_p90": 0.11828472496228704,
+        "tv_max": 0.2261918367830591,
+        "abs_error_share_ge300": 0.028027933505035508,
+        "abs_error_share_ge500": 0.02174450051708131,
+        "abs_error_share_ge700": 0.016247483235507877,
+        "tv_small_areas_equal_mean": 0.08311632798368294,
+        "tv_large_areas_equal_mean": 0.08265157342329006,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05629197929869347,
+        "area_tv_change_vs_M0_max_worsening": 0.023808672125559677,
+        "fraction_areas_improved_vs_M0": 0.5933333333333333,
+        "area_tv_change_vs_M1_max_worsening": 0.020839358557599174,
+        "fraction_areas_improved_vs_M1": 0.5900000000000001,
+        "selected": [
+          [
+            2.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ],
+          [
+            6.0,
+            1.0,
+            1.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.0009141658443384936,
+      "M1_minus_M0_seed_range": [
+        -0.0018336638779807707,
+        -0.00017496796864660547
+      ],
+      "M2_minus_M0_tv_weighted": -0.002195888610367283,
+      "M2_minus_M0_seed_range": [
+        -0.004577526135478266,
+        -0.00032428864928914225
+      ],
+      "M12_minus_M0_tv_weighted": -0.0026260010264935072,
+      "M12_minus_M0_seed_range": [
+        -0.004300228972881612,
+        -0.00048498832577717477
+      ],
+      "M12_minus_M1_tv_weighted": -0.0017118351821550138,
+      "M12_minus_M1_seed_range": [
+        -0.0031690977593125114,
+        0.00015144589729175484
+      ]
+    },
+    "regional_varying_associations": {
+      "config": {
+        "theta_sd": 0.35,
+        "phi_sd": 0.35
+      },
+      "M0": {
+        "tv_weighted": 0.08732693649696914,
+        "tv_equal_area_mean": 0.09077927698036155,
+        "tv_median": 0.08925247904048843,
+        "tv_p90": 0.13021255615597982,
+        "tv_max": 0.24457789359222684,
+        "abs_error_share_ge300": 0.033994582335504946,
+        "abs_error_share_ge500": 0.02861036588188151,
+        "abs_error_share_ge700": 0.021853559674821298,
+        "tv_small_areas_equal_mean": 0.0911545598587286,
+        "tv_large_areas_equal_mean": 0.09080450739109487,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06020370232555322,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.08672470379676382,
+        "tv_equal_area_mean": 0.09050709607305772,
+        "tv_median": 0.08921245303386931,
+        "tv_p90": 0.13052769743682946,
+        "tv_max": 0.23434312357631004,
+        "abs_error_share_ge300": 0.0328897138732443,
+        "abs_error_share_ge500": 0.027535956645077426,
+        "abs_error_share_ge700": 0.020908482003942217,
+        "tv_small_areas_equal_mean": 0.09296741649817486,
+        "tv_large_areas_equal_mean": 0.0903291331720005,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06017891356660526,
+        "area_tv_change_vs_M0_max_worsening": 0.018440616466490884,
+        "fraction_areas_improved_vs_M0": 0.3783333333333333,
+        "selected": [
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ],
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.08534026563328447,
+        "tv_equal_area_mean": 0.08878393956549734,
+        "tv_median": 0.08749303514152845,
+        "tv_p90": 0.12742293463452628,
+        "tv_max": 0.22447890785463614,
+        "abs_error_share_ge300": 0.031163024411689243,
+        "abs_error_share_ge500": 0.026628658900427676,
+        "abs_error_share_ge700": 0.02033034483602144,
+        "tv_small_areas_equal_mean": 0.09211612497601254,
+        "tv_large_areas_equal_mean": 0.08852115622389797,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05968345836556753,
+        "area_tv_change_vs_M0_max_worsening": 0.03793611525273185,
+        "fraction_areas_improved_vs_M0": 0.5566666666666666,
+        "selected": [
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.08480805090955545,
+        "tv_equal_area_mean": 0.08824172529522066,
+        "tv_median": 0.08686707800954153,
+        "tv_p90": 0.126980178932292,
+        "tv_max": 0.23139196351012456,
+        "abs_error_share_ge300": 0.030216656784322317,
+        "abs_error_share_ge500": 0.025834944024041222,
+        "abs_error_share_ge700": 0.01981957352748559,
+        "tv_small_areas_equal_mean": 0.09144345358503644,
+        "tv_large_areas_equal_mean": 0.08798990304754631,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05963256362615234,
+        "area_tv_change_vs_M0_max_worsening": 0.030829563782112834,
+        "fraction_areas_improved_vs_M0": 0.5766666666666665,
+        "area_tv_change_vs_M1_max_worsening": 0.029223065249575342,
+        "fraction_areas_improved_vs_M1": 0.6250000000000001,
+        "selected": [
+          [
+            1.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            3.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            6.0,
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.0006022327002053213,
+      "M1_minus_M0_seed_range": [
+        -0.001326913413971953,
+        0.0001249973959005779
+      ],
+      "M2_minus_M0_tv_weighted": -0.001986670863684689,
+      "M2_minus_M0_seed_range": [
+        -0.003379383210186687,
+        0.0010319617198217557
+      ],
+      "M12_minus_M0_tv_weighted": -0.002518885587413705,
+      "M12_minus_M0_seed_range": [
+        -0.004529357645325138,
+        0.0005463335971832989
+      ],
+      "M12_minus_M1_tv_weighted": -0.0019166528872083838,
+      "M12_minus_M1_seed_range": [
+        -0.0035352035095937706,
+        0.000421336201282721
+      ]
+    },
+    "education_industry_interaction": {
+      "config": {
+        "interaction": 0.25
+      },
+      "M0": {
+        "tv_weighted": 0.08357567979879724,
+        "tv_equal_area_mean": 0.08637320670016232,
+        "tv_median": 0.08507490959314867,
+        "tv_p90": 0.1268594743776291,
+        "tv_max": 0.2381722339162423,
+        "abs_error_share_ge300": 0.032905182603348584,
+        "abs_error_share_ge500": 0.02705930282002612,
+        "abs_error_share_ge700": 0.02112409610560175,
+        "tv_small_areas_equal_mean": 0.08467265166891036,
+        "tv_large_areas_equal_mean": 0.08656443474548585,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05943095601657407,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.08280363336009218,
+        "tv_equal_area_mean": 0.0862550037637388,
+        "tv_median": 0.08493411867873665,
+        "tv_p90": 0.12719012710028374,
+        "tv_max": 0.27126327576127324,
+        "abs_error_share_ge300": 0.03060428235600257,
+        "abs_error_share_ge500": 0.02521790948303454,
+        "abs_error_share_ge700": 0.01988892520781427,
+        "tv_small_areas_equal_mean": 0.08465223786452794,
+        "tv_large_areas_equal_mean": 0.08642018069251503,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05915360910594003,
+        "area_tv_change_vs_M0_max_worsening": 0.023618931577887487,
+        "fraction_areas_improved_vs_M0": 0.4833333333333333,
+        "selected": [
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            1.0,
+            0.0,
+            2.0
+          ],
+          [
+            4.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.08069050075355119,
+        "tv_equal_area_mean": 0.084265229001379,
+        "tv_median": 0.08307288022421673,
+        "tv_p90": 0.12381103907951511,
+        "tv_max": 0.23694848716932276,
+        "abs_error_share_ge300": 0.027819106025980932,
+        "abs_error_share_ge500": 0.023107575714804894,
+        "abs_error_share_ge700": 0.01861075859141087,
+        "tv_small_areas_equal_mean": 0.08474752209048438,
+        "tv_large_areas_equal_mean": 0.08422471579286481,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05833929226765451,
+        "area_tv_change_vs_M0_max_worsening": 0.02381337775903194,
+        "fraction_areas_improved_vs_M0": 0.49000000000000005,
+        "selected": [
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.07991912933228765,
+        "tv_equal_area_mean": 0.08318754329369632,
+        "tv_median": 0.0817255282802127,
+        "tv_p90": 0.12224746073378648,
+        "tv_max": 0.24281482865930487,
+        "abs_error_share_ge300": 0.025878537505099736,
+        "abs_error_share_ge500": 0.021570425405487263,
+        "abs_error_share_ge700": 0.01749185658786603,
+        "tv_small_areas_equal_mean": 0.08423040222595618,
+        "tv_large_areas_equal_mean": 0.08311608233222542,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05821922793786212,
+        "area_tv_change_vs_M0_max_worsening": 0.019704936592015873,
+        "fraction_areas_improved_vs_M0": 0.5916666666666666,
+        "area_tv_change_vs_M1_max_worsening": 0.01747301432507207,
+        "fraction_areas_improved_vs_M1": 0.67,
+        "selected": [
+          [
+            2.0,
+            2.0,
+            1.0
+          ],
+          [
+            3.0,
+            1.0,
+            1.0
+          ],
+          [
+            6.0,
+            1.0,
+            1.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.0007720464387050735,
+      "M1_minus_M0_seed_range": [
+        -0.001845418582312991,
+        0.0001857216432303438
+      ],
+      "M2_minus_M0_tv_weighted": -0.0028851790452460667,
+      "M2_minus_M0_seed_range": [
+        -0.005082608186840615,
+        0.0
+      ],
+      "M12_minus_M0_tv_weighted": -0.0036565504665096145,
+      "M12_minus_M0_seed_range": [
+        -0.005022401088876527,
+        -0.0020027473259683487
+      ],
+      "M12_minus_M1_tv_weighted": -0.0028845040278045408,
+      "M12_minus_M1_seed_range": [
+        -0.0037123082188297574,
+        -0.0021884689691986925
+      ]
+    },
+    "industry_effect_age_dependent": {
+      "config": {
+        "age_gradient": 1.0
+      },
+      "M0": {
+        "tv_weighted": 0.0832108345858346,
+        "tv_equal_area_mean": 0.08573273287704003,
+        "tv_median": 0.08453143226956716,
+        "tv_p90": 0.123026635585144,
+        "tv_max": 0.2284617577228897,
+        "abs_error_share_ge300": 0.032614798464824,
+        "abs_error_share_ge500": 0.026710373385660967,
+        "abs_error_share_ge700": 0.019544082864576654,
+        "tv_small_areas_equal_mean": 0.08458732671877174,
+        "tv_large_areas_equal_mean": 0.08585764692428259,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05751032455603429,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.08267409842818882,
+        "tv_equal_area_mean": 0.08591741961055205,
+        "tv_median": 0.0842398719856455,
+        "tv_p90": 0.12316337880692341,
+        "tv_max": 0.2425558820838797,
+        "abs_error_share_ge300": 0.031152314804797458,
+        "abs_error_share_ge500": 0.02506411458856451,
+        "abs_error_share_ge700": 0.018439354935187537,
+        "tv_small_areas_equal_mean": 0.08614762633037577,
+        "tv_large_areas_equal_mean": 0.08590257462047478,
+        "tv_income_given_area_sex_age_edu_weighted": 0.057547135707672836,
+        "area_tv_change_vs_M0_max_worsening": 0.0200665974301506,
+        "fraction_areas_improved_vs_M0": 0.5149999999999999,
+        "selected": [
+          [
+            4.0,
+            0.0,
+            2.0
+          ],
+          [
+            4.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            4.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.08078021570081297,
+        "tv_equal_area_mean": 0.0840707062355766,
+        "tv_median": 0.08283925938053148,
+        "tv_p90": 0.12090650855839655,
+        "tv_max": 0.233034280745796,
+        "abs_error_share_ge300": 0.02856570211127642,
+        "abs_error_share_ge500": 0.0229376579555379,
+        "abs_error_share_ge700": 0.016897263219184517,
+        "tv_small_areas_equal_mean": 0.08601466249598758,
+        "tv_large_areas_equal_mean": 0.08388972182975996,
+        "tv_income_given_area_sex_age_edu_weighted": 0.0569991911086891,
+        "area_tv_change_vs_M0_max_worsening": 0.02778620031014743,
+        "fraction_areas_improved_vs_M0": 0.5766666666666667,
+        "selected": [
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.08046448316579222,
+        "tv_equal_area_mean": 0.08377147563223564,
+        "tv_median": 0.08235338495496776,
+        "tv_p90": 0.12014218364813609,
+        "tv_max": 0.2548298074774886,
+        "abs_error_share_ge300": 0.027445104490889393,
+        "abs_error_share_ge500": 0.022236573295465044,
+        "abs_error_share_ge700": 0.01644926785751956,
+        "tv_small_areas_equal_mean": 0.08637199035125113,
+        "tv_large_areas_equal_mean": 0.08352470839073481,
+        "tv_income_given_area_sex_age_edu_weighted": 0.056822603127142504,
+        "area_tv_change_vs_M0_max_worsening": 0.032525285354487274,
+        "fraction_areas_improved_vs_M0": 0.595,
+        "area_tv_change_vs_M1_max_worsening": 0.027303390506027158,
+        "fraction_areas_improved_vs_M1": 0.6066666666666667,
+        "selected": [
+          [
+            1.0,
+            1.0,
+            2.0
+          ],
+          [
+            3.0,
+            2.0,
+            1.0
+          ],
+          [
+            6.0,
+            1.0,
+            1.0
+          ],
+          [
+            6.0,
+            1.0,
+            1.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.000536736157645773,
+      "M1_minus_M0_seed_range": [
+        -0.0019068142008148575,
+        0.0020798229165271964
+      ],
+      "M2_minus_M0_tv_weighted": -0.0024306188850216374,
+      "M2_minus_M0_seed_range": [
+        -0.0043019650743421345,
+        -0.000296124232429279
+      ],
+      "M12_minus_M0_tv_weighted": -0.0027463514200423782,
+      "M12_minus_M0_seed_range": [
+        -0.0047671945986234865,
+        -0.0018378050089821463
+      ],
+      "M12_minus_M1_tv_weighted": -0.002209615262396605,
+      "M12_minus_M1_seed_range": [
+        -0.004349525073483809,
+        -0.00030701507485510204
+      ]
+    },
+    "industry_effect_regional": {
+      "config": {
+        "regional_ind_sd": 0.2
+      },
+      "M0": {
+        "tv_weighted": 0.09219927124176727,
+        "tv_equal_area_mean": 0.09733993629270514,
+        "tv_median": 0.09598364244674282,
+        "tv_p90": 0.14141207302115286,
+        "tv_max": 0.2340889758062768,
+        "abs_error_share_ge300": 0.04174264976675914,
+        "abs_error_share_ge500": 0.033305743932647555,
+        "abs_error_share_ge700": 0.024983799714870577,
+        "tv_small_areas_equal_mean": 0.09706734922567109,
+        "tv_large_areas_equal_mean": 0.09740765003059954,
+        "tv_income_given_area_sex_age_edu_weighted": 0.060955055256306664,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.09218093324619211,
+        "tv_equal_area_mean": 0.09797477837968946,
+        "tv_median": 0.09640431209871371,
+        "tv_p90": 0.14224495920417182,
+        "tv_max": 0.2579457596588819,
+        "abs_error_share_ge300": 0.04101737663117397,
+        "abs_error_share_ge500": 0.033053657304116135,
+        "abs_error_share_ge700": 0.024946408516445657,
+        "tv_small_areas_equal_mean": 0.09909904536748212,
+        "tv_large_areas_equal_mean": 0.09786027586335513,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06060036201802771,
+        "area_tv_change_vs_M0_max_worsening": 0.03700326508248153,
+        "fraction_areas_improved_vs_M0": 0.4916666666666667,
+        "selected": [
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            1.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.0900117529320421,
+        "tv_equal_area_mean": 0.09549534803906362,
+        "tv_median": 0.09441760364489357,
+        "tv_p90": 0.13820995751848925,
+        "tv_max": 0.24140280574407003,
+        "abs_error_share_ge300": 0.038419859207029956,
+        "abs_error_share_ge500": 0.031017696791579848,
+        "abs_error_share_ge700": 0.023380730554285828,
+        "tv_small_areas_equal_mean": 0.09881668402378471,
+        "tv_large_areas_equal_mean": 0.09512353943615222,
+        "tv_income_given_area_sex_age_edu_weighted": 0.060094393483586986,
+        "area_tv_change_vs_M0_max_worsening": 0.04227660954428953,
+        "fraction_areas_improved_vs_M0": 0.4333333333333334,
+        "selected": [
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            0.5
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.08976885277419816,
+        "tv_equal_area_mean": 0.09522427048919296,
+        "tv_median": 0.0943902722161019,
+        "tv_p90": 0.13748052597468421,
+        "tv_max": 0.24144752408483297,
+        "abs_error_share_ge300": 0.03807053758542133,
+        "abs_error_share_ge500": 0.030519043791299612,
+        "abs_error_share_ge700": 0.022989617355795,
+        "tv_small_areas_equal_mean": 0.09808977549333806,
+        "tv_large_areas_equal_mean": 0.09490787354929929,
+        "tv_income_given_area_sex_age_edu_weighted": 0.059959825122642994,
+        "area_tv_change_vs_M0_max_worsening": 0.038077987863976634,
+        "fraction_areas_improved_vs_M0": 0.5633333333333334,
+        "area_tv_change_vs_M1_max_worsening": 0.0318989657345188,
+        "fraction_areas_improved_vs_M1": 0.47000000000000003,
+        "selected": [
+          [
+            4.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            1.0,
+            1.0
+          ],
+          [
+            2.0,
+            2.0,
+            0.5
+          ],
+          [
+            2.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -1.83379955751517e-05,
+      "M1_minus_M0_seed_range": [
+        -0.0007862099095859582,
+        0.0009809114340349062
+      ],
+      "M2_minus_M0_tv_weighted": -0.0021875183097251616,
+      "M2_minus_M0_seed_range": [
+        -0.004337899416136812,
+        0.0
+      ],
+      "M12_minus_M0_tv_weighted": -0.002430418467569101,
+      "M12_minus_M0_seed_range": [
+        -0.0045275049079319535,
+        -0.00010087788710790024
+      ],
+      "M12_minus_M1_tv_weighted": -0.002412080471993949,
+      "M12_minus_M1_seed_range": [
+        -0.004361568363869681,
+        0.0
+      ]
+    },
+    "informative_unknowns": {
+      "config": {
+        "unknown_corr": 0.8,
+        "unknown_ind_corr": 0.8
+      },
+      "M0": {
+        "tv_weighted": 0.08254208310113885,
+        "tv_equal_area_mean": 0.08530617684245098,
+        "tv_median": 0.08415848036759949,
+        "tv_p90": 0.12347070287555764,
+        "tv_max": 0.2249841670391489,
+        "abs_error_share_ge300": 0.032452827362820715,
+        "abs_error_share_ge500": 0.025782932625358957,
+        "abs_error_share_ge700": 0.01844633787139034,
+        "tv_small_areas_equal_mean": 0.08774454968914079,
+        "tv_large_areas_equal_mean": 0.08509205796139584,
+        "tv_income_given_area_sex_age_edu_weighted": 0.057888505749096,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.08203234777776129,
+        "tv_equal_area_mean": 0.08543669591944794,
+        "tv_median": 0.08413662215683039,
+        "tv_p90": 0.12411394283722119,
+        "tv_max": 0.23089937318764422,
+        "abs_error_share_ge300": 0.031236357367605105,
+        "abs_error_share_ge500": 0.024970401336704202,
+        "abs_error_share_ge700": 0.01799348396744593,
+        "tv_small_areas_equal_mean": 0.08613671909326094,
+        "tv_large_areas_equal_mean": 0.0853932866924311,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05757079783865188,
+        "area_tv_change_vs_M0_max_worsening": 0.02159547016733162,
+        "fraction_areas_improved_vs_M0": 0.5033333333333333,
+        "selected": [
+          [
+            2.0,
+            0.0,
+            2.0
+          ],
+          [
+            2.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.08006512683275212,
+        "tv_equal_area_mean": 0.08326864280202234,
+        "tv_median": 0.0822301769301026,
+        "tv_p90": 0.12081548287043439,
+        "tv_max": 0.23552147174802185,
+        "abs_error_share_ge300": 0.028213130162474377,
+        "abs_error_share_ge500": 0.02285412982185071,
+        "abs_error_share_ge700": 0.016322533697401734,
+        "tv_small_areas_equal_mean": 0.08467622159497391,
+        "tv_large_areas_equal_mean": 0.08318064638593317,
+        "tv_income_given_area_sex_age_edu_weighted": 0.057281098376093895,
+        "area_tv_change_vs_M0_max_worsening": 0.03707792543855367,
+        "fraction_areas_improved_vs_M0": 0.5733333333333334,
+        "selected": [
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.07983564947100855,
+        "tv_equal_area_mean": 0.08300090248616021,
+        "tv_median": 0.08183880581962708,
+        "tv_p90": 0.12022909672875222,
+        "tv_max": 0.24494828886034972,
+        "abs_error_share_ge300": 0.027755115518160206,
+        "abs_error_share_ge500": 0.02238808487065269,
+        "abs_error_share_ge700": 0.016050347986830048,
+        "tv_small_areas_equal_mean": 0.0849321173303936,
+        "tv_large_areas_equal_mean": 0.08285835720201626,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05708000638413119,
+        "area_tv_change_vs_M0_max_worsening": 0.035077548836090766,
+        "fraction_areas_improved_vs_M0": 0.595,
+        "area_tv_change_vs_M1_max_worsening": 0.03151802059634554,
+        "fraction_areas_improved_vs_M1": 0.6366666666666666,
+        "selected": [
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            1.0,
+            2.0,
+            1.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ],
+          [
+            4.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.0005097353233775636,
+      "M1_minus_M0_seed_range": [
+        -0.0011425841857654884,
+        0.00039489168712442124
+      ],
+      "M2_minus_M0_tv_weighted": -0.0024769562683867262,
+      "M2_minus_M0_seed_range": [
+        -0.005162093366472539,
+        -0.000165788277925627
+      ],
+      "M12_minus_M0_tv_weighted": -0.0027064336301303145,
+      "M12_minus_M0_seed_range": [
+        -0.005162093366472539,
+        -0.000165788277925627
+      ],
+      "M12_minus_M1_tv_weighted": -0.0021966983067527508,
+      "M12_minus_M1_seed_range": [
+        -0.0041133303380443825,
+        0.000316816731049982
+      ]
+    },
+    "sparse_small_areas": {
+      "config": {
+        "pop_log_mean": 7.824046010856292,
+        "pop_min": 300.0,
+        "pop_max": 20000.0
+      },
+      "M0": {
+        "tv_weighted": 0.2686888105156968,
+        "tv_equal_area_mean": 0.2762093457855706,
+        "tv_median": 0.27412008286631095,
+        "tv_p90": 0.3966784987966202,
+        "tv_max": 0.7053754438391524,
+        "abs_error_share_ge300": 0.0788107046715085,
+        "abs_error_share_ge500": 0.06607943860811281,
+        "abs_error_share_ge700": 0.04828203657685675,
+        "tv_small_areas_equal_mean": 0.2780670501531589,
+        "tv_large_areas_equal_mean": 0.2560309126114072,
+        "tv_income_given_area_sex_age_edu_weighted": 0.15223380890408694,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            3.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.2690503798819557,
+        "tv_equal_area_mean": 0.2766509582024782,
+        "tv_median": 0.274442533090963,
+        "tv_p90": 0.39730427100154053,
+        "tv_max": 0.7112081864338846,
+        "abs_error_share_ge300": 0.07892140268980008,
+        "abs_error_share_ge500": 0.0661621445084896,
+        "abs_error_share_ge700": 0.04825953035617503,
+        "tv_small_areas_equal_mean": 0.27854914217560234,
+        "tv_large_areas_equal_mean": 0.2559541596933344,
+        "tv_income_given_area_sex_age_edu_weighted": 0.15253381820543563,
+        "area_tv_change_vs_M0_max_worsening": 0.005775332568117431,
+        "fraction_areas_improved_vs_M0": 0.17833333333333332,
+        "selected": [
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            2.0,
+            0.0,
+            3.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.26869560796051806,
+        "tv_equal_area_mean": 0.2760722884908534,
+        "tv_median": 0.27368032600667525,
+        "tv_p90": 0.39573516026551364,
+        "tv_max": 0.7164948970543142,
+        "abs_error_share_ge300": 0.07869367364481314,
+        "abs_error_share_ge500": 0.06602751572647221,
+        "abs_error_share_ge700": 0.04832771549727736,
+        "tv_small_areas_equal_mean": 0.2778630211032663,
+        "tv_large_areas_equal_mean": 0.25610078751286086,
+        "tv_income_given_area_sex_age_edu_weighted": 0.1521229966894598,
+        "area_tv_change_vs_M0_max_worsening": 0.016877889820970077,
+        "fraction_areas_improved_vs_M0": 0.37,
+        "selected": [
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.26877750054921556,
+        "tv_equal_area_mean": 0.276117786934181,
+        "tv_median": 0.2736421060054055,
+        "tv_p90": 0.39595985857760396,
+        "tv_max": 0.7101124523260484,
+        "abs_error_share_ge300": 0.07857060963998086,
+        "abs_error_share_ge500": 0.06598349653776135,
+        "abs_error_share_ge700": 0.04839802703501535,
+        "tv_small_areas_equal_mean": 0.2778931498612157,
+        "tv_large_areas_equal_mean": 0.2564243094639149,
+        "tv_income_given_area_sex_age_edu_weighted": 0.15218039566888755,
+        "area_tv_change_vs_M0_max_worsening": 0.015603483804179452,
+        "fraction_areas_improved_vs_M0": 0.35833333333333334,
+        "area_tv_change_vs_M1_max_worsening": 0.011099097161067406,
+        "fraction_areas_improved_vs_M1": 0.27,
+        "selected": [
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": 0.0003615693662588626,
+      "M1_minus_M0_seed_range": [
+        0.0,
+        0.0011563454867221656
+      ],
+      "M2_minus_M0_tv_weighted": 6.797444821249332e-06,
+      "M2_minus_M0_seed_range": [
+        -0.0009920114485167941,
+        0.0007260334657118173
+      ],
+      "M12_minus_M0_tv_weighted": 8.869003351876791e-05,
+      "M12_minus_M0_seed_range": [
+        -0.0009920114485167941,
+        0.0011563454867221656
+      ],
+      "M12_minus_M1_tv_weighted": -0.00027287933274009466,
+      "M12_minus_M1_seed_range": [
+        -0.0016435127930889415,
+        0.0004511531332401786
+      ]
+    },
+    "no_direct_industry_effect": {
+      "config": {
+        "ind_scale": 0.0
+      },
+      "M0": {
+        "tv_weighted": 0.07783657705795846,
+        "tv_equal_area_mean": 0.08057256852499778,
+        "tv_median": 0.07999646863644105,
+        "tv_p90": 0.1149111288328537,
+        "tv_max": 0.2170080275794874,
+        "abs_error_share_ge300": 0.027936167632828034,
+        "abs_error_share_ge500": 0.021661148197037863,
+        "abs_error_share_ge700": 0.01548697374017905,
+        "tv_small_areas_equal_mean": 0.0811780300342815,
+        "tv_large_areas_equal_mean": 0.08050849631146884,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05281813984183881,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.07761252615508765,
+        "tv_equal_area_mean": 0.08051497333176333,
+        "tv_median": 0.07981020954529536,
+        "tv_p90": 0.11534111889379887,
+        "tv_max": 0.21932026020106266,
+        "abs_error_share_ge300": 0.027334193633776694,
+        "abs_error_share_ge500": 0.02070180269529913,
+        "abs_error_share_ge700": 0.014833187769655903,
+        "tv_small_areas_equal_mean": 0.08086789684823004,
+        "tv_large_areas_equal_mean": 0.0804613614375881,
+        "tv_income_given_area_sex_age_edu_weighted": 0.0529299872142827,
+        "area_tv_change_vs_M0_max_worsening": 0.008788114956824475,
+        "fraction_areas_improved_vs_M0": 0.44833333333333336,
+        "selected": [
+          [
+            4.0,
+            0.0,
+            2.0
+          ],
+          [
+            1.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            2.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.0777641111742503,
+        "tv_equal_area_mean": 0.08108970819568195,
+        "tv_median": 0.08030780043687442,
+        "tv_p90": 0.1161625653331843,
+        "tv_max": 0.21132094316579214,
+        "abs_error_share_ge300": 0.027806979460277832,
+        "abs_error_share_ge500": 0.02093078490451148,
+        "abs_error_share_ge700": 0.01489319484800213,
+        "tv_small_areas_equal_mean": 0.08240033057070803,
+        "tv_large_areas_equal_mean": 0.08094624511454149,
+        "tv_income_given_area_sex_age_edu_weighted": 0.053029256020904116,
+        "area_tv_change_vs_M0_max_worsening": 0.0227804436299314,
+        "fraction_areas_improved_vs_M0": 0.425,
+        "selected": [
+          [
+            0.0,
+            2.0,
+            2.0
+          ],
+          [
+            0.0,
+            4.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.0777409221594413,
+        "tv_equal_area_mean": 0.08105239101860785,
+        "tv_median": 0.0801957276106412,
+        "tv_p90": 0.11651753004898646,
+        "tv_max": 0.2206321896498266,
+        "abs_error_share_ge300": 0.027598547039331272,
+        "abs_error_share_ge500": 0.02075573716224586,
+        "abs_error_share_ge700": 0.014815074691993748,
+        "tv_small_areas_equal_mean": 0.08258458516141162,
+        "tv_large_areas_equal_mean": 0.0808898499205651,
+        "tv_income_given_area_sex_age_edu_weighted": 0.05305069229319551,
+        "area_tv_change_vs_M0_max_worsening": 0.019423348755784768,
+        "fraction_areas_improved_vs_M0": 0.4066666666666666,
+        "area_tv_change_vs_M1_max_worsening": 0.01210947267705217,
+        "fraction_areas_improved_vs_M1": 0.2866666666666667,
+        "selected": [
+          [
+            3.0,
+            1.0,
+            2.0
+          ],
+          [
+            4.0,
+            3.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            3.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.00022405090287080655,
+      "M1_minus_M0_seed_range": [
+        -0.0004112478690641991,
+        0.0
+      ],
+      "M2_minus_M0_tv_weighted": -7.246588370815321e-05,
+      "M2_minus_M0_seed_range": [
+        -0.0006174579283266396,
+        0.00039199958119401357
+      ],
+      "M12_minus_M0_tv_weighted": -9.565489851716402e-05,
+      "M12_minus_M0_seed_range": [
+        -0.0004052711685546828,
+        0.0001345562004927553
+      ],
+      "M12_minus_M1_tv_weighted": 0.00012839600435364252,
+      "M12_minus_M1_seed_range": [
+        -0.00019160824617274475,
+        0.0004820200573236594
+      ]
+    },
+    "no_direct_education_effect": {
+      "config": {
+        "theta_scale": 0.0
+      },
+      "M0": {
+        "tv_weighted": 0.08091714676092097,
+        "tv_equal_area_mean": 0.08403858112984976,
+        "tv_median": 0.08272572663863062,
+        "tv_p90": 0.12351666794978629,
+        "tv_max": 0.24080384994978718,
+        "abs_error_share_ge300": 0.03333828378563244,
+        "abs_error_share_ge500": 0.025686909917964955,
+        "abs_error_share_ge700": 0.0176481524155722,
+        "tv_small_areas_equal_mean": 0.085580748042179,
+        "tv_large_areas_equal_mean": 0.08392955665846372,
+        "tv_income_given_area_sex_age_edu_weighted": 0.050098924527490526,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ],
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.07934783776955032,
+        "tv_equal_area_mean": 0.082464521196858,
+        "tv_median": 0.0812658660383467,
+        "tv_p90": 0.12104205247875924,
+        "tv_max": 0.23160760768783573,
+        "abs_error_share_ge300": 0.03021433953785127,
+        "abs_error_share_ge500": 0.022949058204944167,
+        "abs_error_share_ge700": 0.01585952545633413,
+        "tv_small_areas_equal_mean": 0.08400353253178601,
+        "tv_large_areas_equal_mean": 0.082355254033769,
+        "tv_income_given_area_sex_age_edu_weighted": 0.04963535104638775,
+        "area_tv_change_vs_M0_max_worsening": 0.011628796715784161,
+        "fraction_areas_improved_vs_M0": 0.6483333333333333,
+        "selected": [
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            2.0
+          ],
+          [
+            6.0,
+            0.0,
+            2.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.07789255218170034,
+        "tv_equal_area_mean": 0.08133056790545078,
+        "tv_median": 0.07977328210876829,
+        "tv_p90": 0.11973411494931394,
+        "tv_max": 0.2405582882140441,
+        "abs_error_share_ge300": 0.028467498134728524,
+        "abs_error_share_ge500": 0.02096096199503745,
+        "abs_error_share_ge700": 0.014529075516769347,
+        "tv_small_areas_equal_mean": 0.08093398844687073,
+        "tv_large_areas_equal_mean": 0.0813776548708026,
+        "tv_income_given_area_sex_age_edu_weighted": 0.04910886414304081,
+        "area_tv_change_vs_M0_max_worsening": 0.03511069171735237,
+        "fraction_areas_improved_vs_M0": 0.635,
+        "selected": [
+          [
+            0.0,
+            2.0,
+            2.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.07750801513788512,
+        "tv_equal_area_mean": 0.08095947600475858,
+        "tv_median": 0.07971040763891105,
+        "tv_p90": 0.11852390021209766,
+        "tv_max": 0.23072018107515987,
+        "abs_error_share_ge300": 0.027584602940181148,
+        "abs_error_share_ge500": 0.020785890602382385,
+        "abs_error_share_ge700": 0.01452818853624761,
+        "tv_small_areas_equal_mean": 0.08281143513627637,
+        "tv_large_areas_equal_mean": 0.0808126867927071,
+        "tv_income_given_area_sex_age_edu_weighted": 0.04893369113999378,
+        "area_tv_change_vs_M0_max_worsening": 0.028820757604805635,
+        "fraction_areas_improved_vs_M0": 0.6166666666666666,
+        "area_tv_change_vs_M1_max_worsening": 0.028032980183110557,
+        "fraction_areas_improved_vs_M1": 0.6033333333333333,
+        "selected": [
+          [
+            6.0,
+            2.0,
+            1.0
+          ],
+          [
+            6.0,
+            2.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ],
+          [
+            4.0,
+            2.0,
+            1.0
+          ],
+          [
+            3.0,
+            2.0,
+            1.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.001569308991370652,
+      "M1_minus_M0_seed_range": [
+        -0.0024042382937179835,
+        -0.0008928603360665033
+      ],
+      "M2_minus_M0_tv_weighted": -0.003024594579220641,
+      "M2_minus_M0_seed_range": [
+        -0.003950991509991966,
+        -0.001758552796286561
+      ],
+      "M12_minus_M0_tv_weighted": -0.0034091316230358522,
+      "M12_minus_M0_seed_range": [
+        -0.004709032905769739,
+        -0.002215976687158172
+      ],
+      "M12_minus_M1_tv_weighted": -0.0018398226316652,
+      "M12_minus_M1_seed_range": [
+        -0.002898444217377061,
+        -0.0007049883109203625
+      ]
+    },
+    "all_violations_weak_tax_proxy": {
+      "config": {
+        "theta_sd": 0.35,
+        "phi_sd": 0.35,
+        "interaction": 0.25,
+        "age_gradient": 1.0,
+        "regional_ind_sd": 0.2,
+        "unknown_corr": 0.8,
+        "unknown_ind_corr": 0.8,
+        "tax_noise": 0.3
+      },
+      "M0": {
+        "tv_weighted": 0.1227729910332406,
+        "tv_equal_area_mean": 0.12897412866282612,
+        "tv_median": 0.12024931519939923,
+        "tv_p90": 0.20615183761864292,
+        "tv_max": 0.34845463134749605,
+        "abs_error_share_ge300": 0.07602275693456448,
+        "abs_error_share_ge500": 0.0614554978371046,
+        "abs_error_share_ge700": 0.046801102546554715,
+        "tv_small_areas_equal_mean": 0.12900119629257772,
+        "tv_large_areas_equal_mean": 0.12880753643045537,
+        "tv_income_given_area_sex_age_edu_weighted": 0.07492708102968529,
+        "selected": [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            0.0,
+            0.5
+          ]
+        ]
+      },
+      "M1": {
+        "tv_weighted": 0.11254530493807521,
+        "tv_equal_area_mean": 0.11762158516367063,
+        "tv_median": 0.11198248829953147,
+        "tv_p90": 0.17907418373224185,
+        "tv_max": 0.322862993104543,
+        "abs_error_share_ge300": 0.06279251104039715,
+        "abs_error_share_ge500": 0.051608345703091196,
+        "abs_error_share_ge700": 0.039980885632549264,
+        "tv_small_areas_equal_mean": 0.11973030321627023,
+        "tv_large_areas_equal_mean": 0.1172744527935307,
+        "tv_income_given_area_sex_age_edu_weighted": 0.07091051039246446,
+        "area_tv_change_vs_M0_max_worsening": 0.03632055823848975,
+        "fraction_areas_improved_vs_M0": 0.7,
+        "selected": [
+          [
+            6.0,
+            0.0,
+            0.5
+          ],
+          [
+            6.0,
+            0.0,
+            0.5
+          ],
+          [
+            6.0,
+            0.0,
+            0.5
+          ],
+          [
+            6.0,
+            0.0,
+            0.5
+          ],
+          [
+            6.0,
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      "M2": {
+        "tv_weighted": 0.10211944203593096,
+        "tv_equal_area_mean": 0.10875583774116923,
+        "tv_median": 0.10586132745978652,
+        "tv_p90": 0.1588678168240824,
+        "tv_max": 0.324319342533743,
+        "abs_error_share_ge300": 0.0475473912055174,
+        "abs_error_share_ge500": 0.039436222745979924,
+        "abs_error_share_ge700": 0.03143746128933326,
+        "tv_small_areas_equal_mean": 0.11926621439170296,
+        "tv_large_areas_equal_mean": 0.10755811253510246,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06835917482167429,
+        "area_tv_change_vs_M0_max_worsening": 0.09611941798122119,
+        "fraction_areas_improved_vs_M0": 0.6683333333333333,
+        "selected": [
+          [
+            0.0,
+            3.0,
+            0.5
+          ],
+          [
+            0.0,
+            3.0,
+            0.0
+          ],
+          [
+            0.0,
+            3.0,
+            0.0
+          ],
+          [
+            0.0,
+            4.0,
+            0.0
+          ],
+          [
+            0.0,
+            3.0,
+            0.0
+          ]
+        ]
+      },
+      "M12": {
+        "tv_weighted": 0.1012940782977427,
+        "tv_equal_area_mean": 0.10754902564708382,
+        "tv_median": 0.10499938241118031,
+        "tv_p90": 0.15601853821613254,
+        "tv_max": 0.32076994460517516,
+        "abs_error_share_ge300": 0.046248987487802554,
+        "abs_error_share_ge500": 0.03850815369152618,
+        "abs_error_share_ge700": 0.030760329088277628,
+        "tv_small_areas_equal_mean": 0.11767935775248214,
+        "tv_large_areas_equal_mean": 0.10641869229733417,
+        "tv_income_given_area_sex_age_edu_weighted": 0.06805696073386047,
+        "area_tv_change_vs_M0_max_worsening": 0.08637939796798896,
+        "fraction_areas_improved_vs_M0": 0.68,
+        "area_tv_change_vs_M1_max_worsening": 0.09520983103405226,
+        "fraction_areas_improved_vs_M1": 0.6283333333333333,
+        "selected": [
+          [
+            6.0,
+            2.0,
+            0.5
+          ],
+          [
+            0.0,
+            3.0,
+            0.0
+          ],
+          [
+            6.0,
+            2.0,
+            0.0
+          ],
+          [
+            4.0,
+            3.0,
+            0.0
+          ],
+          [
+            3.0,
+            3.0,
+            0.0
+          ]
+        ]
+      },
+      "M1_minus_M0_tv_weighted": -0.010227686095165367,
+      "M1_minus_M0_seed_range": [
+        -0.013158721886714825,
+        -0.008791631959286311
+      ],
+      "M2_minus_M0_tv_weighted": -0.02065354899730962,
+      "M2_minus_M0_seed_range": [
+        -0.02977236479970377,
+        -0.0113529350160365
+      ],
+      "M12_minus_M0_tv_weighted": -0.021478912735497867,
+      "M12_minus_M0_seed_range": [
+        -0.02977236479970377,
+        -0.013764383125280555
+      ],
+      "M12_minus_M1_tv_weighted": -0.011251226640332498,
+      "M12_minus_M1_seed_range": [
+        -0.016613642912988946,
+        -0.004972751165994244
+      ]
+    }
+  },
+  "elapsed_seconds": 107.7
+}
