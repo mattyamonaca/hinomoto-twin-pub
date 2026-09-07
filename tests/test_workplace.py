@@ -70,5 +70,25 @@ class ApiTests(unittest.TestCase):
    mix={'G05':0.5,'G07':0.5};r2=m.workplace('01101',None,mix);self.assertAlmostEqual(sum(e['p'] for e in r2['p_workplace']),1.,places=9)
    agg=m.workplace('01100');self.assertAlmostEqual(agg['model_population'],float(X[:8].sum()),places=2)   # designated city = its two wards
    with self.assertRaises(ValueError):m.workplace('01101','G00')
+ def test_mixture_is_conditioned_on_known_workplace_and_zero_population_is_refused(self):
+  import json,pandas as pd,persona_v4 as pv
+  # residence R (0): G01 -> A (1) known 10, unknown 90; G02 -> B (2) known 100, unknown 0; nothing else
+  areas=['00001','00002','00003'];oi=np.array([0,0],np.int32);di=np.array([1,2],np.int32);ci=np.array([2,2],np.int8)
+  X=np.zeros((2,20),np.float32);X[0,0]=10.;X[1,1]=100.;unk=np.zeros((3,20),np.float32);unk[0,0]=90.
+  with tempfile.TemporaryDirectory() as td:
+   td=Path(td);(td/'workplace').mkdir();(td/'industry').mkdir()
+   np.savez(td/'workplace_c.npz',areas=np.array(areas),origin=oi,dest=di,category=ci,x=X,seed=X,unknown_workplace=unk,industry_codes=np.array(bw.G),categories=np.array(bw.CAT),model_version='test',stage='C')
+   pd.DataFrame({'parent_code':[],'parent_name':[],'area':[],'name':[]}).to_csv(td/'parent_mapping.csv',index=False)
+   pd.DataFrame({'municipality_code':areas,'municipality_name':['R','A','B']}).to_csv(td/'geography.csv',index=False)
+   pd.DataFrame({'origin':areas,'total':[1]*3,'own':[1]*3,'home':[0.]*3}).to_csv(td/'workplace/od_origin_summary_tidy.csv.gz',index=False)
+   pd.DataFrame({'industry_code':bw.G,'jsic_letter':list('ABCDEFGHIJKLMNOPQRST'),'industry_label':bw.G}).to_csv(td/'industry/industry_bins.csv',index=False)
+   m=pv.WorkplaceDistribution(td,td)
+   r=m.workplace('00001',None,{'G01':0.5,'G02':0.5});p={e['municipality_code']:e['p'] for e in r['p_workplace']}
+   self.assertAlmostEqual(p['00002'],1/11,places=9);self.assertAlmostEqual(p['00003'],10/11,places=9)   # known-workplace shares 10:100 within the 50/50 mixture
+   self.assertAlmostEqual(r['unknown_workplace_share_outside_distribution'],0.45,places=9)               # 0.5*0.9 + 0.5*0
+   json.dumps(r,allow_nan=False)
+   with self.assertRaises(ValueError):m.workplace('00001','G03')          # OD pairs exist, but nobody of this industry
+   with self.assertRaises(ValueError):m.residence('00002','G02')
+   with self.assertRaises(ValueError):m.workplace('00001',None,{'G03':1.})
 
 if __name__=='__main__':unittest.main()
