@@ -90,7 +90,29 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.select('muni', '47201'); H.asmOpen('A01', null); const tK = txt(); asm.city_marked_included = tK.indexOf('86 都市に含まれる') >= 0 && tK.indexOf('那覇市') >= 0; H.derBack();
   H.asmOpen('A04', null); asm.old_version_flagged = txt().indexOf('旧版') >= 0; H.derBack();
   H.asmOpen('A05', null); asm.direct_has_limits = txt().indexOf('直接検証済み') >= 0 && txt().indexOf('保証しない') >= 0; H.derBack();
-  const asmOk = asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
+  // PR #33 review: (1) tax-check inclusion follows the actual evaluation units of validate_m12 (validation_m12_areas.csv)
+  const csv = fs.readFileSync(path.resolve('docs/experiments/validation_m12_areas.csv'), 'utf8').split('\n').slice(1).filter(Boolean).map(l => l.split(',')); const units = {}; csv.forEach(r => { units[r[0]] = r[4] === 'True'; });
+  const G2 = JSON.parse(fs.readFileSync(path.join(site, 'data', 'graph.json'), 'utf8')).graph; let taxMismatch = [];
+  G2.munis.forEach(m => { const t = H.taxEvalStatus(m.c); if (m.c in units){ const want = units[m.c] ? 'included' : 'excluded'; if (t.s !== want) taxMismatch.push(m.c + ':' + t.s + '!=' + want); } else { if (t.s !== 'city_only' || !(m.pa in units)) taxMismatch.push(m.c + ':' + t.s + ' (not a unit, expected city_only)'); } });
+  asm.tax_units_in_csv = Object.keys(units).length; asm.tax_rule_mismatches = taxMismatch.slice(0, 5); asm.tax_rule_ok = taxMismatch.length === 0;
+  H.select('muni', '07546'); H.asmOpen('A05', null); const tF = txt(); asm.futaba_excluded = tF.indexOf('双葉町は評価対象外') >= 0 && tF.indexOf('有給就業者が 0') >= 0 && tF.indexOf('双葉町を含む') < 0; H.derBack();
+  H.select('muni', '27102'); H.asmOpen('A05', null); const tW = txt(); asm.ward_city_only = tW.indexOf('都島区は個別に評価していない') >= 0 && tW.indexOf('大阪市の市計として評価') >= 0; H.derBack();
+  H.select('muni', '27100'); H.asmOpen('A05', null); asm.designated_city_unit = txt().indexOf('市計として') >= 0; H.derBack();
+  // (2) each synthetic experiment is described with its own areas / scenarios / seeds, matching the saved reports
+  const EX = H.EXPERIMENTS; const rM12 = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/synthetic_recovery_m12.json'), 'utf8')), rM1 = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/synthetic_recovery.json'), 'utf8')), rA = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/employment_a_synthetic.json'), 'utf8'));
+  asm.exp_m12_ok = EX.synth_m12.scenarios === Object.keys(rM12.scenarios).length && EX.synth_m12.seeds === rM12.seeds.length && /6 都道府県 × 20 地域/.test(EX.synth_m12.areas);
+  asm.exp_m1_ok = EX.synth_m1.scenarios === Object.keys(rM1.scenarios).length && /人工/.test(EX.synth_m1.areas);
+  asm.exp_a_ok = EX.synth_a.scenarios === Object.keys(rA.scenarios).length && new RegExp(rA.areas + ' 地域').test(EX.synth_a.areas) && /北海道・東京都/.test(EX.synth_a.areas);
+  H.asmOpen('A03', null); const tA3 = txt(); asm.a03_uses_m12_experiment = tA3.indexOf('M12 の仮想人口実験') >= 0 && tA3.indexOf('人工の 6 都道府県') >= 0 && tA3.indexOf('北海道・東京都') < 0; H.derBack();
+  H.asmOpen('A06', null); const tA6 = txt(); asm.a06_uses_m1_experiment = tA6.indexOf('M1 の仮想人口実験') >= 0 && tA6.indexOf('北海道・東京都') < 0; H.derBack();
+  H.asmOpen('A09', null); const tA9 = txt(); asm.a09_uses_stage_a_experiment = tA9.indexOf('段階A の未観測関連の実験') >= 0 && tA9.indexOf('北海道・東京都') >= 0 && tA9.indexOf('250 地域') >= 0; H.derBack();
+  // (3) A11 distinguishes the expected table (exact) from the integer sample (rounding / sampling errors), values from the saved report
+  const rP = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/household_b_population_13103.json'), 'utf8')).model;
+  H.select('muni', '13103'); H.asmOpen('A11', null); const t11 = txt();
+  asm.a11_integer_errors_shown = t11.indexOf('整数個票（抽出後）') >= 0 && t11.indexOf('±1 世帯') >= 0 && t11.indexOf('0.375') >= 0 && Math.abs(rP.households_per_family_type.max_abs_error - 1) < 1e-6 && Math.abs(rP.households_per_size_bin.max_abs_error - 2) < 1e-6 && Math.abs(rP.members_per_family_type.max_rel_error - 0.375) < 1e-3;
+  asm.a11_heldout_versions_separated = t11.indexOf('整数個票からの集計') >= 0 && t11.indexOf('期待人数表からの計算値') >= 0 && Math.abs(rP.heldout_26_1_elderly_by_size.total_ratio - 1.05) < 0.005; H.derBack();
+  const asmOk2 = asm.tax_rule_ok && asm.futaba_excluded && asm.ward_city_only && asm.designated_city_unit && asm.exp_m12_ok && asm.exp_m1_ok && asm.exp_a_ok && asm.a03_uses_m12_experiment && asm.a06_uses_m1_experiment && asm.a09_uses_stage_a_experiment && asm.a11_integer_errors_shown && asm.a11_heldout_versions_separated;
+  const asmOk = asmOk2 && asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
   const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
   const report = { passed, no_emp_dataset: noEmp, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
   console.log(JSON.stringify(report, null, 1)); if (!passed) process.exit(1);

@@ -28,7 +28,21 @@
   "town_marked_not_evaluated": true,
   "city_marked_included": true,
   "old_version_flagged": true,
-  "direct_has_limits": true
+  "direct_has_limits": true,
+  "tax_units_in_csv": 1741,
+  "tax_rule_mismatches": [],
+  "tax_rule_ok": true,
+  "futaba_excluded": true,
+  "ward_city_only": true,
+  "designated_city_unit": true,
+  "exp_m12_ok": true,
+  "exp_m1_ok": true,
+  "exp_a_ok": true,
+  "a03_uses_m12_experiment": true,
+  "a06_uses_m1_experiment": true,
+  "a09_uses_stage_a_experiment": true,
+  "a11_integer_errors_shown": true,
+  "a11_heldout_versions_separated": true
  },
  "assumptions_ok": true,
  "review_cases": {
