@@ -259,6 +259,14 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .stagebox{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:6px 0 12px}
 .tech{margin:8px 0}.tech summary{cursor:pointer;font-size:12.5px;color:var(--ink-2)}.tech p{font-size:12.5px;color:var(--ink-2)}
 .asm{list-style:none;padding:0;margin:0 0 8px}.asm li{font-size:13px;margin:0 0 4px}
+.asmchip{display:block;width:100%;text-align:left;font:inherit;font-size:12.5px;line-height:1.45;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
+.asmchip:hover{background:var(--surface-2)}.asmchip:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.vc{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:9px;border:1px solid var(--line-strong);margin-left:4px;white-space:nowrap}
+.vc.direct{background:var(--d-muni-soft);border-color:var(--d-muni)}.vc.indirect{background:var(--d-edu-soft);border-color:var(--d-edu)}.vc.none{background:var(--d-inc-soft);border-color:var(--d-inc)}
+.vsum{padding:8px 10px;border-radius:6px;border:1px solid var(--line-strong);margin:0 0 10px;font-size:13px}
+.vtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:0 0 10px;table-layout:fixed}.vtab th:nth-child(1),.vtab td:nth-child(1){width:28%}.vtab th:nth-child(2),.vtab td:nth-child(2){width:5.2em}.vtab th,.vtab td{text-align:left;vertical-align:top;padding:5px 6px;border-bottom:1px solid var(--line)}.vtab th{color:var(--muted);font-weight:500;font-size:11.5px}
+.vs{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line-strong);white-space:nowrap}.vs.done{background:var(--d-muni-soft)}.vs.not{background:var(--d-inc-soft)}.vs.na{background:var(--surface-2)}
+.lit{margin:8px 0}.lit h4{font-size:12.5px;margin:0 0 4px;color:var(--ink-2)}.lit ul{padding-left:16px;margin:0 0 4px;font-size:12.5px}.lit small{color:var(--ink-2)}
 @media (max-width:640px){.flow{flex-direction:column;overflow:visible}.farr{transform:rotate(90deg)}.fstep{flex:0 0 auto}}
 @media (max-width:1100px){.board-wrap{grid-template-columns:1fr}.panel{position:static}.palette{position:static;flex-direction:row;flex-wrap:wrap}.pnode{grid-template-columns:auto 1fr}}
 /* phone layout: palette becomes a sticky strip, the board scrolls sideways with snap, the panel becomes a bottom sheet */
@@ -992,9 +1000,9 @@ var MODEL_DERIVATIONS = {
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [['15歳以上人口', '0 人（分布未定義）']] }; return { rows: [['15歳以上人口 N', fmtN(b.N) + ' 人'], ['就業者 W', fmtN(b.W) + ' 人（就業率 ' + pct(b.er, 1) + '）'], ['公表分布（校正の目標）', c.pr ? esc(c.pr.n) + ' × 性別 × 年齢の所得既知の有業者の年収構成' : '各都道府県 × 性別 × 年齢の公表構成']] }; } },
       { kind: 'process', tag: 'est', title: '就業構成の整合（地位別就業者 W(m,s,a,k)）', plain: '地域計の従業上の地位を、年齢 × 地位の初期表を使って年齢別に配分し、年齢別の就業者数に合わせる。', tech: '反復比例調整：行合計＝年齢別就業者、列合計＝地域計の地位別人数、初期値＝表3-1（公表 99 地域、それ以外は都道府県）の年齢 × 地位。結果は段階A の地位周辺にも使う。', src: [['S3','T(m,s,k)'],['S4','初期表'],['S2','E(m,s,a)']],
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [] }; var rows = [['地位別の構成（就業者内、' + esc(pathNameASE()) + '）', empAvailable() && empReady(c.key) ? (function(){ var R = empCounts({ e: S.edu, lab: 0, sta: null, ind: null }); return R.ready && R.J[0] ? STA_SHORT.slice(0,5).map(function(n, k){ return n + ' ' + pct(R.K[k]/R.J[0], 1); }).join('、') : MISSING; })() : (empAvailable() ? '読み込み中' : MISSING + '（段階A のデータで表示）')]]; return { rows: rows }; } },
-      { kind: 'estimate', tag: 'est', title: '地位別の所得形状を混ぜる（混合直後の分布）', plain: '都道府県の地位別（正規・非正規・役員・自営）の年収分布を、地域の地位構成で混ぜ直す。この段階の配列は配布していない。', tech: 'q(y|m,s,a) = Σ_k W(m,s,a,k)/W(m,s,a) · r(y|p,s,a,k)。同じ混合 q は M2 の出発点でもある（M2 は校正済みの M1 を傾けるのではなく、この q に傾きを掛けてから校正する）。', src: [['S5','r(y|p,s,a,k)']],
+      { kind: 'estimate', tag: 'est', asm: ['A01','A02'], lit: [{ k: 'income', use: '就業属性（地位）を用いて所得を割り当てる設計', diff: '本実装は年収階級の分布を地位構成で混合する。同論文の月収の同一値割当てや賃金構造基本統計調査は使わない' }], title: '地位別の所得形状を混ぜる（混合直後の分布）', plain: '都道府県の地位別（正規・非正規・役員・自営）の年収分布を、地域の地位構成で混ぜ直す。この段階の配列は配布していない。', tech: 'q(y|m,s,a) = Σ_k W(m,s,a,k)/W(m,s,a) · r(y|p,s,a,k)。同じ混合 q は M2 の出発点でもある（M2 は校正済みの M1 を傾けるのではなく、この q に傾きを掛けてから校正する）。', src: [['S5','r(y|p,s,a,k)']],
         value: function(c){ return { rows: [['混合直後の分布 q', MISSING + '（配布しているのは次の校正後の配列）']] }; } },
-      { kind: 'process', tag: 'est', title: '県 × 性別 × 年齢の公表構成への校正', plain: '混合した各市区町村の分布を、県内で束ねて都道府県 × 性別 × 年齢の所得既知の有業者の構成比（公表値）に反復比例調整で合わせる。各地域の就業者数は保つ。', tech: 'build.py：県ごとに ipf(q·E, 行＝地域の就業者 E、列＝公表構成 × ΣE)。これが model_arrays.npz の X。', src: [['S5','県 × 性別 × 年齢 × 所得（status=0）'],['M1','counts_by_sex（結果）']],
+      { kind: 'process', tag: 'est', lit: [{ k: 'ipf', use: '公表周辺に合わせる反復比例調整と、初期値・空セルへの感度を検証する考え方', diff: '本実装は県 × 性別 × 年齢の 1 周辺と地域の就業者数の KL 射影。同論文の空間マイクロシミュレーションの評価設定は再現していない' }], title: '県 × 性別 × 年齢の公表構成への校正', plain: '混合した各市区町村の分布を、県内で束ねて都道府県 × 性別 × 年齢の所得既知の有業者の構成比（公表値）に反復比例調整で合わせる。各地域の就業者数は保つ。', tech: 'build.py：県ごとに ipf(q·E, 行＝地域の就業者 E、列＝公表構成 × ΣE)。これが model_arrays.npz の X。', src: [['S5','県 × 性別 × 年齢 × 所得（status=0）'],['M1','counts_by_sex（結果）']],
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [] }; return { rows: [cmpRow('500万円以上の割合（公表分布 → 校正後の M1）', b.prf ? p500(b.prf) : p500(b.nat), p500(b.pC))], dist: { before: b.prf || b.nat, after: b.pC, bl: c.pr ? esc(c.pr.n) + 'の公表分布（校正の目標）' : '全国の公表分布', al: c.here + 'の M1（混合 → 校正後）' } }; } },
       { kind: 'output', tag: 'out', title: '出力：基準所得配列（校正済み）', plain: 'M1 は学歴・産業の傾きを入れずに校正した基準で、公開ページでは年収帯の導出③として表示される。', tech: 'counts_by_sex[m,s,a,z]（z = 0 非就業、1..16 年収階級）。税補助なし。', src: [['M1','counts_by_sex']],
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [] }; return { rows: [['この段階の 500万円以上の割合（就業者）', pct(p500(b.pC), 1)], ['M2 との関係', 'M2 は M1 の配列を入力にせず、同じ混合 q から傾きを掛けて校正し直す（比較の基準として使う）']] }; } }
@@ -1007,9 +1015,9 @@ var MODEL_DERIVATIONS = {
     stages: [
       { kind: 'input', tag: 'obs', title: '入力：M1 と同じ混合と、構成の統計', plain: 'M1 と同じ地位別の混合分布 q（配布なし）を出発点に、地域の学歴構成（国勢調査 11-2）と産業構成（国勢調査 6-3）、全国の学歴別・産業別の所得形状（就業構造基本調査）を使う。M1 の校正済み配列は入力ではなく比較の基準。', tech: '入力：W(m,s,a,k)、r(y|p,s,a,k)、P(e|m,s,a)、P(g|m,s,a)、全国の r(y|e)・r(y|g)。', src: [['S5','r(y|p,s,a,k)'],['S3','W'],['S7','学歴構成'],['S10','産業構成'],['S9','学歴別所得形状'],['S11','産業別所得形状']],
         value: function(c){ var b = baseNumbers(); return { rows: b.defined ? [['混合直後の分布 q', MISSING], ['地域の傾きの中間値（T_e^γ・T_g^γ₂）', MISSING + '。係数 γ=1.5・γ₂=1.0 は固定']] : [['15歳以上人口', '0 人（分布未定義）']] }; } },
-      { kind: 'estimate', tag: 'est', title: '学歴・産業構成による傾きを混合に掛ける（校正前）', plain: '地域の学歴構成・産業構成が都道府県と違う分だけ、混合直後の分布 q の形を傾ける（構成が高学歴・高所得産業寄りなら上へ）。この段階の配列も配布していない。', tech: 'T_e(y) = Σ_e P(e|m) r(y|e) / Σ_e P(e|p) r(y|e)、同様に T_g。q_tilt = q × T_e^1.5 × T_g^1.0（estimator.run：mixture(inp, W, cp, tilt)）。乗算近似で、個人の学歴 × 産業 × 所得の関連は実測ではない。', src: [['S7','P(e|m)'],['S10','P(g|m)']],
+      { kind: 'estimate', tag: 'est', asm: ['A03','A04','A05'], title: '学歴・産業構成による傾きを混合に掛ける（校正前）', plain: '地域の学歴構成・産業構成が都道府県と違う分だけ、混合直後の分布 q の形を傾ける（構成が高学歴・高所得産業寄りなら上へ）。この段階の配列も配布していない。', tech: 'T_e(y) = Σ_e P(e|m) r(y|e) / Σ_e P(e|p) r(y|e)、同様に T_g。q_tilt = q × T_e^1.5 × T_g^1.0（estimator.run：mixture(inp, W, cp, tilt)）。乗算近似で、個人の学歴 × 産業 × 所得の関連は実測ではない。', src: [['S7','P(e|m)'],['S10','P(g|m)']],
         value: function(c){ return { rows: [['傾けた混合分布 q_tilt', MISSING + '（式と係数のみ。感度は docs/EXPERIMENT_M12.md）']] }; } },
-      { kind: 'process', tag: 'est', title: '県 × 性別 × 年齢の公表構成への校正', plain: '傾けた分布を、M1 と同じ手順で都道府県 × 性別 × 年齢の所得既知の有業者の構成比に反復比例調整で合わせる。地域の就業者数は保つ。税務係数 β=0 なので校正後の税務調整は恒等。', tech: 'calibrate(inp, q_tilt, E) → tax_project(β=0)。市区町村のすがたの課税所得は使わない。', src: [['S5','県 × 性別 × 年齢 × 所得'],['S6','（β=0 のため未使用）'],['M2','counts_by_sex（結果）']],
+      { kind: 'process', tag: 'est', lit: [{ k: 'ipf', use: '公表周辺への反復比例調整', diff: '傾けた混合分布を県の構成比へ射影する 1 周辺の校正。税務調整は β=0 で恒等' }], title: '県 × 性別 × 年齢の公表構成への校正', plain: '傾けた分布を、M1 と同じ手順で都道府県 × 性別 × 年齢の所得既知の有業者の構成比に反復比例調整で合わせる。地域の就業者数は保つ。税務係数 β=0 なので校正後の税務調整は恒等。', tech: 'calibrate(inp, q_tilt, E) → tax_project(β=0)。市区町村のすがたの課税所得は使わない。', src: [['S5','県 × 性別 × 年齢 × 所得'],['S6','（β=0 のため未使用）'],['M2','counts_by_sex（結果）']],
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [] }; return { rows: [cmpRow('500万円以上の割合（校正後どうし：M1 基準 → M2）', p500(b.pC), p500(b.pD))], dist: { before: b.pC, after: b.pD, bl: 'M1（傾きなしで校正）＝比較の基準', al: 'M2（傾きを掛けて校正）' } }; } },
       { kind: 'output', tag: 'out', title: '出力：非就業者を加えた住民全体の分布', plain: '非就業者を「50万円未満」に置いて住民全体の分布にする。これが公開ページの年収帯の値（学歴などを選んでいないとき）。', tech: 'counts_by_sex[m,s,a,0] = N − W、[1..16] = 就業者の年収階級。', src: [['M2','counts_by_sex'],['S1','N']],
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [] }; return { rows: [['就業率', pct(b.er, 1)], ['住民全体の 500万円以上', pct(p500(b.pF), 1) + '（就業者では ' + pct(p500(b.pD), 1) + '）']], dist: { before: b.pD, after: b.pF, bl: '就業者', al: '住民全体（非就業者を50万円未満に）', clip: true } }; } }
@@ -1022,9 +1030,9 @@ var MODEL_DERIVATIONS = {
     stages: [
       { kind: 'input', tag: 'obs', title: '学歴人数と学歴別就業率', plain: '国勢調査の市区町村 × 性別 × 年齢 × 最終卒業学校（在学・不詳を含む）の人数と、都道府県（または大都市）の学歴別労働力状態。', tech: '学歴人数 R(m,s,a,e)（11-2 の比率 × 不詳補完後の人口）。就業率 rate(m,s,a,e) は 12-1 から擬似人口 100 で縮約。', src: [['S7','E01–E08'],['S8','labor_status 11/12/2'],['S1','population']],
         value: function(c){ var r = eduPop(); var x = eduNumbers(); return { rows: [['学歴不詳率（この条件）', r.den ? pct(r.R[7]/r.den, 1) : '—'], x ? ['「' + EDU[x.e] + '」の人数', fmtN(x.R) + ' 人 / ' + fmtN(x.den) + ' 人'] : ['学歴', '未選択（学歴を選ぶと人数と分布を表示）'], x && x.rate !== null ? ['学歴別就業率の初期値', pct(x.rate, 1)] : (x ? ['学歴別就業率の初期値', c.agg ? '集計地域では各市区町村の値（表示は市区町村を選択時）' : MISSING] : null)].filter(function(z){ return z; }) }; } },
-      { kind: 'input', tag: 'asm', title: '全国の学歴 × 年収の関連（移植）', plain: '学歴 × 年収は都道府県別にも公表されていないため、全国の学歴別年収分布を出発点にする。', tech: 'q(y|s,a,e)（04000）。小さな区分は同性・同年齢の全体分布へ縮約（shrink）。E07/E08 は全学歴の形。', src: [['S9','education × income']],
+      { kind: 'input', tag: 'asm', asm: ['A06','A04'], title: '全国の学歴 × 年収の関連（移植）', plain: '学歴 × 年収は都道府県別にも公表されていないため、全国の学歴別年収分布を出発点にする。', tech: 'q(y|s,a,e)（04000）。小さな区分は同性・同年齢の全体分布へ縮約（shrink）。E07/E08 は全学歴の形。', src: [['S9','education × income']],
         value: function(c){ var x = eduNumbers(); if (!x) return { rows: [] }; return { rows: [['全国の「' + EDU[x.e] + '」の 500万円以上（就業者）', pct(p500(x.pQ), 1)]] }; } },
-      { kind: 'estimate', tag: 'est', title: '学歴 × 年収の配分（M2 の周辺を保つ）', plain: '学歴人数（行）と M2 の年齢・性別の年収分布（列）の両方に合うよう、反復比例調整で学歴別の配分を動かす。学歴を合計すると M2 に戻る。', tech: '8 × 17 の IPF：初期値 R(e)·(1−rate_e) を 0 円成分、R(e)·rate_e·q(y|e) を階級に置く。不詳（E08）は他学歴へ配分しない。公開ページは同じ計算を再現（検証済み）。', src: [['M2','列合計'],['S7','行合計'],['M3','counts（結果）']],
+      { kind: 'estimate', tag: 'est', asm: ['A07','A08'], lit: [{ k: 'ipf', use: '行（学歴人数）と列（年収分布）の 2 周辺への反復比例調整', diff: '8 × 17 の小さな表で、初期値は全国の学歴別形状 × 学歴別就業率。同論文の空間配分・空セルの扱いとは対象が異なる' }], title: '学歴 × 年収の配分（M2 の周辺を保つ）', plain: '学歴人数（行）と M2 の年齢・性別の年収分布（列）の両方に合うよう、反復比例調整で学歴別の配分を動かす。学歴を合計すると M2 に戻る。', tech: '8 × 17 の IPF：初期値 R(e)·(1−rate_e) を 0 円成分、R(e)·rate_e·q(y|e) を階級に置く。不詳（E08）は他学歴へ配分しない。公開ページは同じ計算を再現（検証済み）。', src: [['M2','列合計'],['S7','行合計'],['M3','counts（結果）']],
         value: function(c){ var x = eduNumbers(); if (!x) return { rows: [] }; return { rows: [cmpRow('「' + EDU[x.e] + '」の 500万円以上（初期分布 → 整合後）', p500(x.pS), p500(x.pF))], dist: { before: x.pS, after: x.pF, bl: '初期分布（全国の関連 + 就業率）', al: '整合後（M3）', clip: true } }; } },
       { kind: 'output', tag: 'out', title: '出力：学歴別分布', plain: '公開ページの学歴を選んだときの年収帯の値。CSV の p_age_sex_education_income_given_municipality。', tech: 'counts[m,s,a,e,y]（0 円成分は I01 に統合）。', src: [['M3','counts']],
         value: function(c){ var x = eduNumbers(); return { rows: x ? [['P(年収 ≥500万円｜' + EDU[x.e] + ')', pct(p500(x.pF), 1)]] : [] }; } }
@@ -1037,9 +1045,9 @@ var MODEL_DERIVATIONS = {
     stages: [
       { kind: 'input', tag: 'obs', title: '固定する周辺', plain: '学歴 × 年収（M3）、地位別就業者（M1 の W）、産業別就業者（国勢調査 6-3）、非就業の内訳（完全失業／非労働力、参考表1）。', tech: '周辺 A(e,y)、W(k)、gm(g)、K6+K7 と完全失業割合 u。市区町村 × 性別 × 年齢ごと。', src: [['M3','A(e,y)'],['S3','W(k)'],['S10','gm(g)'],['S2','unemployed / inactive']],
         value: function(c){ if (!empAvailable()) return { rows: [['段階A', '未配信']] }; if (!empReady(c.key)) return { rows: [['段階A', '読み込み中…']] }; var R = empCounts({ e: null, lab: null, sta: null, ind: null }); if (!R.total) return { rows: [['人口', '0 人（未定義）']] }; return { rows: [['就業者 / 完全失業 / 非労働力（' + esc(c.who) + '、学歴を問わず）', fmtN(R.J[0]) + ' / ' + fmtN(R.J[1]) + ' / ' + fmtN(R.J[2]) + ' 人'], ['産業別就業者（周辺、上位3）', (function(){ var a = []; for (var g = 1; g < 21; g++) a.push([g, R.G[g]]); a.sort(function(p, q){ return q[1] - p[1]; }); return a.slice(0,3).map(function(x){ return IND[x[0]] + ' ' + fmtN(x[1]); }).join('、'); })()]] }; } },
-      { kind: 'input', tag: 'asm', title: '移植する関連（初期値）', plain: '学歴 × 地位は全国、地位 × 産業は都道府県、産業 × 年収は全国（年齢なし）の関連。学歴 × 産業の直接の関連は公表表がなく仮定しない。', tech: 'P(k|e,s,a)（04000 地位別）、P(g|k,s,a,p)（10-1、擬似人口 300 で全国へ縮約）、産業別傾き（表24、0.05〜20 倍に制限）、学歴別完全失業割合（12-1、擬似人口 100）。', src: [['S12','P(k|e)'],['S13','P(g|k)'],['S11','tilt'],['S8','P(失業|e)']],
+      { kind: 'input', tag: 'asm', asm: ['A09','A04','A07'], title: '移植する関連（初期値）', plain: '学歴 × 地位は全国、地位 × 産業は都道府県、産業 × 年収は全国（年齢なし）の関連。学歴 × 産業の直接の関連は公表表がなく仮定しない。', tech: 'P(k|e,s,a)（04000 地位別）、P(g|k,s,a,p)（10-1、擬似人口 300 で全国へ縮約）、産業別傾き（表24、0.05〜20 倍に制限）、学歴別完全失業割合（12-1、擬似人口 100）。', src: [['S12','P(k|e)'],['S13','P(g|k)'],['S11','tilt'],['S8','P(失業|e)']],
         value: function(c){ if (!empAvailable()) return { rows: [] }; var s = empSeedShape(); return { rows: [['地位・産業の所得形状（初期値）の 500万円以上', s ? pct(p500(s), 1) + '（現在の地位・産業条件）' : '地位・産業を選ぶと表示']] }; } },
-      { kind: 'estimate', tag: 'est', title: '3周辺の反復比例調整', plain: '学歴 × 地位 × 産業 × 年収のブロックを、3つの周辺に同時に合わせる。周辺が固定なので公開中の 5 属性の値は変わらない。', tech: 'ipf3：seed = R(e)·P(k|e)·P(g|k,e)·P(y|k,g)、周辺 A(e,y)・W(k)・paid_g(g)、相対誤差 1e-6。0 円成分は先に家族従業／完全失業／非労働力へ分割（各 8×2 の IPF）。', src: [['M4','block']],
+      { kind: 'estimate', tag: 'est', asm: ['A10'], lit: [{ k: 'ipf', use: '複数周辺への反復比例調整（3 周辺）', diff: '学歴 × 年収・地位・産業の 3 周辺を固定し、初期値に全国・都道府県の関連を置く。空セルは構造的ゼロとして扱う' }, { k: 'income', use: '就業状態 → 雇用形態 → 産業の順に属性を付与して所得と結びつける設計', diff: '本実装は同時配分（IPF）で、月収の同一値割当ては行わない。企業規模は扱わない' }], title: '3周辺の反復比例調整', plain: '学歴 × 地位 × 産業 × 年収のブロックを、3つの周辺に同時に合わせる。周辺が固定なので公開中の 5 属性の値は変わらない。', tech: 'ipf3：seed = R(e)·P(k|e)·P(g|k,e)·P(y|k,g)、周辺 A(e,y)・W(k)・paid_g(g)、相対誤差 1e-6。0 円成分は先に家族従業／完全失業／非労働力へ分割（各 8×2 の IPF）。', src: [['M4','block']],
         value: function(c){ if (!empAvailable() || !empReady(c.key)) return { rows: [] }; var rows = []; if (c.leaf && S.age !== null && S.sex !== null){ var b = empBlock(c.key, S.sex, S.age); rows.push(['このセルの反復回数 / 周辺誤差（ページ内再計算）', b.agg ? MISSING : b.it + ' 回 / ' + (b.err !== undefined ? b.err.toExponential(1) : '—')]); } else rows.push(['反復回数・周辺誤差', c.agg ? '集計ブロック（' + MISSING + '）' : '性別と年齢を選ぶとそのセルの値を表示']); var R = empCounts({ e: S.edu, lab: S.lab, sta: S.sta, ind: S.ind }); if (R.ready) rows.push(['条件の人数（分母、' + esc(pathName()) + '）', R.total ? fmtN(R.total) + ' 人' : '0 人（未定義）']); return { rows: rows }; } },
       { kind: 'output', tag: 'out', title: '出力：条件付き分布', plain: '就業状態・地位・産業の分布と、それらを条件にした年収分布。公開ページの3列の値。', tech: 'P(k|…)、P(g|…)、P(y|e,k,g)。市区町村は再計算、都道府県・全国・政令市は集計済みブロック（float32）。', src: [['M4','employment_a.npz']],
         value: function(c){ if (!empAvailable() || !empReady(c.key)) return { rows: [] }; var R = empCounts({ e: S.edu, lab: null, sta: null, ind: null }); if (!R.total) return { rows: [] }; var rows = [['P(就業者｜' + esc(pathNameASE()) + ')', pct(R.J[0]/R.total, 1) + '（就業状態・地位・産業を選ぶ前の周辺）']]; if (S.lab !== null) rows.push(['P(' + LAB[S.lab] + '｜' + esc(pathNameASE()) + ')', pct(R.J[S.lab]/R.total, 1)]); if (S.sta !== null){ var Rs = empCounts({ e: S.edu, lab: S.lab, sta: null, ind: null }); if (Rs.total) rows.push(['P(' + STA_SHORT[S.sta] + '｜' + esc(pathNameASE()) + (S.lab !== null ? '・' + LAB[S.lab] : '') + ')', pct(Rs.K[S.sta]/Rs.total, 1)]); } if (S.ind !== null){ var Rg = empCounts({ e: S.edu, lab: S.lab, sta: S.sta, ind: null }); if (Rg.total) rows.push(['P(' + IND[S.ind] + '｜' + esc(pathNameASE()) + (S.lab !== null ? '・' + LAB[S.lab] : '') + (S.sta !== null ? '・' + STA_SHORT[S.sta] : '') + ')', pct(Rg.G[S.ind]/Rg.total, 1)]); } var ri = empSel() ? incDist() : null; if (ri && ri.defined) rows.push(['P(年収 ≥500万円｜' + esc(pathName()) + ')', pct(p500(ri.p), 1)]); else if (ri && !ri.defined && !ri.loading) rows.push(['P(年収｜' + esc(pathName()) + ')', '未定義（該当者 0 人）']); return { rows: rows }; } }
@@ -1052,8 +1060,8 @@ var MODEL_DERIVATIONS = {
     stages: [
       { kind: 'input', tag: 'obs', title: '世帯表', plain: '国勢調査の世帯主の性別 × 年齢 × 家族類型（12-3）、家族類型別人員（12-4）、世帯人数（6-3）、都道府県の続き柄 × 性別 × 年齢（13-2）。', tech: '9 表。年齢不詳の世帯主は性別 × 家族類型内で按分。', src: [['S14','12-3 / 12-4 / 6-3 / 13-2']],
         value: function(c){ if (!c.m || !hhAvailable(c.m.c)) return { rows: [['対象', c.m ? '対象外地域' : '未選択']] }; var d = HH_STATE.data[c.m.c]; if (!d){ hhLoad(c.m.c); return { rows: [['世帯データ', '読み込み中…']] }; } return { rows: [['一般世帯数（期待値）', fmtN(d.expected_households) + ' 世帯'], ['構成員', fmtN(d.members) + ' 人（15歳以上 ' + fmtN(d.members_15plus) + '）']] }; } },
-      { kind: 'estimate', tag: 'est', title: '期待人数表（世帯主セル × 続き柄 × 性別 × 年齢）', plain: '世帯主セルごとに世帯人数を配分し、続き柄・年齢を年齢差の事前分布で置く。家族類型別の世帯数・人員・人数別世帯数は誤差 0。', tech: '集計 IPF（X[F,r,s,a]）→ 世帯人数の 3 制約 KL 射影 → 役割別期待人数。固定枠と混合枠（⌊D⌋/⌈D⌉）。', src: [['M5','<code>.npz']], value: function(c){ return { rows: [['中間値', c.m && hhAvailable(c.m.c) ? '期待人数表そのものは' + MISSING + '（要約のみ配布）' : '—']] }; } },
-      { kind: 'process', tag: 'est', title: '整数個票と個人属性の結合', plain: '家族類型 × 人数ごとの管理丸めで世帯数を整数にし、構成員を生成過程から抽出。15歳以上には段階A のブロックから学歴・地位・産業・年収を独立に結びつける。', tech: 'seed 1。世帯内の所得相関は未観測（独立抽出）。0〜14歳は所得母集団の外。', src: [['M4','段階A ブロック'],['M5','<code>_population.csv.gz']],
+      { kind: 'estimate', tag: 'est', asm: ['A11','A12','A14'], lit: [{ k: 'household', use: '家族類型と世帯内役割を明示して世帯を合成し、年齢の整合をとる設計。使用統計を増やして誤差を減らす考え方', diff: '本実装は SA 法の再現ではなく、期待人数表を反復比例調整で作り、生成過程から抽出する。独立抽出・年齢差の事前分布・端数の混合は独自' }, { k: 'ipf', use: '集計表 X[F,r,s,a] と世帯人数の周辺への反復比例調整', diff: '3 制約の KL 射影に人数で重み付けした周辺を含む（指数傾き）' }], title: '期待人数表（世帯主セル × 続き柄 × 性別 × 年齢）', plain: '世帯主セルごとに世帯人数を配分し、続き柄・年齢を年齢差の事前分布で置く。家族類型別の世帯数・人員・人数別世帯数は誤差 0。', tech: '集計 IPF（X[F,r,s,a]）→ 世帯人数の 3 制約 KL 射影 → 役割別期待人数。固定枠と混合枠（⌊D⌋/⌈D⌉）。', src: [['M5','<code>.npz']], value: function(c){ return { rows: [['中間値', c.m && hhAvailable(c.m.c) ? '期待人数表そのものは' + MISSING + '（要約のみ配布）' : '—']] }; } },
+      { kind: 'process', tag: 'est', asm: ['A13','A15'], title: '整数個票と個人属性の結合', plain: '家族類型 × 人数ごとの管理丸めで世帯数を整数にし、構成員を生成過程から抽出。15歳以上には段階A のブロックから学歴・地位・産業・年収を独立に結びつける。', tech: 'seed 1。世帯内の所得相関は未観測（独立抽出）。0〜14歳は所得母集団の外。', src: [['M4','段階A ブロック'],['M5','<code>_population.csv.gz']],
         value: function(c){ if (!c.m || !hhAvailable(c.m.c) || !HH_STATE.data[c.m.c]) return { rows: [] }; var d = HH_STATE.data[c.m.c]; return { rows: [['整数個票の世帯数', fmtN(d.households) + ' 世帯（期待値との差 ' + fmtN(Math.abs(d.households - d.expected_households)) + '）'], ['15歳未満（属性なし）', fmtN(d.members_under_15) + ' 人']] }; } },
       { kind: 'output', tag: 'out', title: '出力：同居の集計', plain: '構成員の性別 × 年齢ごとの単独・配偶者・子・親・65歳以上との同居割合。配偶者は世帯主とその配偶者でのみ判定、18歳未満は 15〜19歳の 3/5 の仮定。', tech: 'web/household/<code>.json。', src: [['M5','by_sex_age']],
         value: function(c){ if (!c.m || !hhAvailable(c.m.c) || !HH_STATE.data[c.m.c]) return { rows: [] }; return { rows: [['表示', '市区町村パネルの「世帯構成を見る」']] }; } }
@@ -1066,8 +1074,8 @@ var MODEL_DERIVATIONS = {
     stages: [
       { kind: 'input', tag: 'obs', title: 'OD と産業別周辺', plain: '第3表の常住地 × 従業地の就業者数（全市区町村ペア）と、第8表の市区町村 × 産業 × 通勤区分の就業者数（居住側・従業側）。従業地不詳は外数。', tech: 'OD[o,d]、R[o,c,g]、W[d,c,g]、U[o,g]。入力の整合は誤差 0。', src: [['S15','第3表・第8表']],
         value: function(c){ if (!wpAvailable()) return { rows: [['段階C', '未配信']] }; if (!c.m) return { rows: [] }; var side = WP_STATE.mode; if (!wpReady(side, c.m.c)) return { rows: [['勤務地データ', '読み込み中…']] }; var R = wpCompute(side, c.m.c, { kind: 'all', label: '全産業' }); return { rows: R ? [['OD ペア数', fmtN(R.rows)], [side === 'residence' ? '勤務地既知の就業者' : 'ここで働く就業者', fmtN(R.tot) + ' 人'], side === 'residence' ? ['勤務地不詳（外数）', pct(R.unkShare, 1)] : null].filter(function(z){ return z; }) : [['人数', '0（未定義）']] }; } },
-      { kind: 'estimate', tag: 'est', title: '3周辺の反復比例調整', plain: 'ペアごとの産業内訳を、OD・居住側周辺・従業側周辺の3つに合わせる。区分の中でどの市区町村へ行くかの産業差だけを推定する。', tech: '244,944 ペア × 20 産業、520 反復、最大誤差 0.10 人。初期値は OD × 区分内の産業比。', src: [['M6','workplace_c.npz']], value: function(c){ return { rows: [['ペアごとの反復の中間値', MISSING]] }; } },
-      { kind: 'process', tag: 'asm', title: '条件付けと正規化', plain: '産業を選べばその列、年齢・性別・学歴・地位を選べば段階A の産業構成を勤務地既知者に条件付け直して混合（産業を介した条件付き独立の仮定）。流入側は産業のみ。', tech: 'P(g|o,既知) ∝ mix_g (1 − P(不詳|o,g))。', src: [['M4','P(g|…)']],
+      { kind: 'estimate', tag: 'est', asm: ['A16'], lit: [{ k: 'workplace', use: '居住地・勤務地・産業の統計を同時に考慮する多次元 IPF で整合的な同時分布を推定し、居住地と産業を条件に従業地を割り当てる方針', diff: '本文未確認（公開抄録のみ）。周辺の選択（第3表・第8表の通勤区分別）、初期値、評価（第9・10表）は独自設計。小地域配分は行わない' }, { k: 'ipf', use: '複数周辺への反復比例調整', diff: '244,944 ペア × 20 産業の 3 周辺' }], title: '3周辺の反復比例調整', plain: 'ペアごとの産業内訳を、OD・居住側周辺・従業側周辺の3つに合わせる。区分の中でどの市区町村へ行くかの産業差だけを推定する。', tech: '244,944 ペア × 20 産業、520 反復、最大誤差 0.10 人。初期値は OD × 区分内の産業比。', src: [['M6','workplace_c.npz']], value: function(c){ return { rows: [['ペアごとの反復の中間値', MISSING]] }; } },
+      { kind: 'process', tag: 'asm', asm: ['A17','A18','A19'], title: '条件付けと正規化', plain: '産業を選べばその列、年齢・性別・学歴・地位を選べば段階A の産業構成を勤務地既知者に条件付け直して混合（産業を介した条件付き独立の仮定）。流入側は産業のみ。', tech: 'P(g|o,既知) ∝ mix_g (1 − P(不詳|o,g))。', src: [['M4','P(g|…)']],
         value: function(c){ if (!wpAvailable() || !c.m) return { rows: [] }; var cond = wpCondition(WP_STATE.mode); return { rows: [['現在の条件', cond.kind === 'none' ? '勤務地なし（' + esc(cond.reason) + '）' : cond.kind === 'industry' ? esc(cond.label) + (cond.n !== undefined ? '、条件の就業者 ' + fmtN(cond.n) + ' 人' : '') : cond.kind === 'mix' ? esc(cond.label) + '、就業者 ' + fmtN(cond.n) + ' 人' : cond.kind === 'all' ? '全産業' + (cond.ignored ? '（適用しない条件：' + esc(cond.ignored) + '）' : '') : cond.kind]] }; } },
       { kind: 'output', tag: 'out', title: '出力：勤務地／居住地の分布', plain: '居住する人の勤務地、または働きに来る人の居住地（昼間人口ではない）。', tech: '上位市区町村・通勤区分・自宅就業。', src: [['M6','o_/d_<code>.json']],
         value: function(c){ if (!wpAvailable() || !c.m) return { rows: [] }; var side = WP_STATE.mode, cond = wpCondition(side); if (!wpReady(side, c.m.c) || cond.kind === 'none' || cond.kind === 'loading' || cond.kind === 'undefined' || cond.kind === 'unsupported') return { rows: [] }; var R = wpCompute(side, c.m.c, cond); if (!R) return { rows: [['分布', '未定義']] }; var top = R.list[0], mm = top ? G.munis[MI[top.c]] : null; return { rows: [['最も多い' + (side === 'residence' ? '勤務地' : '居住地'), mm ? esc(mm.n) + ' ' + pct(top.n/R.tot, 1) : '—'], ['表示', '市区町村パネルの「勤務地を見る」']] }; } }
@@ -1082,16 +1090,134 @@ var MODEL_LITERATURE = {
   household: { title: '原田・村田・枡井 (2018)', url: 'https://www.jstage.jst.go.jp/article/sicetr/54/9/54_705/_article/-char/ja', name: '家族類型と世帯内の役割を考慮したSA法による大規模世帯の合成', checked: '公開抄録・書誌、2026-09-07確認', supports: '世帯構成を統計に合わせて合成し、年齢交換や使用統計を評価する研究。', limit: '本実装は同論文のSA法の再現ではない。独立抽出、年齢差の事前分布、端数人数の混合を裏付けるものではない。' },
   workplace: { title: '堀上・村田 (2026)', url: 'https://www.jstage.jst.go.jp/article/sicetr/62/6/62_228/_article/-char/ja', name: '合成人口データにおける全自治体の就業者への従業地割当て', checked: '公開抄録のみ（本文未確認）、2026-09-07確認', supports: '多次元IPFで居住地・勤務地・産業を整合し、居住地と産業を条件に割り当てる方針の参考。', limit: '年齢・性別・学歴との条件付き独立は実証していない。本実装の周辺の選択・初期値・評価は独自設計。' }
 };
-var MODEL_EVIDENCE = {
-  M1: ['ipf','income'], M2: ['ipf','income'], M3: ['ipf'],
-  M4: ['ipf','income'], M5: ['household','ipf'], M6: ['workplace','ipf']
+/* ---------- assumptions with their verification status (Issue #32) ----------
+   Each original assumption of the pipeline has a stable id. The four verification methods are recorded from the saved
+   reports and code (docs/experiments/*, validation/*): 'done' (実施済み, with the result), 'not' (未実施), 'na' (対象外,
+   with the reason). cls: 'direct' 直接検証済み / 'indirect' 間接評価のみ / 'none' 未検証. Whole-model results are never
+   presented as proof of a single assumption; results from older model versions are flagged as such. */
+var VCLASS = { direct: '直接検証済み', indirect: '間接評価のみ', none: '未検証' };
+var VSTAT = { done: '実施済み', not: '未実施', na: '対象外' };
+var VMETH = { published: '公表統計との整合（制約に使った統計）', heldout: '推定に使わなかった統計との比較', synthetic: '仮想人口での復元', sensitivity: '感度分析・比較実験' };
+/* experiments referenced by the assumptions: kept separate so that each assumption shows the right areas,
+   generating process and model version (checked against the saved reports by the test) */
+var EXPERIMENTS = {
+  synth_m12: { name: 'M12 の仮想人口実験', script: 'src/synthetic_population_m12.py', report: 'docs/experiments/synthetic_recovery_m12.json', areas: '人工の 6 都道府県 × 20 地域（実在の自治体ではない。人口 1,500〜40 万人を対数正規で生成）', process: '学歴・産業・所得の同時分布を既知にした仮想世界を、日本で公表されている粒度の表（国勢調査相当の人口・就業・学歴・産業、2% 標本の所得調査、税務代理変数）だけで観測', scenarios: 10, seeds: 5, cases: 50, design: '10 シナリオ × 5 seed = 50 ケース', models: 'M0 / M1 / M2 / M12（現行 3.0-M12 と同じ推定器）' },
+  synth_m1: { name: 'M1 の仮想人口実験（Issue #12）', script: 'src/synthetic_population.py', report: 'docs/experiments/synthetic_recovery.json', areas: '人工の 6 都道府県 × 20 地域（実在の自治体ではない）', process: '学歴 × 所得の関連と不詳の相関を変えた仮想世界。産業は含まない', scenarios: 9, seeds: 3, cases: 27, design: '9 シナリオ × 3 seed = 27 ケース', models: 'M0 / M1（産業の傾きを含まない旧実験）' },
+  synth_a: { name: '段階A の未観測関連の実験', script: 'src/synthetic_employment.py', report: 'docs/experiments/employment_a_synthetic.json', areas: '北海道・東京都の実在する市区町村・行政区 250 地域 × 性別 × 年齢 4 区分（2,000 セル）', process: '初期値と異なる生成過程で「真」のブロックを同じ周辺へ射影し、推定器には周辺だけを渡す', scenarios: 8, seeds: 1, cases: 8, design: '8 ケースを各 1 回（5 種類の逸脱シナリオと、対数正規の乱数傾きを seed 1・2・3 で引いた 3 ケース）', models: '段階A（3.0-M12 上の配分）' }
 };
-function assumptionEvidenceHtml(id){
-  var M = MODEL_DERIVATIONS[id];
-  return '<h3 class="dh">仮定の根拠</h3><p class="ex">「独自仮定」は、この実装で採用した仮定・設計判断です。下記の参考論文は手法の根拠であり、個々の独自仮定や推定精度を保証するものではありません。直接の裏付けを確認できない仮定を、論文由来とは表示しません。</p>' +
-    '<ul class="asm">' + M.assumptions.map(function(a){ return '<li><span class="ftag asm">独自仮定</span> ' + esc(a) + '<br><small>根拠：本プロジェクトの設計判断。直接の論文による裏付けは未確認。</small></li>'; }).join('') + '</ul>' +
-    '<h3 class="dh">手法の参考論文と適用範囲</h3><ul class="asm">' + MODEL_EVIDENCE[id].map(function(k){ var r = MODEL_LITERATURE[k]; return '<li><a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.title) + ' — ' + esc(r.name) + '</a><p>' + esc(r.supports) + '</p><p>' + esc(r.limit) + '</p><small>確認範囲：' + esc(r.checked) + '</small></li>'; }).join('') + '</ul>';
+function expNote(id){ var e = EXPERIMENTS[id]; return '［' + e.name + '：' + e.areas + '。' + e.design + '、' + e.models + '。生成過程の範囲での評価で、日本の実態の直接検証ではない］'; }
+/* whether the current municipality is inside the evaluation set of the independent tax check (validate_m12.py):
+   units are municipalities with designated cities aggregated; the unit with no paid workers is excluded */
+var TAX_EXCLUDED = { '07546': '有給就業者が 0 のため評価から除外' };
+function taxEvalStatus(code){
+  var m = G.munis[MI[code]]; if (!m) return { s: 'unknown' };
+  if (m.l === 'w' && m.pa) return { s: 'city_only', parent: G.munis[MI[m.pa]].n };
+  if (TAX_EXCLUDED[m.c]) return { s: 'excluded', why: TAX_EXCLUDED[m.c] };
+  return { s: 'included', unit: m.s === 'aggregated_wards' ? 'city' : 'municipality' };
 }
+function areaEvalNote(kind){
+  /* whether the current selection is inside the evaluated set of areas; the page cannot always tell */
+  var m = S.muni ? G.munis[MI[S.muni]] : null;
+  if (kind === 'cities86') return !m ? '（都道府県・全国の集計は評価対象外。市区町村を選ぶと判定）' : m.v ? '（' + esc(m.n) + 'は評価対象の 86 都市に含まれる。開発で使用済みのため独立テストではない）' : '（' + esc(m.n) + 'は評価対象外。この地域の結果はない）';
+  if (kind === 'hh3int') return (m && hhAvailable(m.c) ? '（' + esc(m.n) + 'の整数個票の値は docs/experiments/household_b_population_' + m.c + '.json の model）' : '（3 地域の整数個票。' + (m ? esc(m.n) + 'は評価対象外' : '市区町村を選ぶと判定') + '）');
+  if (kind === 'hh3') return !m ? '（市区町村を選ぶと判定）' : hhAvailable(m.c) ? '（' + esc(m.n) + 'は対象 3 地域の 1 つ）' : '（' + esc(m.n) + 'は評価対象外。この地域の結果はない）';
+  if (kind === 'minato') return m && m.c === '13103' ? '（港区の結果）' : '（港区のみ。' + (m ? esc(m.n) + 'の結果はない' : '市区町村を選ぶと判定') + '）';
+  if (kind === 'large290') return '（大都市等 290 地域のみ。対象地域の一覧はこの配布版に未収録のため、この地域が含まれるかは判定できない）';
+  if (kind === 'tax1740'){ if (!m) return '（市区町村単位の評価。集計表示では判定しない）'; var t = taxEvalStatus(m.c); return t.s === 'excluded' ? '（' + esc(m.n) + 'は評価対象外：' + esc(t.why) + '）' : t.s === 'city_only' ? '（' + esc(m.n) + 'は個別に評価していない。' + esc(t.parent) + 'の市計として評価。分布ではなく相対水準の整合）' : '（' + esc(m.n) + 'は評価対象の 1,740 単位に含まれる' + (t.unit === 'city' ? '：市計として' : '') + '。分布ではなく相対水準の整合）'; }
+  if (kind === 'synth_m12' || kind === 'synth_m1' || kind === 'synth_a') return expNote(kind);
+  return '';
+}
+var ASSUMPTIONS = {
+  A01: { text: '地位別（正規・非正規・役員・自営）の所得形状は都道府県の値を市区町村に移植する', why: '市区町村 × 地位 × 所得は公表されていない（就業構造基本調査の地域編は都道府県・86 都市まで）', applies: 'M1・M2 の混合（就業者の年収分布）。全市区町村 × 性別 × 年齢', cls: 'indirect', reason: '86 都市の年収構成の交差検証と独立統計との相対水準の整合はモデル全体の成績で、この移植だけを変えた評価はない。市区町村 × 地位別の形状は観測できない。', limits: '町村・行政区、性別別の形状は未検証',
+    methods: { published: { s: 'done', t: '都道府県 × 性別 × 年齢の所得既知の有業者の構成比に一致（校正の制約。内部整合であり移植の実証ではない）' }, heldout: { s: 'done', t: '86 都市 × 年齢の就業者の年収構成（02300 都市行）を out-of-fold で比較：M0 加重 TV 0.0933、M12 0.0899。都市行は係数選択にも使ったため独立テストではない', area: 'cities86' }, synthetic: { s: 'done', t: '地域で関連が異なるシナリオ（regional_varying_associations）を含む 10 シナリオで M0〜M12 の復元を比較', area: 'synth_m12' }, sensitivity: { s: 'not', t: '地位別形状を全国形状に置き換えた場合の感度は未実施' } },
+    scope: '2020 年人口・2022 年所得、モデル 3.0-M12。結果はモデル全体の値', links: [['docs/VALIDATION_M12.md', 'docs/VALIDATION_M12.md'], ['docs/experiments/validation_m12.json', 'docs/experiments/validation_m12.json'], ['src/validate_m12.py', 'src/validate_m12.py']] },
+  A02: { text: '年齢 × 従業上の地位の関連は公表 99 地域の表3-1 を初期値に、地域計の地位と年齢別就業者へ整合して推定する', why: '市区町村 × 年齢 × 地位は不詳補完後の表として公表されていない', applies: 'M1 の地位別就業者 W(m,s,a,k)。段階A の地位周辺にも使う', cls: 'indirect', reason: '地位周辺は制約に一致（内部整合）。年齢別の地位構成は就業構造基本調査の都市行（10-1）で間接的に比較したが、2020 年国勢調査と 2022 年標本調査の差を含む', limits: '町村・行政区は比較対象がない',
+    methods: { published: { s: 'done', t: '地域計の地位（参考表5-1）と年齢別就業者（参考表1）に一致（最大誤差 0.04 人）' }, heldout: { s: 'done', t: '就業構造基本調査 10-1 の都市行（85 都市 × 性別 × 年齢）で地位周辺の TV 加重平均 0.075（段階A の検証の一部）', area: 'cities86' }, synthetic: { s: 'na', t: '年齢 × 地位の生成過程を変えた仮想人口は作っていない' }, sensitivity: { s: 'not', t: '初期表を全国に置き換えた感度は未実施' } },
+    scope: '2020 年、モデル 3.0-M12 の内部量', links: [['docs/EMPLOYMENT_A.md §4', 'docs/EMPLOYMENT_A.md'], ['docs/experiments/employment_a_verification.json', 'docs/experiments/employment_a_verification.json']] },
+  A03: { text: '学歴構成・産業構成の効果は、混合分布に傾き T_e^γ・T_g^γ₂ を乗算する近似で入れる', why: '市区町村 × 学歴 × 産業 × 所得の同時分布は観測できず、構成比だけが公表されている', applies: 'M2 の傾き（校正前）。全市区町村', cls: 'indirect', reason: '仮想人口で学歴 × 産業の交互作用や地域差を入れたシナリオでも M12 が M0 より悪化しないことを確認し、係数の感度も小さいが、日本の実態で乗算が成り立つかの直接検証はない', limits: '町村では独立統計との整合が逆方向（産業の傾き）',
+    methods: { published: { s: 'done', t: '校正で県 × 性別 × 年齢の構成比に一致（内部整合）' }, heldout: { s: 'done', t: '86 都市の out-of-fold：M1 0.0900、M2 0.0913、M12 0.0899（M1 比 0.14%、区別できない）', area: 'cities86' }, synthetic: { s: 'done', t: '交互作用（education_industry_interaction）・年齢依存・地域依存の産業効果・情報のある不詳・効果なしの各シナリオで M12−M0 は −0.002〜−0.022（悪化なし）', area: 'synth_m12' }, sensitivity: { s: 'done', t: 'γ∈[1,2]、γ₂∈[0.5,1.5] で都市の TV は 0.0897〜0.0900 とほぼ平坦。市区町村の分布は ±0.5 刻みで加重 TV 0.007〜0.010 動く' } },
+    scope: 'モデル 3.0-M12（現行）', links: [['docs/VALIDATION_M12.md', 'docs/VALIDATION_M12.md'], ['docs/EXPERIMENT_M12.md', 'docs/EXPERIMENT_M12.md'], ['docs/experiments/synthetic_recovery_m12.json', 'docs/experiments/synthetic_recovery_m12.json']] },
+  A04: { text: '学歴別・産業別の所得形状は全国の値を移植する（産業別に年齢区分はない）', why: '学歴 × 所得・産業 × 所得の地域別表がない（表24 は全国・年齢なし）', applies: 'M2 の傾き、M3 の初期分布、M4 の産業別傾き', cls: 'indirect', reason: '仮想人口の年齢依存・地域依存シナリオで復元が悪化しないこと、段階A の表24 都市行で産業を無視するより近いことは確認したが、地域別の学歴・産業 × 所得の実測はない', limits: '産業 × 所得の年齢差は評価できない',
+    methods: { published: { s: 'na', t: '移植元の全国表は制約に使っていない（初期値）' }, heldout: { s: 'done', t: '表24 都市行（85 都市 × 性別 × 産業）で P(年収｜産業) の加重 TV：モデル 0.176、全国形状 0.191、産業無視 0.238', area: 'cities86' }, synthetic: { s: 'done', t: 'industry_effect_age_dependent・industry_effect_regional のシナリオで M12 の復元は悪化しない', area: 'synth_m12' }, sensitivity: { s: 'done', t: '旧版（v2.0）の参考評価：学歴別形状の学歴差を半減すると学歴別の 500万円以上が平均 1.9 ポイント、除くと 4.2 ポイント動く' } },
+    scope: '表24・04000 は 2022 年全国。感度分析は v2.0（現行 3.0-M12 ではない）', links: [['docs/EMPLOYMENT_A.md §4', 'docs/EMPLOYMENT_A.md'], ['validation/education_sensitivity.json（v2.0）', 'METHOD_V2.md']] },
+  A05: { text: '学歴の係数 1.5・産業の係数 1.0・税務係数 0 を採用する', why: '事前登録した採用規則（相対改善 ≥1%、中央値が悪化しない、最大悪化 ≤0.02）で選んだ', applies: 'M2 全体', cls: 'direct', reason: '係数の選択そのものを 86 都市の out-of-fold と、推定に使っていない全市区町村の課税所得（相対水準）で評価した。ただし対象は都市の就業者の年収構成と市区町村の相対水準で、町村・性別別・学歴別の分布は保証しない', limits: '町村では M12−M1 が独立指標と逆方向（−0.111）。都市行は開発でも使用',
+    methods: { published: { s: 'done', t: '校正の制約に一致（内部整合）' }, heldout: { s: 'done', t: '86 都市 out-of-fold：M12 加重 TV 0.0899（M0 0.0933）。独立統計（令和5年度 市町村税課税状況等の調、1,740 市区町村）：県内相対所得の相関 M0 0.53 → M12 0.64、市部 0.61 → 0.86、町村 0.49 → 0.48', area: 'tax1740' }, synthetic: { s: 'done', t: '弱い税務代理変数（all_violations_weak_tax_proxy）を含む 10 シナリオで悪化なし', area: 'synth_m12' }, sensitivity: { s: 'done', t: '係数格子で都市の TV は平坦（0.0897〜0.0900）' } },
+    scope: 'モデル 3.0-M12（現行）。独立統計は 2022 年所得', links: [['docs/VALIDATION_M12.md', 'docs/VALIDATION_M12.md'], ['docs/experiments/validation_m12.json', 'docs/experiments/validation_m12.json']] },
+  A06: { text: '学歴 × 年収の関連は全国の学歴別オッズ比を全地域で保存する（地域の年収分布と学歴人数に合わせて配分）', why: '学歴 × 年収の地域別表がない', applies: 'M3 の配分。全市区町村 × 性別 × 年齢 × 学歴', cls: 'indirect', reason: '行・列の周辺一致は内部整合。感度分析と仮想人口（学歴の関連を変えたシナリオ）はあるが、地域別の学歴 × 年収の実測との比較はない', limits: '学歴別の市区町村精度は未検証',
+    methods: { published: { s: 'done', t: '学歴人数（行）と M2 の年収分布（列）に一致（内部整合）' }, heldout: { s: 'na', t: '市区町村 × 学歴 × 年収の公表表がない' }, synthetic: { s: 'done', t: '学歴 × 所得の関連と不詳の相関を変えた 9 シナリオで M1 の学歴別復元を評価。産業を含まない旧実験で、現行 M12 の再実行ではない', area: 'synth_m1' }, sensitivity: { s: 'done', t: '旧版（v2.0）の参考評価：学歴差を半減 1.9 ポイント、除く 4.2 ポイント、就業率の学歴差も除く 4.5 ポイント' } },
+    scope: '感度分析は v2.0、仮想人口は M1 実験（現行 3.0-M12 ではない）', links: [['METHOD_V2.md', 'METHOD_V2.md'], ['docs/EXPERIMENT_M12.md', 'docs/EXPERIMENT_M12.md']] },
+  A07: { text: '学歴不詳は独立区分として保持し、他の学歴へ配分しない。不詳の所得形状は全学歴の形', why: '不詳率が地域・年齢で大きく異なり、配分の根拠がない', applies: 'M3 の E08 と M4 の E08 行', cls: 'indirect', reason: '不詳の扱いを変えた感度は旧版で小さい（0.1〜0.4 ポイント）が、不詳者の実際の所得は観測できない', limits: '不詳率が高い条件では既知学歴の割合を母集団の分布として読めない',
+    methods: { published: { s: 'done', t: '不詳の人数は国勢調査の値そのもの' }, heldout: { s: 'na', t: '不詳者の所得を観測する統計がない' }, synthetic: { s: 'done', t: '「不詳が非正規に偏る」シナリオ（unknown_informative）：P(地位｜学歴) の TV 0.044、5 属性の周辺は不変', area: 'synth_a' }, sensitivity: { s: 'done', t: '旧版（v2.0）の参考評価：不詳の扱いへの感度 0.1〜0.4 ポイント' } },
+    scope: '現行 3.0-M12 と段階A。感度は v2.0', links: [['METHOD_V2.md 学歴不詳の扱い', 'METHOD_V2.md'], ['docs/EMPLOYMENT_A.md §7.2', 'docs/EMPLOYMENT_A.md']] },
+  A08: { text: '在学中（E06）は独立区分とし、在学者の就業率・在学者行の産業構成を使う', why: '在学者は卒業者と就業・所得が大きく異なる', applies: 'M3 の E06、M4 の E06 行', cls: 'none', reason: '在学者の所得・産業を地域別に確かめる統計がなく、感度分析も未実施', limits: '在学者の年収は全学歴の形の移植',
+    methods: { published: { s: 'done', t: '在学者数は国勢調査の値（内部整合）' }, heldout: { s: 'na', t: '在学者の所得の地域別統計がない' }, synthetic: { s: 'not', t: '未実施' }, sensitivity: { s: 'not', t: '未実施' } },
+    scope: '—', links: [['METHOD_V2.md', 'METHOD_V2.md']] },
+  A09: { text: '学歴と産業の直接の関連を仮定しない（地位・年収・地域を介した条件付き独立）', why: '学歴 × 産業のクロス表がない', applies: 'M4 のブロック配分。全市区町村', cls: 'indirect', reason: '仮想人口で直接の関連があるときの誤差の大きさ（P(産業｜学歴) TV 0.074）を測ったが、実態での有無は観測できない', limits: '関連が真に存在すると産業別の学歴構成が TV 0.07 程度ずれうる',
+    methods: { published: { s: 'done', t: '学歴 × 年収・地位・産業の 3 周辺に一致（内部整合）' }, heldout: { s: 'na', t: '学歴 × 産業の統計がない（10-1 は在学/卒業の 2 区分のみ）' }, synthetic: { s: 'done', t: 'edu_industry シナリオ：同時分布 TV 0.074（独立抽選 0.384）、5 属性の周辺は不変', area: 'synth_a' }, sensitivity: { s: 'done', t: '地位 × 産業を全国の関連に置き換えると P(地位, 産業｜…) は加重 TV 0.053 動く' } },
+    scope: '段階A、モデル 3.0-M12', links: [['docs/EMPLOYMENT_A.md §7.2', 'docs/EMPLOYMENT_A.md'], ['docs/experiments/employment_a_synthetic.json', 'docs/experiments/employment_a_synthetic.json']] },
+  A10: { text: '完全失業・非労働力と年収の関連を仮定しない（どちらも主な仕事の収入なし）', why: '公開分布の 0 円成分に対応する', applies: 'M4 の K6/K7', cls: 'none', reason: '定義上の扱いで、検証する統計がない', limits: '非就業者の副収入・年金は年収に含まない',
+    methods: { published: { s: 'done', t: '完全失業／非労働力の人数は参考表1 に一致' }, heldout: { s: 'na', t: '非就業者の所得統計は対象外（年収の定義が主な仕事の収入）' }, synthetic: { s: 'na', t: '対象外' }, sensitivity: { s: 'na', t: '対象外' } },
+    scope: '—', links: [['docs/EMPLOYMENT_A.md §7.1', 'docs/EMPLOYMENT_A.md']] },
+  A11: { text: '世帯の構成員は世帯主セル（家族類型・性別・年齢・人数）を条件に互いに独立に抽出する', why: 'きょうだいの年齢間隔などの世帯内の関連は公表表にない', applies: 'M5 の整数個票（期待人数表からの抽出）。港区・那覇市・遠軽町', cls: 'indirect', reason: '推定に使わない表（26-1・8-1・9-1）で存在世帯数を比較し、独立抽選（構成員を世帯主と無関係に引く）より近いことは確認したが、世帯内の関連そのものは観測できない', limits: '対象 3 地域のみ',
+    methods: { published: { s: 'done', t: '期待人数表（抽出前）は家族類型別世帯数・人員・人数別世帯数に一致（誤差 0）。整数個票（抽出後）は管理丸めと抽出の誤差を持つ：家族類型別世帯数 ±1 世帯、人数別世帯数 ±2 世帯、家族類型別人員の最大相対誤差 0.375（数世帯の不詳区分 F7。港区の実測値）', area: 'hh3int' }, heldout: { s: 'done', t: '整数個票からの集計：65 歳以上あり世帯 1.04〜1.06 倍、6 歳未満あり 1.00〜1.03 倍、夫婦と子の 15 歳未満あり 95〜96%（構成員を独立に抽出すると 1.25〜1.29 倍）。期待人数表からの計算値（65 歳以上 1.03〜1.06、6 歳未満 1.00〜1.06、15 歳未満 95〜97%）は別掲', area: 'hh3' }, synthetic: { s: 'not', t: '未実施' }, sensitivity: { s: 'done', t: '属性交換（SA）で性別 × 年齢を合わせると世帯主との年齢連結が壊れ 65 歳以上あり世帯が 10〜22% 過大' } },
+    scope: '2020 年、3 地域', links: [['docs/HOUSEHOLD_B.md §7.2', 'docs/HOUSEHOLD_B.md'], ['docs/experiments/household_b_population_13103.json', 'docs/experiments/household_b_population_13103.json']] },
+  A12: { text: '世帯員の年齢差は独自の事前分布（配偶者は夫が 2.5 歳上・SD 4.5、子は −30 歳など）を周辺に合わせて使う', why: '世帯主と構成員の年齢のクロス表は市区町村では公表されていない', applies: 'M5 の続き柄別の年齢', cls: 'indirect', reason: '港区の 13-2 都市行（続き柄 × 性別 × 年齢）で TV 0.025 だが、都道府県の 13-2 を初期値に使っており、他の 2 地域には比較表がない', limits: '世帯主の父母・兄弟姉妹・その他の年齢分布は粗い（TV 0.10〜0.19）',
+    methods: { published: { s: 'done', t: '構成員の性別 × 年齢と続き柄別人数に一致' }, heldout: { s: 'done', t: '港区の 13-2 都市行：全体 TV 0.025、世帯主 0.009、配偶者 0.030、子 0.013、父母 0.104、兄弟姉妹 0.185', area: 'minato' }, synthetic: { s: 'not', t: '未実施' }, sensitivity: { s: 'not', t: '事前分布の幅を変えた感度は未実施' } },
+    scope: '2020 年、港区のみ', links: [['docs/HOUSEHOLD_B.md §4', 'docs/HOUSEHOLD_B.md']] },
+  A13: { text: '世帯内の所得・学歴・就業の相関は未観測として独立に結びつける', why: '世帯 × 個人属性のクロス表がない', applies: 'M5 の個人属性の結合', cls: 'none', reason: '検証できる統計がなく、感度分析も未実施', limits: '構成員の就業収入の合計を世帯年収と呼ばない',
+    methods: { published: { s: 'done', t: '結合した個人の学歴 × 年収の周辺は 5 属性モデルに一致（期待値）' }, heldout: { s: 'na', t: '世帯単位の所得統計は年収の定義が異なり対象外' }, synthetic: { s: 'not', t: '未実施' }, sensitivity: { s: 'not', t: '未実施' } },
+    scope: '—', links: [['docs/HOUSEHOLD_B.md §7.3', 'docs/HOUSEHOLD_B.md']] },
+  A14: { text: '「10 人以上」区分の人数は平均人数 m の ⌊m⌋／⌈m⌉ 混合とする', why: '区分内の人数分布が公表されていない', applies: 'M5 の 10 人以上世帯（那覇市 23 世帯など）', cls: 'none', reason: '期待人数を保存する最小の仮定で、検証する統計がない', limits: '該当世帯はごく少数',
+    methods: { published: { s: 'done', t: '人員総数に一致（内部整合）' }, heldout: { s: 'na', t: '区分内の人数分布の統計がない' }, synthetic: { s: 'na', t: '対象外' }, sensitivity: { s: 'na', t: '対象外（該当世帯が少ない）' } },
+    scope: '—', links: [['docs/HOUSEHOLD_B.md §7.1', 'docs/HOUSEHOLD_B.md']] },
+  A15: { text: '18 歳未満は 0〜14 歳に加えて 15〜19 歳階級の 3/5（単歳一様）とみなす', why: '単歳の年齢を生成していない', applies: 'M5 の「18 歳未満の子と同居」と整数個票の u18', cls: 'none', reason: '単歳の統計と照合していない', limits: '15〜19 歳の実際の単歳分布が一様でなければずれる',
+    methods: { published: { s: 'not', t: '単歳の人口（国勢調査）との照合は未実施' }, heldout: { s: 'na', t: '対象外' }, synthetic: { s: 'na', t: '対象外' }, sensitivity: { s: 'not', t: '未実施' } },
+    scope: '—', links: [['docs/HOUSEHOLD_B.md §7.4', 'docs/HOUSEHOLD_B.md']] },
+  A16: { text: '通勤区分の中でどの市区町村へ行くかの産業差は、OD・居住側・従業側の 3 周辺への反復比例調整で推定する', why: '産業別の勤務市区町村は大都市等でしか公表されていない', applies: 'M6 の X[o,d,g]。全市区町村', cls: 'direct', reason: '推定に使っていない第9・10表（大都市等 290 地域）で、この推定量 P(勤務地｜居住地, 産業) を直接比較した。ただし対象は大都市等の常住者・就業者に限られる', limits: '大都市等以外の 1,606 地域は未検証',
+    methods: { published: { s: 'done', t: 'OD・居住側・従業側の周辺に一致（最大誤差 0.10 人）' }, heldout: { s: 'done', t: '第9表：P(勤務地｜居住地, 産業) の TV 0.034（産業無視 0.141、居住側のみ 0.086）。第10表：0.036（独立 0.096）', area: 'large290' }, synthetic: { s: 'na', t: '仮想人口は作っていない（初期値の感度で代替）' }, sensitivity: { s: 'done', t: '居住側のみで整合 0.035、平坦な初期値でも同一（1e-6）' } },
+    scope: '2020 年、モデル C-0.1', links: [['docs/WORKPLACE_C.md §4', 'docs/WORKPLACE_C.md'], ['docs/experiments/workplace_c_verification.json', 'docs/experiments/workplace_c_verification.json']] },
+  A17: { text: '年齢・性別・学歴・地位と勤務地は産業を介した条件付き独立とする', why: 'これらと勤務地のクロス表がどの表にもない', applies: 'M6 の属性条件付き（混合）', cls: 'none', reason: '検証する統計がない。段階A の産業構成を経由する混合の式だけを確認', limits: '若年層や高学歴者の通勤先の偏りは表せない',
+    methods: { published: { s: 'na', t: '対象外' }, heldout: { s: 'na', t: '年齢・性別別の ODI 表を取得していない（第3表の男女別は未取得）' }, synthetic: { s: 'not', t: '未実施' }, sensitivity: { s: 'not', t: '未実施' } },
+    scope: '—', links: [['docs/WORKPLACE_C.md §6', 'docs/WORKPLACE_C.md']] },
+  A18: { text: '所得と勤務地の関連は未観測とし、勤務地を条件にした年収分布は提供しない', why: '所得 × 勤務地の統計がない', applies: 'M6（提供範囲の制限）', cls: 'none', reason: '仮定ではなく提供しないという制限。検証対象がない', limits: '—',
+    methods: { published: { s: 'na', t: '対象外' }, heldout: { s: 'na', t: '対象外' }, synthetic: { s: 'na', t: '対象外' }, sensitivity: { s: 'na', t: '対象外' } },
+    scope: '—', links: [['docs/WORKPLACE_C.md §6', 'docs/WORKPLACE_C.md']] },
+  A19: { text: '働きに来る人の居住地（流入側）は産業でのみ条件付けする', why: '各居住地の年齢・性別・学歴の構成は流入側では観測されない', applies: 'M6 の流入側', cls: 'none', reason: '提供範囲の制限。流入側の分布自体は第10表で直接比較済み（A16）', limits: '—',
+    methods: { published: { s: 'na', t: '対象外' }, heldout: { s: 'done', t: '流入側の産業別分布は第10表で TV 0.036（A16 と同じ評価）', area: 'large290' }, synthetic: { s: 'na', t: '対象外' }, sensitivity: { s: 'na', t: '対象外' } },
+    scope: 'モデル C-0.1', links: [['docs/WORKPLACE_C.md §9', 'docs/WORKPLACE_C.md']] }
+};
+var MODEL_ASSUMPTIONS = { M1: ['A01','A02'], M2: ['A03','A04','A05'], M3: ['A06','A04','A07','A08'], M4: ['A09','A04','A10','A07'], M5: ['A11','A12','A13','A14','A15'], M6: ['A16','A17','A18','A19'] };
+function asmChip(id){ var a = ASSUMPTIONS[id]; return '<button type="button" class="asmchip ' + a.cls + '" data-asm="' + id + '"><span class="ftag asm">独自仮定 ' + id + '</span> ' + esc(a.text) + ' <span class="vc ' + a.cls + '">' + VCLASS[a.cls] + '</span></button>'; }
+function assumptionListHtml(id){
+  var ids = MODEL_ASSUMPTIONS[id] || [];
+  return '<h3 class="dh">独自仮定（クリックで検証状況）</h3><p class="ex">この実装で採用した仮定・設計判断。ラベルは仮定ごとの検証の分類で、モデル全体の成績はここでは仮定単独の実証として扱わない。</p><ul class="asm">' + ids.map(function(a){ return '<li>' + asmChip(a) + '</li>'; }).join('') + '</ul>';
+}
+function litHtml(list){
+  if (!list || !list.length) return '';
+  return '<div class="lit"><h4>手法の参考文献（この工程）</h4><ul>' + list.map(function(l){ var r = MODEL_LITERATURE[l.k]; if (!r) return '<li>参照 ' + esc(l.k) + ' が見つからない</li>'; return '<li><a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.title) + '『' + esc(r.name) + '』</a><br><small>確認箇所：' + esc(r.checked) + '　参考にした点：' + esc(l.use) + '　本実装との違い：' + esc(l.diff) + '</small></li>'; }).join('') + '</ul><p class="ex">参考文献は手法の参考であり、この工程の独自仮定や日本の推定精度を裏付けるものではない。</p></div>';
+}
+function asmOpen(id, fromSel){
+  if (!ASSUMPTIONS[id]) return;
+  if (NAV.length < 8) NAV.push({ focus: { dim: S.focus.dim, id: S.focus.id }, der: DER.open, sel: fromSel || null });
+  S.focus = { dim: 'assumption', id: id }; renderPanel();
+  var b = $('panel').querySelector('.action[data-go="derback"]'); if (b) b.focus();
+}
+function renderAssumption(id){
+  var P = $('panel'), a = ASSUMPTIONS[id], h = '', meta = G.__meta || {};
+  P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--d-age)'); P.style.setProperty('--soft', 'var(--d-age-soft)');
+  var crumbs = NAV.map(function(n, i){ var f = n.focus; var lbl = f.dim === 'model' ? f.id : f.dim === 'assumption' ? f.id : f.dim === 'sources' ? '参照一覧' : f.dim ? DIM_LABEL[f.dim] || f.dim : '属性パネル'; return '<button type="button" class="crumbx" data-nav="' + i + '">' + esc(lbl) + '</button><span class="sep">›</span>'; }).join('');
+  h += '<div class="dercrumb">' + crumbs + '<b>' + id + '</b>　<button type="button" class="action" data-go="derback">戻る</button></div>';
+  h += '<span class="eyebrow">独自仮定 ' + id + '</span><h2>' + esc(a.text) + '</h2>';
+  h += '<div class="vsum ' + a.cls + '"><span class="vc ' + a.cls + '">' + VCLASS[a.cls] + '</span> ' + esc(a.reason) + '</div>';
+  var usedIn = Object.keys(MODEL_ASSUMPTIONS).filter(function(m){ return MODEL_ASSUMPTIONS[m].indexOf(id) >= 0; });
+  h += '<div class="vals">' + dl([['導入理由', esc(a.why)], ['適用される工程・属性・母集団', esc(a.applies)], ['使う成果物', usedIn.map(function(m){ return sid(m); }).join(' ')], ['対象・年次・モデル版', esc(a.scope)], ['未検証範囲・限界', esc(a.limits)], ['閲覧中のデータ版', esc(meta.dataset_version || '不明')]]) + '</div>';
+  h += '<h3 class="dh">検証方法ごとの状況</h3><table class="vtab"><thead><tr><th>方法</th><th>状況</th><th>内容・結果・対象</th></tr></thead><tbody>' + ['published','heldout','synthetic','sensitivity'].map(function(k){ var v = a.methods[k]; return '<tr><td>' + VMETH[k] + '</td><td><span class="vs ' + v.s + '">' + VSTAT[v.s] + '</span></td><td>' + esc(v.t) + (v.area ? ' ' + areaEvalNote(v.area) : '') + '</td></tr>'; }).join('') + '</tbody></table>';
+  h += '<details class="tech" open><summary>分類の規則</summary><p>制約に使った統計への一致は内部整合で、未知の同時分布や独立性の実証ではない。仮想人口の復元は生成過程の範囲での評価。感度が小さいこと・独立抽選より良いこと・参考文献があることだけでは「直接検証済み」にしない。「直接検証済み」も記載した対象範囲の外までは保証しない。結果が現行のモデル版と異なる場合は旧版の参考評価と明記する。</p></details>';
+  h += '<p class="src">検証コード・レポート：' + a.links.map(function(l){ return '<a href="' + REPO + l[1] + '" target="_blank" rel="noopener">' + esc(l[0]) + '</a>'; }).join('　') + '</p>';
+  h += '<p class="note">閲覧しても条件・分布は変わりません。</p>';
+  P.innerHTML = h;
+}
+
 function derLinks(id){ var M = MODEL_DERIVATIONS[id]; return '<p class="src">コード：<code>' + esc(M.code) + '</code>　方法：<a href="' + REPO + M.method + '" target="_blank" rel="noopener">' + esc(M.method) + '</a>　成果物：<code>' + esc(M.artifact) + '</code></p>'; }
 function derOpen(id, fromSel){
   if (!MODEL_DERIVATIONS[id]) return;
@@ -1122,8 +1248,8 @@ function renderModelDerivation(id){
   h += '<div class="stagebox"><h3 class="dh">' + esc(st.title) + '　<span class="ftag ' + st.tag + '">' + TAG[st.tag] + '</span></h3><p>' + st.plain + '</p>';
   if (v.rows && v.rows.length) h += '<div class="vals">' + dl(v.rows) + '</div>'; else h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">この条件で表示できる数値はありません（条件を選ぶか、対象データを読み込んでください）。</p>';
   if (v.dist){ var stages = [{ t: v.dist.bl, s: '', p: v.dist.before, dim: 'muni', clip: !!v.dist.clip }, { t: v.dist.al, s: '', p: v.dist.after, dim: 'inc', clip: !!v.dist.clip, last: true }]; h += renderStages(stages, null, '同じ尺度で比較'); }
-  h += '<details class="tech"><summary>技術的な詳細</summary><p>' + st.tech + '</p></details>' + ref(st.src) + '</div>';
-  h += assumptionEvidenceHtml(id) + '<h3 class="dh">検証結果</h3><p>' + esc(M.validation) + '</p>' + derLinks(id);
+  h += '<details class="tech"><summary>技術的な詳細</summary><p>' + st.tech + '</p></details>' + (st.asm && st.asm.length ? '<p class="l">この工程の独自仮定</p><ul class="asm">' + st.asm.map(function(x){ return '<li>' + asmChip(x) + '</li>'; }).join('') + '</ul>' : '') + litHtml(st.lit) + ref(st.src) + '</div>';
+  h += assumptionListHtml(id) + '<h3 class="dh">モデル全体の検証結果</h3><p>' + esc(M.validation) + '</p>' + derLinks(id);
   h += '<p class="note">この画面は現在の選択条件の値を既存の計算から取り出して表示しています。閲覧しても条件・分布は変わりません。</p>';
   P.innerHTML = h;
 }
@@ -1277,6 +1403,7 @@ function renderPanel(){
   if (f.dim === 'household'){ renderHousehold(f.id); return; }
   if (f.dim === 'workplace'){ renderWorkplace(f.id); return; }
   if (f.dim === 'model'){ renderModelDerivation(f.id); return; }
+  if (f.dim === 'assumption'){ renderAssumption(f.id); return; }
   P.style.setProperty('--sw', f.dim ? DIM_VAR[f.dim] : 'var(--line-strong)');
   P.style.setProperty('--soft', f.dim ? DIM_SOFT[f.dim] : 'var(--accent-soft)');
   if (!f.dim){
@@ -1566,7 +1693,7 @@ function renderPalette(){
   $('board-empty').hidden = placed().length > 0;
 }
 function renderAll(){
-  if (S.focus.dim !== 'model' && S.focus.dim !== 'sources') NAV.length = 0;
+  if (S.focus.dim !== 'model' && S.focus.dim !== 'sources' && S.focus.dim !== 'assumption') NAV.length = 0;
   renderPref(); renderMuni(); renderAge(); renderSex(); renderEdu(); renderLab(); renderSta(); renderInd(); renderInc(); renderCrumb(); renderPalette(); renderPanel();
   document.querySelectorAll('.hub').forEach(function(hb){ hb.classList.toggle('focus', S.focus.dim === hb.dataset.hub && S.focus.id === 'hub'); });
   requestAnimationFrame(drawEdges);
@@ -1616,7 +1743,7 @@ DIMS.forEach(function(d){
 $('scopebtn').addEventListener('click', function(){ S.focus = { dim: 'scope', id: null }; renderScope(); });
 $('srcbtn').addEventListener('click', function(){ NAV.length = 0; S.focus = { dim: 'sources', id: null }; renderSources(null); });
 $('panel').addEventListener('click', function(ev){ var b = ev.target.closest('.sid[data-src]'); if (!b) return; ev.stopPropagation(); if (MODEL_DERIVATIONS[b.dataset.src]){ derOpen(b.dataset.src, '.sid[data-src="' + b.dataset.src + '"]'); return; } if (S.focus.dim !== 'sources') NAV.push({ focus: { dim: S.focus.dim, id: S.focus.id }, der: DER.open, sel: '.sid[data-src="' + b.dataset.src + '"]' }); S.focus = { dim: 'sources', id: b.dataset.src }; renderSources(b.dataset.src); });
-$('panel').addEventListener('click', function(ev){ var st = ev.target.closest('.fstep'); if (st){ DER.open = +st.dataset.step; renderPanel(); var el = $('panel').querySelector('.fstep[data-step="' + st.dataset.step + '"]'); if (el) el.focus(); return; } var cb = ev.target.closest('.crumbx[data-nav]'); if (cb){ var i = +cb.dataset.nav; var n = NAV[i]; NAV.length = i; S.focus = n.focus; DER.open = n.der || 0; renderPanel(); return; } var mb = ev.target.closest('.action[data-go="derback"]'); if (mb){ derBack(); return; } var md = ev.target.closest('.action[data-go="model"]'); if (md){ derOpen(md.dataset.id, null); } });
+$('panel').addEventListener('click', function(ev){ var st = ev.target.closest('.fstep'); if (st){ DER.open = +st.dataset.step; renderPanel(); var el = $('panel').querySelector('.fstep[data-step="' + st.dataset.step + '"]'); if (el) el.focus(); return; } var cb = ev.target.closest('.crumbx[data-nav]'); if (cb){ var i = +cb.dataset.nav; var n = NAV[i]; NAV.length = i; S.focus = n.focus; DER.open = n.der || 0; renderPanel(); return; } var mb = ev.target.closest('.action[data-go="derback"]'); if (mb){ derBack(); return; } var ab = ev.target.closest('.asmchip[data-asm]'); if (ab){ asmOpen(ab.dataset.asm, '.asmchip[data-asm="' + ab.dataset.asm + '"]'); return; } var md = ev.target.closest('.action[data-go="model"]'); if (md){ derOpen(md.dataset.id, null); } });
 $('crumb').addEventListener('click', function(ev){ var b = ev.target.closest('button'); if (b) resetTo(+b.dataset.lv); });
 $('panel').addEventListener('click', function(ev){
   var b = ev.target.closest('.action'); if (!b) return; var d = b.dataset.go, id = b.dataset.id;
@@ -1679,7 +1806,7 @@ document.addEventListener('click', function(ev){ if (!ev.target.closest('.search
 
 renderAll();
 /* test hooks (jsdom verification against the Python arrays) */
-window.__hinomoto = { derOpen: derOpen, derBack: derBack, NAV: NAV, DER: DER, MODEL_DERIVATIONS: MODEL_DERIVATIONS, baseNumbers: baseNumbers, eduNumbers: eduNumbers, renderWorkplace: renderWorkplace, wpCompute: wpCompute, wpCondition: wpCondition, wpState: WP_STATE, wpReady: wpReady, renderHousehold: renderHousehold, hhState: HH_STATE, S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
+window.__hinomoto = { EXPERIMENTS: EXPERIMENTS, taxEvalStatus: taxEvalStatus, ASSUMPTIONS: ASSUMPTIONS, MODEL_ASSUMPTIONS: MODEL_ASSUMPTIONS, MODEL_LITERATURE: MODEL_LITERATURE, asmOpen: asmOpen, derOpen: derOpen, derBack: derBack, NAV: NAV, DER: DER, MODEL_DERIVATIONS: MODEL_DERIVATIONS, baseNumbers: baseNumbers, eduNumbers: eduNumbers, renderWorkplace: renderWorkplace, wpCompute: wpCompute, wpCondition: wpCondition, wpState: WP_STATE, wpReady: wpReady, renderHousehold: renderHousehold, hhState: HH_STATE, S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
 })();
 </script>
 </body>
