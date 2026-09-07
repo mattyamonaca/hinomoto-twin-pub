@@ -2,9 +2,17 @@
   "code": "01555",
   "name": "遠軽町",
   "prefecture_seed": "01000",
-  "households": 8739.0,
+  "households": 8739.000000000002,
   "published_households": 8739.0,
   "unknown_age_head_share": 0.035015447991761074,
+  "final_checks": {
+    "households_per_family_type_max_error": 1.8189894035458565e-12,
+    "members_per_family_type_max_error": 3.1803892852622084e-11,
+    "size_counts_max_error": 1.4203199725670856e-05,
+    "members_total_error": 1.2369127944111824e-10,
+    "nonnegative": true,
+    "passed": true
+  },
   "aggregate_ipf": {
     "iterations": 500,
     "error": 0.0028486185826754056,
@@ -13,8 +21,9 @@
   },
   "plan": {
     "size_ipf": {
-      "iterations": 500,
-      "error": 0.0011795761848868904
+      "iterations": 51,
+      "error": 3.87729232897982e-05,
+      "constraints": "households per family type (12-3), households per size (6-3), members per family type (12-4)"
     },
     "spouse_probability": {
       "F1": 1.0,
@@ -27,27 +36,31 @@
     }
   },
   "evaluation": {
-    "persons_vs_target_tv": 0.003289468459830777,
+    "persons_vs_target_tv": 0.0029413907789811638,
     "members_total": {
-      "generated": 18026.7134574473,
+      "generated": 18032.999999999884,
       "published_12_4": 18033.0
     },
-    "size_distribution_tv_vs_6_3": 0.0004303539143595867,
+    "size_distribution_tv_vs_6_3": 1.6917595130832583e-09,
     "married_persons_check": {
-      "generated_couple_members": 8782.21447677909,
+      "generated_couple_members": 8782.732694157376,
       "published_married_4_3": 9919.0,
-      "tv_by_sex_age": 0.03327993790298252,
+      "tv_by_sex_age": 0.03328144049575024,
       "note": "generated counts couple households (F1,F2) heads+spouses only; published married persons include married members in other roles"
+    },
+    "_presence_debug": {
+      "elderly_size2": 2096.571236207215,
+      "under6_size3": 198.76797774557556
     },
     "heldout_8_1_under6_by_size": {
       "generated": [
         0.0,
-        97.4,
-        199.1,
-        189.2,
-        63.7,
-        17.9,
-        7.2
+        96.6,
+        198.8,
+        182.0,
+        60.0,
+        16.6,
+        6.5
       ],
       "observed": [
         0.0,
@@ -58,19 +71,19 @@
         28.0,
         9.0
       ],
-      "tv": 0.14679713405862377,
-      "total_ratio": 1.0878815809006162,
-      "total_ratio_adjusted_for_unknown_age_heads": 1.0497889199833956
+      "tv": 0.14962970971477701,
+      "total_ratio": 1.0616574487221595,
+      "total_ratio_adjusted_for_unknown_age_heads": 1.024483037541363
     },
     "heldout_26_1_elderly_by_size": {
       "generated": [
-        1581.4,
-        2094.5,
-        453.8,
-        312.6,
-        109.7,
-        35.8,
-        15.7
+        1580.1,
+        2096.6,
+        454.7,
+        310.5,
+        107.7,
+        34.2,
+        15.4
       ],
       "observed": [
         1496.0,
@@ -81,9 +94,9 @@
         17.0,
         12.0
       ],
-      "tv": 0.05254127180368214,
-      "total_ratio": 1.0314567778061128,
-      "total_ratio_adjusted_for_unknown_age_heads": 0.9953398566470935,
+      "tv": 0.05135815963686992,
+      "total_ratio": 1.0305001018491726,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9944166791273685,
       "note": "Published presence counts exclude age-unknown members; generated households allocate unknown-age heads to known ages, so the unadjusted ratio is expected to exceed 1 by about the unknown-age share."
     },
     "heldout_9_1_under15_by_family_type": {
@@ -93,17 +106,17 @@
         "total_households": 2574.0
       },
       "F2": {
-        "generated_households_with_under15": 874.9,
+        "generated_households_with_under15": 873.4,
         "observed": 898.0,
         "total_households": 1663.0
       },
       "F4": {
-        "generated_households_with_under15": 140.4,
+        "generated_households_with_under15": 135.9,
         "observed": 108.0,
         "total_households": 459.0
       },
       "F5": {
-        "generated_households_with_under15": 4.4,
+        "generated_households_with_under15": 4.7,
         "observed": 0.0,
         "total_households": 45.0
       },

@@ -49,6 +49,34 @@ def ipf_nd(seed,margins,iters=500,tol=1e-7):
   if err<tol:break
  return z,it+1,float(err)
 
+def size_fit(seed,H_F,size,P_F,iters=400000,tol=0.01):
+ """Fit N[F,size] to three constraints: sum_size N = H_F, sum_F N = size counts, sum_size N*size = P_F (members per family type).
+ Family types with a single feasible size (support of one column in the seed) are fixed first and removed from the margins;
+ the rest is solved by cyclic KL projections (row scaling, column scaling, exponential tilt exp(lambda_F*size) by bisection)."""
+ nF,nK=seed.shape;ks=np.arange(1,11,dtype=float)
+ if size[9]>0:ks[9]=max((P_F.sum()-(ks[:9]*size[:9]).sum())/size[9],10.)   # open-ended 10+ bin: mean size implied by the member total
+ z=np.zeros_like(seed);fixed=np.zeros(nF,bool);size_r=size.astype(float).copy()
+ for f in range(nF):
+  sup=np.where(seed[f]>0)[0]
+  if H_F[f]<=0:fixed[f]=True;continue
+  if len(sup)==1:z[f,sup[0]]=H_F[f];size_r[sup[0]]-=H_F[f];fixed[f]=True
+ free=np.where(~fixed)[0];w=np.maximum(seed[free],1e-12)*(seed[free]>0);Hf=H_F[free];Pf=P_F[free];size_r=np.maximum(size_r,0)
+ err=0.;target=np.divide(Pf,Hf,out=np.zeros_like(Pf),where=Hf>0)
+ for it in range(iters):
+  s_=w.sum(1);w=w*np.divide(Hf,s_,out=np.zeros_like(s_),where=s_>0)[:,None]
+  s_=w.sum(0);w=w*np.divide(size_r,s_,out=np.zeros_like(s_),where=s_>0)[None,:]
+  # exponential tilt per row so that the mean size equals the published mean (vectorized bisection on lambda)
+  lo=np.full(len(free),-10.);hi=np.full(len(free),10.)
+  for _ in range(50):
+   lam=(lo+hi)/2;q=w*np.exp(lam[:,None]*ks);m=np.divide((q*ks).sum(1),q.sum(1),out=np.zeros(len(free)),where=q.sum(1)>0)
+   lo=np.where(m<target,lam,lo);hi=np.where(m<target,hi,lam)
+  t=w*np.exp(((lo+hi)/2)[:,None]*ks);w=t*np.divide(w.sum(1),t.sum(1),out=np.zeros(len(free)),where=t.sum(1)>0)[:,None]
+  if it%50==0 or it==iters-1:
+   err=max(np.abs(w.sum(1)-Hf).max(),np.abs(w.sum(0)-size_r).max(),np.abs((w*ks).sum(1)-Pf).max())
+   if err<tol:break
+ z[free]=w
+ return z,it+1,float(err),ks
+
 def gap_prior(head_mid,gap_mean,gap_sd,sign=+1):
  """P(member band | head band) from a Gaussian prior on (head age - member age) = gap; sign=-1 for older members."""
  P=np.zeros((18,18))
@@ -131,8 +159,8 @@ def households(x,X):
    if m<mean_size[fi]:lo=lam
    else:hi=lam
   sizeseed[fi]=norm(p*np.exp(lam*ks))
- SZ,it,err=ipf_nd(sizeseed*x['H_F'][:,None],[((0,),x['H_F']),((1,),x['size'])])
- notes['size_ipf']={'iterations':it,'error':err}
+ SZ,it,err,ks_eff=size_fit(sizeseed*x['H_F'][:,None],x['H_F'],x['size'],x['P_F']);x['size_eff']=ks_eff
+ notes['size_ipf']={'iterations':it,'error':err,'constraints':'households per family type (12-3), households per size (6-3), members per family type (12-4)'}
  # ---- age-conditional links per F
  rng=np.random.default_rng(0)
  out=[]
@@ -159,7 +187,10 @@ def households(x,X):
    z,_,_=ipf_nd(prior*rowm[:,None],[((0,),rowm),((1,),colm)]);links[ri]=(norm(z+1e-12),norm(X[fi,ri].sum(1)+1e-12))   # P(band|head band), P(sex) per role band ignored -> use X sex split by band below
    links[ri]=(norm(z+1e-12),np.divide(X[fi,ri],X[fi,ri].sum(0,keepdims=True),out=np.full_like(X[fi,ri],0.5),where=X[fi,ri].sum(0,keepdims=True)>0))
   # role counts per household of size k: distribute non-head, non-spouse members among roles by X shares
-  role_share=norm(X[fi,2:].sum((1,2))+1e-12)                        # over R03..R13
+  role_share=X[fi,2:].sum((1,2)).copy()
+  for ri in range(2,13):
+   if ri not in links:role_share[ri-2]=0                            # roles without a fitted link cannot receive members
+  role_share=norm(role_share+1e-12)                                  # over R03..R13 with links
   spouse_p=min(X[fi,1].sum()/x['H_F'][fi],1.) if x['H_F'][fi]>0 else 0.
   out.append({'F':f,'heads':heads,'size_mix':norm(SZ[fi]+1e-12),'spouse_link':sp_link,'spouse_p':spouse_p,'links':links,'role_share':role_share})
  notes['spouse_probability']={o['F']:o['spouse_p'] for o in out}
@@ -179,7 +210,7 @@ def materialize(x,X,plan):
      nk=n*mix[k]
      if nk<=0:continue
      N[fi,si,ai,k]=nk;T[fi,si,ai,k,0,si,ai]+=nk                          # head
-     remaining=k                                                     # members besides head (size = k+1)
+     remaining=(x['size_eff'][k]-1) if 'size_eff' in x else k          # members besides head (size = k+1; 10+ uses its mean size)
      if o['spouse_link'] is not None and remaining>0:
       sp=min(o['spouse_p'],1.)*nk
       T[fi,si,ai,k,1,1-si]+=sp*o['spouse_link'][si,ai];remaining-=min(o['spouse_p'],1.)
@@ -214,32 +245,43 @@ def evaluate(x,N,T):
  m=x['married'];ok=m.sum()>0
  res['married_persons_check']={'generated_couple_members':float(gen_married[:,3:].sum()),'published_married_4_3':float(m.sum()),'tv_by_sex_age':float(.5*np.abs(norm(gen_married[:,3:].ravel())-norm(m[:,3:].ravel())).sum()) if ok else None,'note':'generated counts couple households (F1,F2) heads+spouses only; published married persons include married members in other roles'}
  # 8-1 / 26-1 / 9-1 held-out: presence of members by age class x size
+ res['_presence_debug']=None
  ac=pd.read_csv(D/'age_class_size_tidy.csv.gz',dtype={'area':str,'age_class':str});el=pd.read_csv(D/'elderly_size_tidy.csv.gz',dtype={'area':str,'elderly_class':str});fa=pd.read_csv(D/'family_age_class_tidy.csv.gz',dtype={'area':str,'family_type':str})
- def presence(bands,size_k):
-  """expected number of households of size k+1 with at least one member in `bands` (approximation: members independent within the household cell)"""
+ def presence(bands,size_k,weights=None):
+  """Expected number of households of size size_k+1 with at least one member in `bands`.
+  Composition model per head cell: the k non-head slots are filled by roles whose expected counts c_r sum to k; integer
+  parts of c_r are fixed slots, fractional parts are one mixed draw per remaining slot (roles in proportion to the
+  fractions). Member ages within a role follow the cell's fitted band distribution. `weights` (18,) scales band
+  membership (e.g. 0.2 for 5-9 when the target is 'under 6'); default = indicator of `bands`."""
+  w=np.zeros(18);w[bands]=1
+  if weights is not None:w=weights
   tot=0.
   for fi in range(7):
    for si in range(2):
     for ai in range(18):
      n=N[fi,si,ai,size_k]
      if n<=0:continue
-     if ai in bands:tot+=n;continue                                  # the head is in the band: presence is certain
-     # non-head members: per role r, c_r members per household with share q_r in the bands; independent draws within the
-     # household cell -> P(none) = prod_r (1-q_r)^c_r  (exact for integer counts, fractional counts interpolate)
-     logp=0.
+     if w[ai]>=1:tot+=n;continue                       # the head is certainly in the target set
+     p_none=1-w[ai]                                     # head partially in the set (fractional weight)
+     mix_num=0.;mix_den=0.
      for ri in range(1,13):
       mem=T[fi,si,ai,size_k,ri].sum(0);c=mem.sum()/n
       if c<=0:continue
-      q=mem[bands].sum()/mem.sum()
-      # c<1: the household has this member with probability c (then in-band with q); c>=1: independent draws
-      logp+=np.log(max(1-c*q,1e-12)) if c<1 else c*np.log(max(1-q,1e-12))
-     tot+=n*(1-np.exp(logp))
+      q=(mem*w).sum()/mem.sum();f=int(np.floor(c+1e-9));frac=c-f
+      p_none*=(1-q)**f
+      mix_num+=frac*q;mix_den+=frac
+     if mix_den>1e-9:p_none*=(1-mix_num/mix_den)**round(mix_den)
+     tot+=n*(1-p_none)
   return tot
+ res['_presence_debug']={'elderly_size2':None,'under6_size3':None}
  def size_presence_table(bands):
   return np.array([presence(bands,k) for k in range(6)]+[sum(presence(bands,k) for k in range(6,10))])
+ w6d=np.zeros(18);w6d[0]=1;w6d[1]=0.2
+ res['_presence_debug']={'elderly_size2':presence(list(range(13,18)),1),'under6_size3':presence([0],2,w6d)}
  sub=ac[(ac.area==x['code'])];obs_u6=sub[sub.age_class=='1'].iloc[0][[f'S{i}' for i in ['01','02','03','04','05','06','07p']]].to_numpy(float) if len(sub) else None
  if obs_u6 is not None:
-  gen_u6=np.array([presence([0],k)+0.2*presence([1],k) for k in range(6)]+[sum(presence([0],k)+0.2*presence([1],k) for k in range(6,10))])
+  w6=np.zeros(18);w6[0]=1;w6[1]=0.2                  # under 6 = all of 0-4 plus one fifth of 5-9 (uniform within the band)
+  gen_u6=np.array([presence([0],k,w6) for k in range(6)]+[sum(presence([0],k,w6) for k in range(6,10))])
   res['heldout_8_1_under6_by_size']={'generated':gen_u6.round(1).tolist(),'observed':obs_u6.tolist(),'tv':float(.5*np.abs(norm(gen_u6)-norm(obs_u6)).sum()),'total_ratio':float(gen_u6.sum()/max(obs_u6.sum(),1)),'total_ratio_adjusted_for_unknown_age_heads':float(gen_u6.sum()*(1-x['unknown_age_head_share'])/max(obs_u6.sum(),1))}
  sub=el[(el.area==x['code'])&(el.elderly_class=='1')]
  if len(sub):
@@ -257,21 +299,32 @@ def evaluate(x,N,T):
      for k in range(10):
       n=N[fi,si,ai,k]
       if n<=0:continue
-      logp=0.
+      if ai<3:gen_u15+=n;continue
+      p_none=1.;mix_num=0.;mix_den=0.
       for ri in range(1,13):
        mem=T[fi,si,ai,k,ri].sum(0);c=mem.sum()/n
        if c<=0:continue
-       q=mem[:3].sum()/mem.sum();logp+=np.log(max(1-c*q,1e-12)) if c<1 else c*np.log(max(1-q,1e-12))
-      gen_u15+=n*(1-np.exp(logp))
+       q=mem[:3].sum()/mem.sum();fl=int(np.floor(c+1e-9));frac=c-fl;p_none*=(1-q)**fl;mix_num+=frac*q;mix_den+=frac
+      if mix_den>1e-9:p_none*=(1-mix_num/mix_den)**round(mix_den)
+      gen_u15+=n*(1-p_none)
    rows[f]={'generated_households_with_under15':round(float(gen_u15),1),'observed':float(r.iloc[0].u15),'total_households':float(r.iloc[0].total)}
   res['heldout_9_1_under15_by_family_type']=rows
  return res
 
+def final_checks(x,N,T,tol_persons=0.5):
+ """Constraints that the final N/T must satisfy (persons): households per F, members per F (12-4), size counts (6-3), non-negativity."""
+ hh_F=N.sum((1,2,3));mem_F=T.sum((1,2,3,4,5,6));size=N.sum((0,1,2))
+ res={'households_per_family_type_max_error':float(np.abs(hh_F-x['H_F']).max()),'members_per_family_type_max_error':float(np.abs(mem_F-x['P_F']).max()),'size_counts_max_error':float(np.abs(size-x['size']).max()),'members_total_error':float(abs(T.sum()-x['P_F'].sum())),'nonnegative':bool((N>=-1e-9).all() and (T>=-1e-9).all())}
+ res['passed']=bool(res['nonnegative'] and max(res['households_per_family_type_max_error'],res['members_per_family_type_max_error'],res['size_counts_max_error'])<tol_persons)
+ return res
+
 def run(code):
  t0=time.time();x=load_area(code);X,agg=aggregate(x);plan,notes=households(x,X);N,T=materialize(x,X,plan);ev=evaluate(x,N,T)
+ checks=final_checks(x,N,T)
+ if not checks['passed']:raise RuntimeError(f"Household output violates constraints: {checks}")
  (OUTPUT/'household_b').mkdir(parents=True,exist_ok=True)
  np.savez_compressed(OUTPUT/'household_b'/f'{code}.npz',households=N,members=T,aggregate=X,family_codes=np.array(F),relationship_codes=np.array(R),age_bands=np.array(A18),code=code)
- rep={'code':code,'name':x['name'],'prefecture_seed':x['pref'],'households':float(N.sum()),'published_households':float(x['H_F'].sum()),'unknown_age_head_share':x['unknown_age_head_share'],'aggregate_ipf':agg,'plan':notes,'evaluation':ev,'elapsed_seconds':round(time.time()-t0,1),'assumptions':['Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).','Unknown-age heads are spread within sex x family type in proportion to known ages.','Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.','Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).','No within-household correlation of income or other individual attributes is modelled.']}
+ rep={'code':code,'name':x['name'],'prefecture_seed':x['pref'],'households':float(N.sum()),'published_households':float(x['H_F'].sum()),'unknown_age_head_share':x['unknown_age_head_share'],'final_checks':checks,'aggregate_ipf':agg,'plan':notes,'evaluation':ev,'elapsed_seconds':round(time.time()-t0,1),'assumptions':['Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).','Unknown-age heads are spread within sex x family type in proportion to known ages.','Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.','Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).','No within-household correlation of income or other individual attributes is modelled.']}
  (REPORTS/f'household_b_{code}.json').write_text(json.dumps(rep,ensure_ascii=False,indent=2))
  return rep
 

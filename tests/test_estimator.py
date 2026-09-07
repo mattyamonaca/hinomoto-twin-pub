@@ -94,3 +94,30 @@ class HouseholdTests(unittest.TestCase):
         import build_household as bh
         P=bh.gap_prior(bh.AGE_MID,30,6,+1)
         self.assertTrue(np.allclose(P.sum(1),1));self.assertLess(np.argmax(P[8]),8)   # children of a 40-44 head are younger
+
+class HouseholdReviewCases(unittest.TestCase):
+    """Regression cases from the PR #18 review: presence counts must follow a composition consistent with fixed member counts."""
+    def _world(self,T,N):
+        import build_household as bh
+        x={'code':'x','persons':T.sum((0,1,2,3,4)),'size':N.sum((0,1,2)),'P_F':T.sum((1,2,3,4,5,6)),'married':np.zeros((2,18)),'city_rel':None,'unknown_age_head_share':0.}
+        return bh,x
+    def test_two_role_fixed_slot_gives_certain_presence(self):
+        # 100 two-person households, head 40-44, the other member is 65-69 with role child 50% / other relative 50%
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18));N[3,0,8,1]=100;T[3,0,8,1,0,0,8]=100;T[3,0,8,1,2,0,13]=50;T[3,0,8,1,9,0,13]=50
+        bh,x=self._world(T,N)
+        import pandas as pd
+        from unittest.mock import patch
+        empty=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])
+        with patch.object(pd,'read_csv',return_value=empty):
+            res=bh.evaluate(x,N,T)
+        self.assertEqual(round(res['_presence_debug']['elderly_size2']),100)
+    def test_under6_not_double_counted(self):
+        # 100 three-person households: head 30-34, one child 0-4, one other member 5-9 -> exactly 100 households with a member under 6 (0-4) ... +20 expected from 5-9 at most once
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18));N[1,0,6,2]=100;T[1,0,6,2,0,0,6]=100;T[1,0,6,2,2,0,0]=100;T[1,0,6,2,9,0,1]=100
+        bh,x=self._world(T,N)
+        import pandas as pd
+        from unittest.mock import patch
+        empty=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])
+        with patch.object(pd,'read_csv',return_value=empty):
+            res=bh.evaluate(x,N,T)
+        self.assertEqual(round(res['_presence_debug']['under6_size3']),100)
