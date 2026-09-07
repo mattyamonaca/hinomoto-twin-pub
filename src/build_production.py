@@ -23,7 +23,9 @@ import estimator as es
 
 STAGES=OUTPUT/'stages'
 SETTINGS={'M12':{'gamma_education':1.5,'gamma_industry':1.0,'beta_tax':0.0,'model_version':'3.0-M12'},'M0':{'gamma_education':0.0,'gamma_industry':0.0,'beta_tax':0.5,'model_version':'2.0'}}
-FINGERPRINT_KEYS=['N','Nraw','Eraw','seed_q','t_status','pref_rate','ess_cat','nat_cat','pref_target','tax_feature','edu_share','edu_q','edu_rate','ind_share','ind_q']
+FINGERPRINT_KEYS=['N','Nraw','Eraw','seed_q','t_status','pref_rate','ess_cat','nat_cat','pref_target','tax_feature','edu_share','edu_q','edu_rate','ind_share','ind_q','pref']
+STAGE_SCHEMA={'status':1,'mixture':1,'calibrated':1}   # bump when the stored arrays / layout change
+IMPL_FILES=['estimator.py','model_math.py','build_production.py']
 
 def sha_bytes(b):return hashlib.sha256(b).hexdigest()
 def sha_file(p):return sha_bytes(p.read_bytes())
@@ -31,13 +33,19 @@ def code_commit():
     try:return subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,cwd=os.path.dirname(os.path.abspath(__file__))).stdout.strip()
     except Exception:return 'unknown'
 def fingerprint(inp):
-    """Hash of the input arrays the stages depend on (independent of file names)."""
+    """Hash of the input arrays the stages depend on: values, shapes, the area -> prefecture mapping and the area/prefecture lists."""
     h=hashlib.sha256()
     for k in FINGERPRINT_KEYS:
-        if k in inp:h.update(k.encode());h.update(np.ascontiguousarray(np.asarray(inp[k],dtype=float)).tobytes())
-    h.update(','.join(inp['areas']).encode());return h.hexdigest()
+        if k in inp:a=np.ascontiguousarray(np.asarray(inp[k],dtype=float));h.update(k.encode());h.update(str(a.shape).encode());h.update(a.tobytes())
+        else:h.update((k+':absent').encode())
+    h.update(('areas:'+','.join(inp['areas'])).encode());h.update(('prefs:'+','.join(inp['prefs'])).encode());return h.hexdigest()
+def impl_hash():
+    """Identity of the computation: hash of the estimator / build sources. A stored stage made by other code is refused."""
+    h=hashlib.sha256();base=os.path.dirname(os.path.abspath(__file__))
+    for f in IMPL_FILES:h.update(f.encode());h.update(open(os.path.join(base,f),'rb').read())
+    return h.hexdigest()
 def provenance(stage,model,fp,upstream=None,extra=None):
-    d={'stage':stage,'model':model,**SETTINGS[model],'inputs_fingerprint':fp,'upstream':upstream or {},'code_commit':code_commit(),'created':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())}
+    d={'stage':stage,'model':model,**SETTINGS[model],'inputs_fingerprint':fp,'upstream':upstream or {},'code_commit':code_commit(),'impl_hash':impl_hash(),'schema':STAGE_SCHEMA.get({'calibrate':'calibrated'}.get(stage,stage),1),'created':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())}
     if extra:d.update(extra)
     return json.dumps(d,ensure_ascii=False)
 def load_stage(name,model,fp,require_upstream=None):
@@ -49,6 +57,8 @@ def load_stage(name,model,fp,require_upstream=None):
     for k in ('gamma_education','gamma_industry','beta_tax'):
         if abs(pv[k]-SETTINGS[model][k])>1e-12:raise ValueError(f"{p.name}: {k}={pv[k]} differs from the {model} setting {SETTINGS[model][k]}")
     if pv['inputs_fingerprint']!=fp:raise ValueError(f'{p.name} was built from different inputs (fingerprint {pv["inputs_fingerprint"][:12]}… vs {fp[:12]}…); rebuild the stages')
+    if pv.get('impl_hash')!=impl_hash():raise ValueError(f'{p.name} was produced by a different implementation of the estimator / build ({str(pv.get("impl_hash"))[:12]}… vs {impl_hash()[:12]}…); rebuild the stages from `status`')
+    if pv.get('schema')!=STAGE_SCHEMA.get(name):raise ValueError(f'{p.name} has stage schema {pv.get("schema")}, expected {STAGE_SCHEMA.get(name)}; rebuild the stages')
     if require_upstream:
         for up,sha in require_upstream.items():
             if pv['upstream'].get(up)!=sha:raise ValueError(f'{p.name} was built from a different {up} artifact; rebuild from that stage')
@@ -92,7 +102,11 @@ def stage_finalize(inp,model,fp):
     assert np.isfinite(C).all() and C.min()>=-1e-8
     np.testing.assert_allclose(C.sum(-1),N,atol=1e-6)
     np.savez_compressed(OUTPUT/'final_arrays.npz',areas=np.array(inp['areas']),population=N,counts_by_sex=C,counts=A,probability=np.divide(A,pop[...,None],out=np.full_like(A,np.nan),where=pop[...,None]>0),p_age_income_given_municipality=np.divide(A,pop.sum(-1)[:,None,None],out=np.full_like(A,np.nan),where=pop.sum(-1)[:,None,None]>0),joint=A/N.sum(),provenance=np.array(provenance('finalize',model,fp,upstream={'calibrated':sha_file(STAGES/'calibrated.npz')})))
-    meta={'model':model,'model_version':st['model_version'],'gamma_education':st['gamma_education'],'gamma_industry':st['gamma_industry'],'beta_tax':st['beta_tax'],'population_year':2020,'income_year':2022,'validation':'Development-set cross-validation; no independent validation of municipality sex/education-specific income or small towns.','inputs_fingerprint':fp,'code_commit':code_commit(),'stages':{n:sha_file(STAGES/f'{n}.npz') for n in ('status','mixture','calibrated')}}
+    # the published M1 baseline (model_arrays.npz) is made from the same staged artifacts: W / E from status, X_m1 from calibrate
+    ds,_=load_stage('status',model,fp);C1=np.concatenate([Z[...,None],dc['X_m1']],axis=-1);A1=C1.sum(1)
+    np.testing.assert_allclose(C1.sum(-1),N,atol=1e-6)
+    np.savez_compressed(OUTPUT/'model_arrays.npz',areas=np.array(inp['areas']),population=N,employment_status=ds['W'],counts_by_sex=C1,counts=A1,probability=np.divide(A1,pop[...,None],out=np.full_like(A1,np.nan),where=pop[...,None]>0),joint=A1/N.sum(),provenance=np.array(provenance('finalize_m1',model,fp,upstream={'status':sha_file(STAGES/'status.npz'),'calibrated':sha_file(STAGES/'calibrated.npz')})))
+    meta={'model':model,'model_version':st['model_version'],'gamma_education':st['gamma_education'],'gamma_industry':st['gamma_industry'],'beta_tax':st['beta_tax'],'population_year':2020,'income_year':2022,'validation':'Development-set cross-validation; no independent validation of municipality sex/education-specific income or small towns.','inputs_fingerprint':fp,'code_commit':code_commit(),'impl_hash':impl_hash(),'stages':{n:sha_file(STAGES/f'{n}.npz') for n in ('status','mixture','calibrated')},'outputs':{'final_arrays.npz':'M12','model_arrays.npz':'M1 baseline from the same stages'}}
     (OUTPUT/'model_metadata.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2))
     (REPORTS/'production_model.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2))
     return meta
@@ -101,10 +115,9 @@ def check_equivalence(inp,model):
     st=SETTINGS[model];r=es.run(inp,gamma=st['gamma_education'],gamma_industry=st['gamma_industry'],beta=st['beta_tax'])
     C=np.load(OUTPUT/'final_arrays.npz')['counts_by_sex'];diff=float(np.abs(C-r['counts_by_sex']).max())
     dc=np.load(STAGES/'calibrated.npz');margins={'staged_vs_direct_max_abs_persons':diff,'X_m2_vs_direct_max_abs_persons':float(np.abs(dc['X_m2']-r['X']).max()),'tolerance_persons':1e-9,'tolerance_reason':'identical numpy operations in the same order; only floating-point non-determinism could differ'}
-    ma=OUTPUT/'model_arrays.npz'
-    if ma.exists():
-        m1=np.load(ma)['counts_by_sex'][...,1:];margins['X_m1_vs_model_arrays_max_abs_persons']=float(np.abs(dc['X_m1']-m1).max());margins['X_m1_note']='model_arrays.npz is produced by build.py (v1); the staged X_m1 reproduces it up to floating-point differences of the v1 code path (2e-12 persons measured)'
-    margins['passed']=diff<=1e-9
+    r1=es.run(inp,gamma=0.,gamma_industry=0.,beta=0.,W=r['W'])           # direct M1 baseline: same mixture, no tilt, no tax
+    m1=np.load(OUTPUT/'model_arrays.npz');margins['model_arrays_vs_direct_M1_max_abs_persons']=float(np.abs(m1['counts_by_sex']-r1['counts_by_sex']).max());margins['model_arrays_note']='model_arrays.npz is written by stage finalize from status.npz (W, E) and calibrated.npz (X_m1); build.py (v1) is kept only as the legacy replay and is overwritten by this build'
+    margins['passed']=diff<=1e-9 and margins['X_m2_vs_direct_max_abs_persons']<=1e-9 and margins['model_arrays_vs_direct_M1_max_abs_persons']<=1e-9
     (REPORTS/'production_stages_check.json').write_text(json.dumps(margins,indent=2));print(json.dumps(margins,indent=1))
     if not margins['passed']:raise SystemExit(1)
     return margins

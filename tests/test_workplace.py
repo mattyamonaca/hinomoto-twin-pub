@@ -106,6 +106,9 @@ class WebExportTests(unittest.TestCase):
    pd.DataFrame({'table':['9','9','10'],'area':['01101','13101','01102'],'industry':['G01']*3,'weight':[1,1,1],'observed_outside_pairs_share':[0,0,0],'tv_model':[0,0,0],'tv_seed':[0,0,0],'tv_independent':[0,0,0],'tv_gravity':[0,0,0],'tv_category':[0,0,0]}).to_csv(td/'validation/workplace_c_heldout.csv',index=False)
    with patch.object(ew,'OUTPUT',td/'data'),patch.object(ew,'WEB',td/'web'),patch.object(ew,'REPORTS',td/'validation'),patch.object(ew,'SOURCES',td/'sources'):ew.main()
    ev=json.loads((td/'web/workplace/evaluated_areas.json').read_text());self.assertEqual(ev['table9_residence_areas'],['01101','13101']);self.assertEqual(ev['table10_workplace_areas'],['01102'])
+   idx=json.loads((td/'web/workplace/index.json').read_text())['files'];eb=(td/'web/workplace/evaluated_areas.json').read_bytes();self.assertEqual(idx['workplace/evaluated_areas.json'],[len(eb),hashlib.sha256(eb).hexdigest()])   # registered in the index
+   g=json.loads((td/'web/graph.json').read_text());self.assertEqual(g['graph']['workplace']['files'],len(idx));self.assertEqual(g['graph']['workplace']['index_sha256'],hashlib.sha256((td/'web/workplace/index.json').read_bytes()).hexdigest())
+   rep=json.loads((td/'validation/workplace_web_export.json').read_text());self.assertEqual(rep['files'],len(idx));self.assertEqual(rep['total_bytes'],sum(v[0] for v in idx.values())+len((td/'web/workplace/index.json').read_bytes()))
    g=json.loads((td/'web/graph.json').read_text());self.assertEqual(g['graph']['workplace']['version'],'test');self.assertTrue(g['dataset_version'].endswith('+C'))
    idx=json.loads((td/'web/workplace/index.json').read_text())['files']
    for rel,(nb,sha) in idx.items():

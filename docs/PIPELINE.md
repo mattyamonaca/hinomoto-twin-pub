@@ -17,9 +17,11 @@
 | <a id="m1-status"></a>status | `estimator.fit_status`、`status_income_shapes` | 正規化済み入力（国勢調査 参考表1・1-4・5-1、表3-1、就業構造基本調査 02300） | `data/stages/status.npz`：`W[m,s,a,k]` 地位別就業者（人）、`E` 有給就業者、`cp[p,s,a,k,y]` 都道府県 × 地位の所得形状 r(y｜p,s,a,k)（擬似人口 1,000 で平滑化）。2.8 MB | mixture |
 | <a id="m1-mixture"></a>mixture | `estimator.mixture`（傾きなし）、`education_tilt`、`industry_tilt`、`mixture`（傾きあり） | status.npz、学歴構成（11-2）、産業構成（6-3）、全国の学歴別・産業別所得形状 | `data/stages/mixture.npz`：`q0[m,s,a,y]` 混合直後の分布（M1 の入力、傾きなし）、`tilt_education` = T_e^γ、`tilt_industry` = T_g^γ₂（係数 0 のときは 1）、`tilt` = 積、`q_tilt` = norm(q0 · tilt)（M2 の入力、校正前）。30 MB | calibrate |
 | <a id="m1-calibrate"></a><a id="m2-tilt"></a><a id="m2-calibrate"></a>calibrate | `estimator.calibrate` | mixture.npz、県 × 性別 × 年齢の所得既知の有業者の構成比（02300） | `data/stages/calibrated.npz`：`X_m1` = calibrate(q0)（M1 基準。`model_arrays.npz` を 2e-12 人以内で再現）、`X_m2` = calibrate(q_tilt)（M12 の税務調整前）、`calibration_summary[pref, sex, age, 行和の最大誤差, 列構成比の最大誤差]`。10 MB | finalize |
-| <a id="m2-finalize"></a>finalize | `estimator.tax_project`（β=0 では恒等） | calibrated.npz、人口 N | `data/final_arrays.npz`（`counts_by_sex[m,s,a,z]`、z=0 非就業、1..16 年収階級、`provenance` 付き）、`data/model_metadata.json`（係数・入力指紋・各工程の SHA-256・コード commit） | 学歴配分・公開データ |
+| <a id="m2-finalize"></a>finalize | `estimator.tax_project`（β=0 では恒等） | calibrated.npz、status.npz、人口 N | `data/final_arrays.npz`（M12：`counts_by_sex[m,s,a,z]`、z=0 非就業、1..16 年収階級、`provenance` 付き）と `data/model_arrays.npz`（M1 基準：status.npz の W・E と calibrated.npz の X_m1 から生成、`employment_status` = W）、`data/model_metadata.json`（係数・入力指紋・実装ハッシュ・各工程の SHA-256・コード commit） | 学歴配分・公開データ |
 
-M1 の公開成果物 `data/model_arrays.npz` は v1 の `src/build.py` が同じ手順（混合 → 県への IPF）で生成しており、工程 calibrate の `X_m1` と一致します（`--check` で確認）。
+M1 の公開成果物 `data/model_arrays.npz` も同じ工程から生成します（v1 の `src/build.py` は旧経路の再現として残り、`make build` の中では build_production が上書きします。両者の差は 2e-12 人）。`--check` は最終配列（M12）・校正結果・`model_arrays.npz`（M1）の 3 つを直接計算と比較し、いずれも 1e-9 人以内で合格とします。
+
+互換性の検査：`provenance` には入力の指紋（値・形状・地域→都道府県の対応・地域と都道府県の一覧）、実装ハッシュ（`estimator.py`・`model_math.py`・`build_production.py` の内容）、工程スキーマ番号を含み、推定コードを変更した後に `--stage finalize` で再開しようとすると旧実装の中間値は拒否されます（`status` から再生成）。
 
 ```sh
 make dataset                                  # 固定版の入力
@@ -48,4 +50,4 @@ python src/build_production.py --check        # 工程経由と直接計算の�
 
 ## 版の対応
 
-`data/model_metadata.json` の `code_commit` と `inputs_fingerprint`、各成果物の `provenance` が対応関係を示す。`export_web.py` は `code_commit` を `graph.json` の `code_ref` に書き、公開ページの再現手順・コード・METHOD へのリンクはその commit に固定される。固定版データの公開は `python src/dataset.py pack` で `sources/` と `web/` を同梱する（中間成果物 `data/stages/` は同梱しない。再現は上記コマンドで行う）。
+`data/model_metadata.json` の `code_commit`・`impl_hash`・`inputs_fingerprint`、各成果物の `provenance` が対応関係を示す。`export_web.py` は `code_commit` を `graph.json` の `code_ref` に書き、公開ページの再現手順・コード・METHOD へのリンクはその commit に固定される。固定版データの公開は `python src/dataset.py pack` で `sources/` と `web/` を同梱する（中間成果物 `data/stages/` は同梱しない。再現は上記コマンドで行う）。現行の固定版（`catalog/production.json`、2026-09-07 の A+B 試験版）には `code_ref` と `workplace/evaluated_areas.json` が含まれないため、固定リンクと勤務地の評価地域判定は、新しい固定版の公開・`catalog/production.json` の更新・本番確認までは有効にならない（Issue #34 の残作業）。

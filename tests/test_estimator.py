@@ -298,6 +298,22 @@ class ProductionStageTests(unittest.TestCase):
                 bp.save_stage('mixture',{'q0':np.zeros(1)},bp.provenance('mixture','M12',fp,upstream={'status':'deadbeef'}))
                 with self.assertRaises(ValueError):bp.load_stage('mixture','M12',fp,require_upstream={'status':bp.sha_file(pathlib.Path(d)/'status.npz')})   # stale upstream
                 with self.assertRaises(FileNotFoundError):bp.load_stage('calibrated','M12',fp)
+    def test_pref_mapping_shapes_and_implementation_are_part_of_the_check(self):
+        import build_production as bp,tempfile,pathlib,json
+        from unittest.mock import patch
+        inp=self._inp();fp=bp.fingerprint(inp)
+        inp2=dict(inp);inp2['pref']=np.array([1,1,0,0]);self.assertNotEqual(fp,bp.fingerprint(inp2))                 # area -> prefecture mapping
+        inp3=dict(inp);inp3['N']=inp['N'].reshape(4,26,1)[:,:,0].reshape(4,2,13) if False else inp['N'].reshape(8,13);self.assertNotEqual(fp,bp.fingerprint(inp3))   # same values, other shape
+        inp4=dict(inp);inp4['prefs']=['01','03'];self.assertNotEqual(fp,bp.fingerprint(inp4))
+        with tempfile.TemporaryDirectory() as d:
+            with patch.object(bp,'STAGES',pathlib.Path(d)):
+                pv=json.loads(bp.provenance('status','M12',fp));pv['impl_hash']='0'*64;pv['code_commit']='oldcommit'
+                bp.save_stage('status',{'W':np.zeros(1)},json.dumps(pv))
+                with self.assertRaises(ValueError):bp.load_stage('status','M12',fp)         # made by another implementation
+                pv=json.loads(bp.provenance('status','M12',fp));pv['schema']=0
+                bp.save_stage('status',{'W':np.zeros(1)},json.dumps(pv))
+                with self.assertRaises(ValueError):bp.load_stage('status','M12',fp)         # other stage schema
+                bp.save_stage('status',{'W':np.zeros(1)},bp.provenance('status','M12',fp));bp.load_stage('status','M12',fp)
     def test_settings_mismatch_is_refused(self):
         import build_production as bp,tempfile,pathlib,json
         from unittest.mock import patch

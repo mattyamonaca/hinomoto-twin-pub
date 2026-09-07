@@ -33,11 +33,12 @@ def main():
         ps=by_d.get(i,[]);rows=[[areas[int(oi[p])],int(ci[p]),rnd(X[p])] for p in sorted(ps,key=lambda p:-X[p].sum())]
         w={'code':code,'rows':rows,'model_version':str(d['model_version'])}
         b=json.dumps(w,ensure_ascii=False,separators=(',',':')).encode();f=out/f'd_{code}.json';f.write_bytes(b);index[f'workplace/d_{code}.json']=[len(b),sha(b)];total_bytes+=len(b);largest=max(largest,len(b))
-    ib=json.dumps({'model_version':str(d['model_version']),'files':index},ensure_ascii=False,separators=(',',':')).encode();(out/'index.json').write_bytes(ib)
     # areas of the held-out evaluation (tables 9 / 10): taken from the saved verification rows, not a hand-written list
     hv=pd.read_csv(REPORTS/'workplace_c_heldout.csv',dtype={'area':str,'table':str})
     ev={'model_version':str(d['model_version']),'source':'validation/workplace_c_heldout.csv','table9_residence_areas':sorted(hv[hv.table=='9'].area.unique().tolist()),'table10_workplace_areas':sorted(hv[hv.table=='10'].area.unique().tolist())}
-    eb=json.dumps(ev,ensure_ascii=False,separators=(',',':')).encode();(out/'evaluated_areas.json').write_bytes(eb);index['workplace/evaluated_areas.json']=[len(eb),sha(eb)]
+    eb=json.dumps(ev,ensure_ascii=False,separators=(',',':')).encode();(out/'evaluated_areas.json').write_bytes(eb);index['workplace/evaluated_areas.json']=[len(eb),sha(eb)];total_bytes+=len(eb);largest=max(largest,len(eb))
+    # the index is written after every file is registered, so graph.workplace.files and the index agree
+    ib=json.dumps({'model_version':str(d['model_version']),'files':index},ensure_ascii=False,separators=(',',':')).encode();(out/'index.json').write_bytes(ib)
     g['workplace']={'version':str(d['model_version']),'stage':'C','evaluated_areas':'workplace/evaluated_areas.json','index':'workplace/index.json','index_sha256':sha(ib),'files':len(index),'industry_codes':d['industry_codes'].tolist(),'categories':d['categories'].tolist(),
                     'note':'2020 census 従業地・通学地集計, 15歳以上就業者 both sexes; residence-side rows o_<code>.json, workplace-side rows d_<code>.json; unknown workplace outside the distribution'}
     if '+C' not in payload.get('dataset_version',''):payload['dataset_version']=payload.get('dataset_version','')+'+C'
