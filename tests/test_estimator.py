@@ -1,6 +1,7 @@
 """Contract tests for the array-level estimator on a small virtual population (no national data needed)."""
 import sys,unittest
 from pathlib import Path
+import base64
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 import estimator as es
@@ -71,8 +72,8 @@ class StageAContractTests(unittest.TestCase):
         import verify_employment as ve
         from unittest.mock import patch
         rng=np.random.default_rng(1);M=3
-        kg=rng.random((M,2,13,6,21));kg[...,5,1:]=0;kg[...,:5,0]=0
-        N=kg.sum((3,4));W=kg[...,:5,:].sum(-1);ke=np.zeros((M,2,13,8,6));ke[...,0,:]=kg.sum(-1)
+        kg=rng.random((M,2,13,7,21));kg[...,5:,1:]=0;kg[...,:5,0]=0
+        N=kg.sum((3,4));W=kg[...,:5,:].sum(-1);ke=np.zeros((M,2,13,8,7));ke[...,0,:]=kg.sum(-1)
         ky=rng.random((M,2,13,4,16));fin=np.zeros((M,2,13,17));fin[...,1:]=ky.sum(3)
         cnt=kg[...,:5,1:].sum(3);gy=rng.random((M,2,13,20,16))
         d={'status_industry':kg,'education_status':ke,'status_income':ky,'industry_income':gy}
@@ -153,3 +154,70 @@ class HouseholdMixedSlotCases(unittest.TestCase):
         with patch.object(pd,'read_csv',return_value=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])):
             res=bh.evaluate(x,N,T)
         self.assertAlmostEqual(res['_presence_debug']['elderly_size10p'],40.,places=6)
+
+
+class StageAPublicationTests(unittest.TestCase):
+    """Issue #22: labour-status split and the API contract of persona_v3."""
+    def test_unemployed_split_preserves_row_and_column_margins(self):
+        from model_math import ipf
+        non=np.array([50.,120.,30.,200.,40.,10.,5.,90.]);pu=np.array([.1,.08,.06,.05,.04,.2,.05,.07]);K6=non.sum();u=.07
+        z,_,_=ipf(np.stack([np.maximum(pu,1e-6),np.maximum(1-pu,1e-6)],-1)*non[:,None],non,np.array([K6*u,K6*(1-u)]),tol=1e-9)
+        self.assertTrue(np.allclose(z.sum(1),non,atol=1e-6));self.assertAlmostEqual(z[:,0].sum()/K6,u,places=8)
+        self.assertGreater(z[5,0]/non[5],z[3,0]/non[3])   # the education with the higher seed keeps the higher unemployment share
+    def test_persona_rejects_six_status_artifact(self):
+        import persona_v3 as pv,tempfile,pathlib
+        with tempfile.TemporaryDirectory() as d:
+            p=pathlib.Path(d);np.savez(p/'employment_a.npz',areas=np.array(['13103']),population=np.ones((1,2,13)),status_industry=np.zeros((1,2,13,6,21)),education_status=np.zeros((1,2,13,8,6)),status_income=np.zeros((1,2,13,4,16)),industry_income=np.zeros((1,2,13,20,16)),education_industry=np.zeros((1,2,13,8,21)),model_version='3.0-M12',variant='base')
+            (p/'parent_mapping.csv').write_text('parent_code,area\n')
+            with self.assertRaises(ValueError):pv.EmploymentDistribution(p,p)
+    def test_status_codes_and_labor_mapping(self):
+        import persona_v3 as pv,build_employment as bm
+        self.assertEqual(pv.K,bm.K);self.assertEqual(len(pv.K),7);self.assertEqual(pv.J,bm.J)
+        self.assertEqual(bm.BLOCK,8*4*20*16+8*20+8+8)
+
+
+class EmploymentWebExportTests(unittest.TestCase):
+    """Issue #22 review: the export refuses artifacts, inputs and graph that do not come from the same model."""
+    def _world(self,ver_inputs='3.0-M12',ver_a='3.0-M12',ver_agg='3.0-M12',ver_graph='3.0-M12',variant='base',shift=0.):
+        import export_employment_web as ew
+        rng=np.random.default_rng(0);M=2;cube=rng.random((M,2,13,8,17))*100;N=cube.sum((3,4))
+        B=8*4*20*16;blk=np.zeros((1,2,13,B+160+16))
+        paid=rng.random((2,13,8,4,20,16));paid*= (cube.sum(0)[...,1:]/paid.sum((3,4)))[:,:,:,None,None,:]
+        fam=rng.random((2,13,8,20));zero=cube.sum(0)[...,0];fam*=(0.5*zero/fam.sum(-1))[...,None];un=0.2*zero;ina=0.3*zero
+        blk[0,...,:B]=paid.reshape(2,13,B);blk[0,...,B:B+160]=fam.reshape(2,13,160);blk[0,...,B+160:B+168]=un;blk[0,...,B+168:]=ina+shift
+        class Z(dict):
+            files=property(lambda self:list(self.keys()))
+        d=Z(areas=np.array(['13103','13104']),model_version=np.array(ver_a),variant=np.array(variant));agg=Z(codes=np.array(['00000']),blocks=blk,model_version=np.array(ver_agg),variant=np.array('base'))
+        edu_rate=rng.random((M,2,13,8));edu_q=rng.random((2,13,8,16)).tolist()
+        x={'model_version':ver_inputs,'areas':['13103','13104'],'cube':cube,'N':N,'inp':{'edu_rate':edu_rate,'edu_q':edu_q,'edu_share':np.full((M,2,13,8),1/8)}}
+        comp=cube.sum(3);nz=lambda a:np.divide(a,a.sum(-1,keepdims=True),out=np.zeros_like(a),where=a.sum(-1,keepdims=True)>0)
+        enc=lambda a:base64.b64encode(np.ascontiguousarray(a,dtype='<f8').tobytes()).decode('ascii')
+        payload={'model':{'model_version':ver_graph},'graph':{'munis':[{'c':'13103'},{'c':'13104'}],'pop':N.tolist(),'xd':enc(nz(comp[...,1:])),'e':enc(comp[...,1:].sum(-1)/N),'rs':enc(nz(cube.sum(4))),'rates':{'13103':edu_rate[0].tolist(),'13104':edu_rate[1].tolist()},'q':__import__('copy').deepcopy(edu_q)}}
+        return ew,payload,d,agg,x
+    def test_consistent_world_passes(self):
+        ew,p,d,a,x=self._world();c=ew.check_consistency(p,d,a,x);self.assertLess(c['national_block_vs_inputs_paid_max_error_persons'],1e-6)
+    def test_version_mismatch_is_refused(self):
+        ew,p,d,a,x=self._world(ver_inputs='different-model')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world(ver_graph='2.0')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+    def test_stale_graph_arrays_with_same_population_are_refused(self):
+        import base64
+        for key in ['xd','e','rs']:
+            ew,p,d,a,x=self._world();arr=np.frombuffer(base64.b64decode(p['graph'][key]),dtype='<f8').copy()
+            arr[len(arr)//3]+=0.01 if key!='e' else 0.01    # one municipality's income / employment / education value changes; population, version and national totals unchanged
+            p['graph'][key]=base64.b64encode(arr.tobytes()).decode('ascii')
+            with self.assertRaises(ValueError,msg=key):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world();p['graph']['rates']['13104'][1][4][2]+=0.05
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world();p['graph']['q'][0][0][0][3]+=0.05
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world();p['graph']['munis']=p['graph']['munis'][:1];p['graph']['pop']=p['graph']['pop'][:1]
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)   # a missing municipality code
+        ew,p,d,a,x=self._world();zero=np.zeros_like(np.frombuffer(base64.b64decode(p['graph']['xd']),dtype='<f8'));p['graph']['xd']=base64.b64encode(zero.tobytes()).decode('ascii')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)   # the reviewer's all-zero income distribution
+    def test_non_base_variant_and_margin_drift_are_refused(self):
+        ew,p,d,a,x=self._world(variant='national_kg')
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+        ew,p,d,a,x=self._world(shift=5.)
+        with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)

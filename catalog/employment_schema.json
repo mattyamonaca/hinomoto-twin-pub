@@ -1,0 +1,39 @@
+{
+  "stage": "A",
+  "description": "Web distribution of the stage-A conditional attributes (employment status, position, industry). graph.json schema_version 3 adds graph.emp; the page recomputes municipality blocks and fetches aggregated blocks.",
+  "graph.emp": {
+    "version": "model version of employment_a.npz (must equal graph model_version)",
+    "variant": "base",
+    "status_codes": ["K1","K2","K3","K4","K5","K6","K7"],
+    "labor_codes": ["J1","J2","J3"],
+    "industry_codes": ["G00","G01","...","G20"],
+    "prefs": "47 prefecture codes in array order",
+    "pref_of_muni": "prefecture index per graph.munis entry (-1 for aggregated-ward cities)",
+    "leaf_index": "row index into employment_inputs.bin per graph.munis entry (-1 for aggregated-ward cities)",
+    "pk_e": "base64 float32 [2,13,8,4] national P(status|education,sex,age) for K1..K4 (ESS 04000 by status)",
+    "pg": "base64 float32 [47,2,2,13,4,20] prefecture P(industry|status,sex,age) for graduates/enrolled (ESS 10-1, shrink 300 toward national)",
+    "tilt": "base64 float32 [2,4,20,16] industry income tilt relative to the status total (ESS 24, national, no age)",
+    "cp": "base64 float32 [47,2,13,4,16] prefecture status income shapes r(y|p,s,a,k)",
+    "pu_e": "base64 float32 [47,2,13,8] prefecture P(unemployed | not employed, education) (census 12-1, shrink 100)",
+    "inputs_file": "employment_inputs.bin",
+    "inputs_sha256": "sha256 of employment_inputs.bin",
+    "agg_files": {"<code>": "employment/agg_<code>.bin"},
+    "agg_sha256": {"<code>": "sha256"},
+    "block_layout": "paid[8,4,20,16] family[8,20] unemployed[8] inactive[8]",
+    "tolerance": {"ipf_relative": 1e-6, "seed_floor": 1e-4, "tilt_clip": [0.05, 20.0]}
+  },
+  "employment_inputs.bin": {
+    "dtype": "float32 little-endian",
+    "shape": [1916, 2, 13, 27],
+    "row": "leaf municipality (leaf_index order) x sex x age band",
+    "columns": ["W1 regular","W2 non-regular","W3 executive","W4 self-employed","W5 family worker","K6+K7 not employed","unemployed share of not employed","G01..G20 employed persons by industry scaled to model employed persons"]
+  },
+  "employment/agg_<code>.bin": {
+    "dtype": "float32 little-endian persons",
+    "shape": [2, 13, 10416],
+    "codes": "00000 nation, <pp>000 prefecture, aggregated-ward city codes",
+    "block": "paid[e,k,g,y] (8x4x20x16) + family[e,g] (8x20) + unemployed[e] (8) + inactive[e] (8)"
+  },
+  "page_computation": "For a leaf municipality x sex x age the page rebuilds the 8x17 education x income-component table with the education IPF, splits the zero-income component into family workers / not employed (IPF with education-specific employment rate seed), splits not employed into unemployed / not in labour force (IPF with pu_e seed), forms the paid seed R(e) P(k|e) P(g|k,e) P(y|k,g) and runs the 3-margin IPF (education x income, status, industry) to relative tolerance 1e-6. Verified against Python by tests/web_employment_check.cjs.",
+  "acceptance_criteria": {"max_abs_persons": 0.5, "max_tv": 1e-4, "margin_tv_vs_5_attribute_income": 1e-5, "all_ages_one_municipality_seconds": 2.0, "added_bytes_max": 120000000, "graph_growth_bytes_max": 10000000, "file_bytes_max": 2000000}
+}

@@ -30,13 +30,14 @@ def checks(d,fin,W,N,cnt):
  """Pure margin checks on arrays; returns the checks dict and pass flag."""
  kg=d['status_industry'];ke=d['education_status'];ky=d['status_income'];gy=d['industry_income'];res={}
  res['nonnegative']=bool((kg>=-1e-9).all() and (ke>=-1e-9).all() and (gy>=-1e-9).all())
+ res['structural_zeros']=bool(np.abs(kg[...,5:,1:]).max()<1e-9 and np.abs(kg[...,:5,0]).max()<1e-9)
  res['population_margin_max_error_persons']=float(np.abs(kg.sum((3,4))-N).max())
  res['status_margin_max_error_persons']=float(np.abs(ke[...,:5].sum(3)-W).max())
  res['production_income_margin_max_error_persons']=float(np.abs(ky.sum(3)-fin[...,1:]).max())
  emp=W.sum(-1);ok=cnt.sum(-1)>0
  gshare=norm(kg[...,:5,1:].sum(3));err=.5*np.abs(gshare-norm(cnt)).sum(-1)
  res['industry_margin_tv_weighted_mean']=float(np.average(err[ok],weights=emp[ok])) if ok.any() else 0.;res['industry_margin_tv_max']=float(err[ok].max()) if ok.any() else 0.
- passed=bool(res['nonnegative'] and res['population_margin_max_error_persons']<0.1 and res['status_margin_max_error_persons']<0.1 and res['production_income_margin_max_error_persons']<0.1 and res['industry_margin_tv_weighted_mean']<1e-3)
+ passed=bool(res['nonnegative'] and res['structural_zeros'] and res['population_margin_max_error_persons']<0.1 and res['status_margin_max_error_persons']<0.1 and res['production_income_margin_max_error_persons']<0.1 and res['industry_margin_tv_weighted_mean']<1e-3)
  return res,passed
 
 def evaluate(output_dir=None,sources_dir=None,reports_dir=None):

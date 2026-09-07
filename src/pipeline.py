@@ -19,6 +19,8 @@ STAGES = {
     'fetch-employment': ['fetch_employment.py'],
     'build-employment': ['build_employment.py'],
     'verify-employment': ['verify_employment.py'],
+    'synthetic-employment': ['synthetic_employment.py'],
+    'export-employment-web': ['export_employment_web.py', 'export_employment_reference.py'],
     'fetch-household': ['download_household.py'],
     'build-household': ['build_household.py'],
     'fetch-workplace': ['download_workplace.py'],

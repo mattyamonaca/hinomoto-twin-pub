@@ -16,6 +16,9 @@ help:
 	@echo "fetch-employment  Fetch/normalize stage-A employment tables (ESS 10-1, 04000 by status)"
 	@echo "build-employment  Allocate employment status x industry conditional on the production model"
 	@echo "verify-employment Verify margins and evaluate on held-out city tables"
+	@echo "synthetic-employment  Recovery of the unobserved education x status x industry x income association (stage A)"
+	@echo "export-employment-web Publish stage A for the Explorer (graph.json v3, employment_inputs.bin, employment/agg_*.bin)"
+	@echo "verify-web-employment jsdom check: the page reproduces the Python stage-A blocks (needs node + jsdom)"
 	@echo "fetch-household  Fetch/normalize census household tables for stage B"
 	@echo "build-household  Generate household compositions for selected municipalities (stage B, experimental)"
 	@echo "fetch-workplace  Fetch/normalize census commuting OD/ODI tables for stage C (142 workbooks, about 400 MB)"
@@ -66,6 +69,25 @@ experiment:
 synthetic:
 	$(PYTHON) src/pipeline.py synthetic
 
+.PHONY: synthetic-employment export-employment-web verify-web-employment
+synthetic-employment:
+	$(PYTHON) src/pipeline.py synthetic-employment
+export-employment-web:
+	$(PYTHON) src/pipeline.py export-employment-web
+verify-web-employment: site
+	node tests/web_employment_check.cjs dist/site
+
+.PHONY: fetch-employment build-employment verify-employment fetch-household build-household
+fetch-employment:
+	$(PYTHON) src/pipeline.py fetch-employment
+build-employment:
+	$(PYTHON) src/pipeline.py build-employment
+verify-employment:
+	$(PYTHON) src/pipeline.py verify-employment
+fetch-household:
+	$(PYTHON) src/pipeline.py fetch-household
+build-household:
+	$(PYTHON) src/pipeline.py build-household
 .PHONY: fetch-workplace build-workplace verify-workplace
 fetch-workplace:
 	$(PYTHON) src/pipeline.py fetch-workplace

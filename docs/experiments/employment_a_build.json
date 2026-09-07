@@ -8,7 +8,13 @@
     "K3",
     "K4",
     "K5",
-    "K6"
+    "K6",
+    "K7"
+  ],
+  "labor_codes": [
+    "J1",
+    "J2",
+    "J3"
   ],
   "industry_codes": [
     "G00",
@@ -35,14 +41,14 @@
   ],
   "margins": {
     "education_x_income": "production counts, preserved exactly",
-    "status": "employment-status table of build.py (K6 = N - employed)",
+    "status": "employment-status table of build.py (K6+K7 = N - employed; K6/K7 split by the municipal unemployed share of census 参考表1)",
     "industry": "census 6-3 employed persons scaled to model employed persons"
   },
   "shrink_kg_pseudopopulation": 300.0,
   "ipf": {
     "max_iterations": 600,
     "max_absolute_margin_error_persons": 0.03924783631198636,
-    "max_education_income_margin_error_persons": 0.018564796054306498,
+    "max_education_income_margin_error_persons": 0.018570715820715122,
     "max_status_margin_error_persons": 0.03924783631198636
   },
   "association_tv_joint_vs_independent": {
@@ -51,11 +57,14 @@
     "p90": 0.44727156168324633
   },
   "nonworker_share": 0.39371869427905737,
+  "unemployed_share": 0.024638337568468113,
+  "unemployed_share_of_not_employed": 0.06257853113524021,
   "family_share": 0.015918088207481234,
-  "elapsed_seconds": 155.5,
+  "elapsed_seconds": 179.8,
   "notes": [
     "Education x status x industry association is transported from national (04000) and prefecture (10-1) tables; municipal cross tables do not exist.",
     "Industry x income shapes have no age dimension (table 24).",
-    "Preserving the production education x income margins means this stage does not change any published 5-attribute probability."
+    "Preserving the production education x income margins means this stage does not change any published 5-attribute probability.",
+    "K6 (unemployed) vs K7 (not in labour force): municipal margin from census 参考表1 (imputed labour-force status), education association from prefecture census 12-1 with pseudo-population 100; no association with income is assumed (both have no main-job income)."
   ]
 }

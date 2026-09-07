@@ -4,7 +4,8 @@
   "variant": "base",
   "checks": {
     "nonnegative": true,
-    "population_margin_max_error_persons": 2.09641370929603e-09,
+    "structural_zeros": true,
+    "population_margin_max_error_persons": 2.096427920150745e-09,
     "status_margin_max_error_persons": 0.03924783631198636,
     "production_income_margin_max_error_persons": 0.022581790607318908,
     "industry_margin_tv_weighted_mean": 0.0009375873987378866,
