@@ -121,3 +121,35 @@ class HouseholdReviewCases(unittest.TestCase):
         with patch.object(pd,'read_csv',return_value=empty):
             res=bh.evaluate(x,N,T)
         self.assertEqual(round(res['_presence_debug']['under6_size3']),100)
+
+
+class HouseholdMixedSlotCases(unittest.TestCase):
+    """PR #18 follow-up (P2): the 10+ size bin has a non-integer mean size; fractional expected counts must keep their members."""
+    def _table(self,elderly):
+        # F4 households in the 10+ bin: head 40-44, nine non-elderly members, plus `elderly` members aged 65-69 per 100 households
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18));N[3,0,8,9]=100;T[3,0,8,9,0,0,8]=100;T[3,0,8,9,2,0,8]=900;T[3,0,8,9,4,0,13]=elderly
+        return N,T
+    def _elderly(self,N,T):
+        import build_household as bh
+        w=np.zeros(18);w[13:]=1
+        return bh.presence_count(N,T,w,size_k=9)
+    def test_reviewer_case_mean_size_10_4(self):
+        N,T=self._table(40);self.assertAlmostEqual(self._elderly(N,T),40.,places=6)
+    def test_fraction_below_half(self):
+        N,T=self._table(30);self.assertAlmostEqual(self._elderly(N,T),30.,places=6)
+    def test_fraction_at_or_above_half(self):
+        N,T=self._table(70);self.assertAlmostEqual(self._elderly(N,T),70.,places=6)
+    def test_integer_mean_size(self):
+        N,T=self._table(100);self.assertAlmostEqual(self._elderly(N,T),100.,places=6)
+    def test_mixed_roles_share_fractional_slots(self):
+        # 0.4 mixed slots split between two roles: 65-69 with probability 0.25 (10 persons) and 40-44 (30 persons) -> 0.4*0.25 = 10 households
+        N,T=self._table(10);T[3,0,8,9,9,0,8]=30
+        self.assertAlmostEqual(self._elderly(N,T),10.,places=6)
+    def test_evaluate_reports_10plus_bin(self):
+        import build_household as bh,pandas as pd
+        from unittest.mock import patch
+        N,T=self._table(40)
+        x={'code':'x','persons':T.sum((0,1,2,3,4)),'size':N.sum((0,1,2)),'P_F':T.sum((1,2,3,4,5,6)),'married':np.zeros((2,18)),'city_rel':None,'unknown_age_head_share':0.}
+        with patch.object(pd,'read_csv',return_value=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])):
+            res=bh.evaluate(x,N,T)
+        self.assertAlmostEqual(res['_presence_debug']['elderly_size10p'],40.,places=6)

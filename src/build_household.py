@@ -222,6 +222,42 @@ def materialize(x,X,plan):
        ages=lk[ai];T[fi,si,ai,k,ri]+=cnt*(sexsplit[:,:]*ages[None,:])
  return N,T
 
+def presence_prob(n,cell,w):
+ """P(at least one member in the target set) for households of one head cell, from the expected member table.
+
+ `cell` is T[f,s_h,a_h,size] (role x sex x age, persons), n the number of households, w[age] the membership weight of an
+ age band in the target set (1, 0, or fractional such as 0.2 for 5-9 when the target is 'under 6'). The head is member
+ 0 with weight w[head age]. Generative assumption (documented in docs/HOUSEHOLD_B.md): for each role the integer part of
+ the expected count c_r = persons/n is a fixed slot filled from that role's sex x age distribution; the fractional parts
+ form D = sum_r frac_r "mixed" slots that draw a role with probability frac_r/D. D itself need not be an integer (the
+ 10+ size bin carries a non-integer mean size), so the number of mixed slots is floor(D) with probability 1-(D-floor(D))
+ and ceil(D) otherwise, which preserves the expected number of members. Members are drawn independently within a slot.
+ """
+ head=cell[0].sum(0);p_none=1-(head*w).sum()/head.sum() if head.sum()>0 else 1.
+ mix_num=0.;mix_den=0.
+ for ri in range(1,13):
+  mem=cell[ri].sum(0);c=mem.sum()/n
+  if c<=0:continue
+  q=(mem*w).sum()/mem.sum();fl=int(np.floor(c+1e-9));frac=c-fl
+  p_none*=(1-q)**fl;mix_num+=frac*q;mix_den+=frac
+ if mix_den>1e-9:
+  qm=mix_num/mix_den;d0=int(np.floor(mix_den+1e-9));delta=mix_den-d0
+  if delta<1e-9:delta=0.
+  p_none*=(1-delta)*(1-qm)**d0+delta*(1-qm)**(d0+1)
+ return 1-p_none
+
+def presence_count(N,T,w,size_k=None,family=None):
+ """Expected number of households with at least one member in the target set defined by weights w[age]."""
+ tot=0.
+ for fi in ([family] if family is not None else range(7)):
+  for si in range(2):
+   for ai in range(18):
+    for k in ([size_k] if size_k is not None else range(10)):
+     n=N[fi,si,ai,k]
+     if n<=0:continue
+     tot+=n*(1 if w[ai]>=1 else presence_prob(n,T[fi,si,ai,k],w))
+ return tot
+
 def evaluate(x,N,T):
  """Held-out comparisons and consistency checks."""
  res={}
@@ -247,37 +283,16 @@ def evaluate(x,N,T):
  # 8-1 / 26-1 / 9-1 held-out: presence of members by age class x size
  res['_presence_debug']=None
  ac=pd.read_csv(D/'age_class_size_tidy.csv.gz',dtype={'area':str,'age_class':str});el=pd.read_csv(D/'elderly_size_tidy.csv.gz',dtype={'area':str,'elderly_class':str});fa=pd.read_csv(D/'family_age_class_tidy.csv.gz',dtype={'area':str,'family_type':str})
- def presence(bands,size_k,weights=None):
-  """Expected number of households of size size_k+1 with at least one member in `bands`.
-  Composition model per head cell: the k non-head slots are filled by roles whose expected counts c_r sum to k; integer
-  parts of c_r are fixed slots, fractional parts are one mixed draw per remaining slot (roles in proportion to the
-  fractions). Member ages within a role follow the cell's fitted band distribution. `weights` (18,) scales band
-  membership (e.g. 0.2 for 5-9 when the target is 'under 6'); default = indicator of `bands`."""
+ def presence(bands,size_k,weights=None,family=None):
+  """Households in size bin `size_k` (all family types, or one) with at least one member in the target set; see presence_prob()."""
   w=np.zeros(18);w[bands]=1
   if weights is not None:w=weights
-  tot=0.
-  for fi in range(7):
-   for si in range(2):
-    for ai in range(18):
-     n=N[fi,si,ai,size_k]
-     if n<=0:continue
-     if w[ai]>=1:tot+=n;continue                       # the head is certainly in the target set
-     p_none=1-w[ai]                                     # head partially in the set (fractional weight)
-     mix_num=0.;mix_den=0.
-     for ri in range(1,13):
-      mem=T[fi,si,ai,size_k,ri].sum(0);c=mem.sum()/n
-      if c<=0:continue
-      q=(mem*w).sum()/mem.sum();f=int(np.floor(c+1e-9));frac=c-f
-      p_none*=(1-q)**f
-      mix_num+=frac*q;mix_den+=frac
-     if mix_den>1e-9:p_none*=(1-mix_num/mix_den)**round(mix_den)
-     tot+=n*(1-p_none)
-  return tot
+  return presence_count(N,T,w,size_k,family)
  res['_presence_debug']={'elderly_size2':None,'under6_size3':None}
  def size_presence_table(bands):
   return np.array([presence(bands,k) for k in range(6)]+[sum(presence(bands,k) for k in range(6,10))])
  w6d=np.zeros(18);w6d[0]=1;w6d[1]=0.2
- res['_presence_debug']={'elderly_size2':presence(list(range(13,18)),1),'under6_size3':presence([0],2,w6d)}
+ res['_presence_debug']={'elderly_size2':presence(list(range(13,18)),1),'under6_size3':presence([0],2,w6d),'elderly_size10p':presence(list(range(13,18)),9)}
  sub=ac[(ac.area==x['code'])];obs_u6=sub[sub.age_class=='1'].iloc[0][[f'S{i}' for i in ['01','02','03','04','05','06','07p']]].to_numpy(float) if len(sub) else None
  if obs_u6 is not None:
   w6=np.zeros(18);w6[0]=1;w6[1]=0.2                  # under 6 = all of 0-4 plus one fifth of 5-9 (uniform within the band)
@@ -293,20 +308,7 @@ def evaluate(x,N,T):
   for f,code in [('F1','111'),('F2','112'),('F4','12'),('F5','2'),('F6','3')]:
    r=sub[sub.family_type==code]
    if not len(r):continue
-   fi=F.index(f);gen_u15=0.
-   for si in range(2):
-    for ai in range(18):
-     for k in range(10):
-      n=N[fi,si,ai,k]
-      if n<=0:continue
-      if ai<3:gen_u15+=n;continue
-      p_none=1.;mix_num=0.;mix_den=0.
-      for ri in range(1,13):
-       mem=T[fi,si,ai,k,ri].sum(0);c=mem.sum()/n
-       if c<=0:continue
-       q=mem[:3].sum()/mem.sum();fl=int(np.floor(c+1e-9));frac=c-fl;p_none*=(1-q)**fl;mix_num+=frac*q;mix_den+=frac
-      if mix_den>1e-9:p_none*=(1-mix_num/mix_den)**round(mix_den)
-      gen_u15+=n*(1-p_none)
+   fi=F.index(f);gen_u15=sum(presence([0,1,2],k,family=fi) for k in range(10))
    rows[f]={'generated_households_with_under15':round(float(gen_u15),1),'observed':float(r.iloc[0].u15),'total_households':float(r.iloc[0].total)}
   res['heldout_9_1_under15_by_family_type']=rows
  return res

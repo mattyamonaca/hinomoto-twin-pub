@@ -50,7 +50,8 @@
     },
     "_presence_debug": {
       "elderly_size2": 2096.571236207215,
-      "under6_size3": 198.76797774557556
+      "under6_size3": 198.76797774557556,
+      "elderly_size10p": 0.7952117101174202
     },
     "heldout_8_1_under6_by_size": {
       "generated": [

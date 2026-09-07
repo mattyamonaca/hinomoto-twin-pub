@@ -67,7 +67,8 @@
     },
     "_presence_debug": {
       "elderly_size2": 17620.474831227246,
-      "under6_size3": 3906.133130644243
+      "under6_size3": 3906.133130644243,
+      "elderly_size10p": 10.238924354734394
     },
     "heldout_8_1_under6_by_size": {
       "generated": [
@@ -77,7 +78,7 @@
         3815.6,
         2085.7,
         718.6,
-        304.1
+        304.0
       ],
       "observed": [
         0.0,
@@ -88,9 +89,9 @@
         1002.0,
         455.0
       ],
-      "tv": 0.13346887017449763,
-      "total_ratio": 1.037747551321512,
-      "total_ratio_adjusted_for_unknown_age_heads": 0.9742984593119716
+      "tv": 0.133469755962492,
+      "total_ratio": 1.0377420893723508,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9742933313127337
     },
     "heldout_26_1_elderly_by_size": {
       "generated": [
@@ -100,7 +101,7 @@
         4354.4,
         2271.1,
         802.2,
-        344.2
+        342.8
       ],
       "observed": [
         17779.0,
@@ -111,9 +112,9 @@
         476.0,
         283.0
       ],
-      "tv": 0.08277540811251564,
-      "total_ratio": 1.0585124763607958,
-      "total_ratio_adjusted_for_unknown_age_heads": 0.9937937926883207,
+      "tv": 0.08276306272638775,
+      "total_ratio": 1.0584839387282892,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9937669998798498,
       "note": "Published presence counts exclude age-unknown members; generated households allocate unknown-age heads to known ages, so the unadjusted ratio is expected to exceed 1 by about the unknown-age share."
     },
     "heldout_9_1_under15_by_family_type": {
@@ -144,7 +145,7 @@
       }
     }
   },
-  "elapsed_seconds": 0.7,
+  "elapsed_seconds": 0.8,
   "assumptions": [
     "Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).",
     "Unknown-age heads are spread within sex x family type in proportion to known ages.",
