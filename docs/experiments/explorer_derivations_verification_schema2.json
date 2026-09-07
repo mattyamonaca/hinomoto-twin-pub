@@ -1,6 +1,17 @@
 {
  "passed": true,
  "no_emp_dataset": true,
+ "plain_wording": {
+  "intro_plain": true,
+  "income_share_plain": true,
+  "income_formula_kept": true,
+  "m2_named_by_role": true,
+  "assumption_summary_first": true,
+  "area_not_evaluated_plain": true,
+  "undefined_message_plain": true,
+  "zero_population_explained": true
+ },
+ "plain_wording_ok": true,
  "reproduction": {
   "code_ref": "b4a03510df6e39d87ce6b77e89a88276ca688f3e",
   "pinned": true,
@@ -48,6 +59,7 @@
   "town_marked_not_evaluated": true,
   "city_marked_included": true,
   "old_version_flagged": true,
+  "a06_plain_old_method": true,
   "direct_has_limits": true,
   "tax_units_in_csv": 1741,
   "tax_rule_mismatches": [],
