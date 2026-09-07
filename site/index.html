@@ -957,7 +957,7 @@ function renderWorkplace(code){
 /* ---------- model derivations (Issue #30): how each M artifact is produced, with the current selection's values ---------- */
 var DER = { open: 0 }, NAV = [];
 var REPO = 'https://github.com/mattyamonaca/hinomoto-twin-pub/blob/main/';
-var TAG = { obs: '観測値', asm: '仮定', est: '推定値', out: '出力' };
+var TAG = { obs: '観測値', asm: '独自仮定', est: '推定値', out: '出力' };
 function derCtx(){
   var m = S.muni ? G.munis[MI[S.muni]] : null, pr = S.pref ? PI[S.pref] : null;
   return { m: m, pr: pr, key: scope(), here: m ? m.n : pr ? pr.n : '全国', who: (S.age !== null ? AGE[S.age] : '15歳以上すべて') + '・' + (S.sex !== null ? SEX[S.sex] : '男女計'), agg: !m || m.s === 'aggregated_wards', leaf: !!(m && m.s !== 'aggregated_wards') };
@@ -1014,7 +1014,7 @@ var MODEL_DERIVATIONS = {
       { kind: 'output', tag: 'out', title: '出力：非就業者を加えた住民全体の分布', plain: '非就業者を「50万円未満」に置いて住民全体の分布にする。これが公開ページの年収帯の値（学歴などを選んでいないとき）。', tech: 'counts_by_sex[m,s,a,0] = N − W、[1..16] = 就業者の年収階級。', src: [['M2','counts_by_sex'],['S1','N']],
         value: function(c){ var b = baseNumbers(); if (!b.defined) return { rows: [] }; return { rows: [['就業率', pct(b.er, 1)], ['住民全体の 500万円以上', pct(p500(b.pF), 1) + '（就業者では ' + pct(p500(b.pD), 1) + '）']], dist: { before: b.pD, after: b.pF, bl: '就業者', al: '住民全体（非就業者を50万円未満に）', clip: true } }; } }
     ],
-    assumptions: ['学歴・産業の効果を混合分布に乗算する近似（校正前に掛ける）', '全国の学歴別・産業別所得形状の移植（産業別に年齢区分なし）', '税務係数 0'],
+    assumptions: ['学歴・産業の効果を混合分布に乗算する近似（校正前に掛ける）', '全国の学歴別・産業別所得形状の移植（産業別に年齢区分なし）', '学歴の係数1.5・産業の係数1.0・税務係数0は本プロジェクトの検証に基づく採用値'],
     validation: '86都市の out-of-fold で TV 0.09328 → 0.08987（M1 比 0.14%）。独立統計（市町村税課税状況等の調）との相対水準は市部で整合、町村では産業の傾きが逆方向（docs/VALIDATION_M12.md）。町村・行政区・性別別・学歴別の分布は未検証。' },
   M3: { name: '学歴別の所得配列', artifact: 'data/education_leaf_arrays.npz / municipality_model_v2.npz', up: ['M2'], code: 'src/build_education.py（prepare, allocate）。公開ページは同じ IPF を再計算', method: 'METHOD_V2.md', year: '2020年人口・2022年所得',
     scope: function(c){ return c.here + '・' + c.who + (S.edu !== null ? '・' + EDU[S.edu] : '（学歴を選ぶと数値を表示）'); },
@@ -1029,7 +1029,7 @@ var MODEL_DERIVATIONS = {
       { kind: 'output', tag: 'out', title: '出力：学歴別分布', plain: '公開ページの学歴を選んだときの年収帯の値。CSV の p_age_sex_education_income_given_municipality。', tech: 'counts[m,s,a,e,y]（0 円成分は I01 に統合）。', src: [['M3','counts']],
         value: function(c){ var x = eduNumbers(); return { rows: x ? [['P(年収 ≥500万円｜' + EDU[x.e] + ')', pct(p500(x.pF), 1)]] : [] }; } }
     ],
-    assumptions: ['全国の学歴 × 年収の関連を全地域に移植（学歴別オッズ比を保存）', '学歴不詳は独立区分として保持', '在学中（E06）は在学者の就業率'],
+    assumptions: ['全国の学歴 × 年収の関連を全地域に移植（学歴別オッズ比を保存）', '学歴不詳は独立区分として保持', '在学中は独立区分として在学者の就業率を使う'],
     validation: '内部整合（行・列の周辺一致）と感度分析（初期形状の学歴差を半減すると 500万円以上が平均 1.9 ポイント）。学歴別の市区町村精度は未検証。' },
   M4: { name: '就業状態・地位・産業の配分ブロック（段階A）', artifact: 'data/employment_a.npz, employment_a_agg.npz, web/employment_inputs.bin, employment/agg_*.bin', up: ['M3','M1'], code: 'src/build_employment.py（block）。公開ページは市区町村で同じ配分を再計算、都道府県・全国・政令市は集計ブロック', method: 'docs/EMPLOYMENT_A.md', year: '2020年人口・2022年所得',
     scope: function(c){ return c.here + '・' + pathName() + (empAvailable() ? '' : '。このデータセットには段階A が含まれていない'); },
@@ -1058,7 +1058,7 @@ var MODEL_DERIVATIONS = {
       { kind: 'output', tag: 'out', title: '出力：同居の集計', plain: '構成員の性別 × 年齢ごとの単独・配偶者・子・親・65歳以上との同居割合。配偶者は世帯主とその配偶者でのみ判定、18歳未満は 15〜19歳の 3/5 の仮定。', tech: 'web/household/<code>.json。', src: [['M5','by_sex_age']],
         value: function(c){ if (!c.m || !hhAvailable(c.m.c) || !HH_STATE.data[c.m.c]) return { rows: [] }; return { rows: [['表示', '市区町村パネルの「世帯構成を見る」']] }; } }
     ],
-    assumptions: ['構成員は世帯主セルを条件に独立に抽出', '世帯内の所得・学歴の相関は未観測', '10人以上区分は平均人数の ⌊m⌋/⌈m⌉ 混合'],
+    assumptions: ['構成員は世帯主セルを条件に独立に抽出', '世帯内の所得・学歴の相関は未観測', '10人以上区分は平均人数の ⌊m⌋/⌈m⌉ 混合', '世帯員の年齢差は独自の事前分布（配偶者の年齢差の平均2.5歳・標準偏差4.5歳等）', '18歳未満は15〜19歳階級の3/5と仮定'],
     validation: '未使用表（26-1、8-1、9-1）で 65歳以上あり世帯 1.03〜1.06 倍、6歳未満 1.00〜1.06 倍、夫婦と子の15歳未満 95〜97%。港区の 13-2 都市行 TV 0.025。' },
   M6: { name: '居住地 × 勤務地 × 産業の表（段階C）', artifact: 'data/workplace_c.npz, web/workplace/{o,d}_<code>.json', up: ['M4'], code: 'src/build_workplace.py, src/persona_v4.py, src/export_workplace_web.py', method: 'docs/WORKPLACE_C.md', year: '2020年（国勢調査 従業地集計）',
     scope: function(c){ return wpAvailable() ? (c.m ? esc(c.m.n) + '（' + (WP_STATE.mode === 'residence' ? '居住する人の勤務地' : '働きに来る人の居住地') + '）' : '市区町村を選ぶと数値を表示') : 'このデータセットには段階C が含まれていない'; },
@@ -1075,6 +1075,23 @@ var MODEL_DERIVATIONS = {
     assumptions: ['年齢・性別・学歴と勤務地は産業を介した条件付き独立', '所得と勤務地の関連は未観測', '流入側は産業のみ条件付け'],
     validation: '未使用の第9表（大都市等 290 地域）で P(勤務地｜居住地, 産業) の TV 0.034（産業を無視すると 0.141）。大都市等以外は未検証。' }
 };
+/* Literature supports a method, not automatically the local assumptions using it. */
+var MODEL_LITERATURE = {
+  ipf: { title: 'Lovelace・Birkin・Ballas・van Leeuwen (2015)', url: 'https://www.jasss.org/18/2/21.html', name: 'Evaluating the Performance of Iterative Proportional Fitting for Spatial Microsimulation', checked: '本文 §1.11–1.15・抄録、2026-09-07確認', supports: '公表周辺に合わせるIPFと、初期値・空セルへの感度を検証する方法の参考。', limit: '本モデルの日本の地域別所得形状、独立性、係数を実証する論文ではない。' },
+  income: { title: '杉浦・村田・原田 (2019)', url: 'https://www.jstage.jst.go.jp/article/iscie/32/2/32_69/_article/-char/ja', name: '賃金構造基本統計調査に基づく合成人口の労働者への就業属性別の所得の割当て', checked: '公開抄録・書誌、2026-09-07確認', supports: '就業属性を用いて所得を割り当てる設計の参考。', limit: '本モデルの年間所得分布、学歴・産業の乗算、地域への形状移植や係数の根拠とはしない。' },
+  household: { title: '原田・村田・枡井 (2018)', url: 'https://www.jstage.jst.go.jp/article/sicetr/54/9/54_705/_article/-char/ja', name: '家族類型と世帯内の役割を考慮したSA法による大規模世帯の合成', checked: '公開抄録・書誌、2026-09-07確認', supports: '世帯構成を統計に合わせて合成し、年齢交換や使用統計を評価する研究。', limit: '本実装は同論文のSA法の再現ではない。独立抽出、年齢差の事前分布、端数人数の混合を裏付けるものではない。' },
+  workplace: { title: '堀上・村田 (2026)', url: 'https://www.jstage.jst.go.jp/article/sicetr/62/6/62_228/_article/-char/ja', name: '合成人口データにおける全自治体の就業者への従業地割当て', checked: '公開抄録のみ（本文未確認）、2026-09-07確認', supports: '多次元IPFで居住地・勤務地・産業を整合し、居住地と産業を条件に割り当てる方針の参考。', limit: '年齢・性別・学歴との条件付き独立は実証していない。本実装の周辺の選択・初期値・評価は独自設計。' }
+};
+var MODEL_EVIDENCE = {
+  M1: ['ipf','income'], M2: ['ipf','income'], M3: ['ipf'],
+  M4: ['ipf','income'], M5: ['household','ipf'], M6: ['workplace','ipf']
+};
+function assumptionEvidenceHtml(id){
+  var M = MODEL_DERIVATIONS[id];
+  return '<h3 class="dh">仮定の根拠</h3><p class="ex">「独自仮定」は、この実装で採用した仮定・設計判断です。下記の参考論文は手法の根拠であり、個々の独自仮定や推定精度を保証するものではありません。直接の裏付けを確認できない仮定を、論文由来とは表示しません。</p>' +
+    '<ul class="asm">' + M.assumptions.map(function(a){ return '<li><span class="ftag asm">独自仮定</span> ' + esc(a) + '<br><small>根拠：本プロジェクトの設計判断。直接の論文による裏付けは未確認。</small></li>'; }).join('') + '</ul>' +
+    '<h3 class="dh">手法の参考論文と適用範囲</h3><ul class="asm">' + MODEL_EVIDENCE[id].map(function(k){ var r = MODEL_LITERATURE[k]; return '<li><a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.title) + ' — ' + esc(r.name) + '</a><p>' + esc(r.supports) + '</p><p>' + esc(r.limit) + '</p><small>確認範囲：' + esc(r.checked) + '</small></li>'; }).join('') + '</ul>';
+}
 function derLinks(id){ var M = MODEL_DERIVATIONS[id]; return '<p class="src">コード：<code>' + esc(M.code) + '</code>　方法：<a href="' + REPO + M.method + '" target="_blank" rel="noopener">' + esc(M.method) + '</a>　成果物：<code>' + esc(M.artifact) + '</code></p>'; }
 function derOpen(id, fromSel){
   if (!MODEL_DERIVATIONS[id]) return;
@@ -1106,7 +1123,7 @@ function renderModelDerivation(id){
   if (v.rows && v.rows.length) h += '<div class="vals">' + dl(v.rows) + '</div>'; else h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">この条件で表示できる数値はありません（条件を選ぶか、対象データを読み込んでください）。</p>';
   if (v.dist){ var stages = [{ t: v.dist.bl, s: '', p: v.dist.before, dim: 'muni', clip: !!v.dist.clip }, { t: v.dist.al, s: '', p: v.dist.after, dim: 'inc', clip: !!v.dist.clip, last: true }]; h += renderStages(stages, null, '同じ尺度で比較'); }
   h += '<details class="tech"><summary>技術的な詳細</summary><p>' + st.tech + '</p></details>' + ref(st.src) + '</div>';
-  h += '<h3 class="dh">仮定と検証</h3><ul class="asm">' + M.assumptions.map(function(a){ return '<li><span class="ftag asm">仮定</span>' + esc(a) + '</li>'; }).join('') + '</ul><p>' + esc(M.validation) + '</p>' + derLinks(id);
+  h += assumptionEvidenceHtml(id) + '<h3 class="dh">検証結果</h3><p>' + esc(M.validation) + '</p>' + derLinks(id);
   h += '<p class="note">この画面は現在の選択条件の値を既存の計算から取り出して表示しています。閲覧しても条件・分布は変わりません。</p>';
   P.innerHTML = h;
 }
