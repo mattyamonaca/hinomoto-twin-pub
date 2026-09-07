@@ -221,3 +221,31 @@ class EmploymentWebExportTests(unittest.TestCase):
         with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
         ew,p,d,a,x=self._world(shift=5.)
         with self.assertRaises(ValueError):ew.check_consistency(p,d,a,x)
+class HouseholdSamplingTests(unittest.TestCase):
+    """Issue #23: households drawn from the expected tables keep integer sizes and the family x size totals."""
+    def _sampler(self):
+        import household_sample as hs
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18))
+        N[1,0,8,2]=40.6;T[1,0,8,2,0,0,8]=40.6;T[1,0,8,2,1,1,8]=40.6;T[1,0,8,2,2,0,1]=20.3;T[1,0,8,2,2,1,1]=20.3    # F2 size 3: head, spouse, one child
+        N[3,0,8,1]=30.4;T[3,0,8,1,0,0,8]=30.4;T[3,0,8,1,2,0,13]=15.2;T[3,0,8,1,9,0,13]=15.2                          # F4 size 2: other member child 50% / relative 50%
+        N[3,0,8,9]=25.;T[3,0,8,9,0,0,8]=25.;T[3,0,8,9,2,0,8]=225.;T[3,0,8,9,4,0,13]=10.                              # F4 10+: mean 10.4
+        return hs,hs.HouseholdSampler('00000',arrays=(N,T))
+    def test_sizes_are_exact_for_closed_bins_and_mixed_for_10plus(self):
+        hs,S=self._sampler();df=S.population(seed=3)
+        self.assertTrue((df[df.size_bin==2].groupby('household_id').size()==3).all())
+        self.assertTrue((df[df.size_bin==1].groupby('household_id').size()==2).all())
+        big=df[df.size_bin==9].groupby('household_id').size();self.assertTrue(set(big.unique())<={10,11});self.assertAlmostEqual(big.mean(),10.4,delta=0.5)
+        self.assertAlmostEqual(S.mean_size[9],10.4,places=6)
+    def test_controlled_rounding_keeps_family_size_totals(self):
+        hs,S=self._sampler();hh=S.population(seed=5).query('member_id==1')
+        for (f,k),n in [((1,2),40.6),((3,1),30.4),((3,9),25.)]:self.assertLessEqual(abs(((hh.family==f)&(hh.size_bin==k)).sum()-n),1.)
+    def test_two_person_households_always_have_the_elderly_member(self):
+        hs,S=self._sampler();df=S.population(seed=7);two=df[df.size_bin==1]
+        self.assertTrue((two.groupby('household_id')['age18'].max()>=13).all())    # the fixed-count slot is exclusive between the two roles
+    def test_age_mapping_and_income_population_flag(self):
+        import household_sample as hs
+        self.assertIsNone(hs.age18_to_model(2));self.assertEqual(hs.age18_to_model(3),0);self.assertEqual(hs.age18_to_model(17),12)
+        hh=self._sampler()[1].sample_households(3,seed=1)
+        for h in hh:
+            self.assertEqual(h['size'],len(h['members']))
+            for m in h['members']:self.assertEqual(m['in_income_population'],hs.A18.index(m['age_band18'])>=3)

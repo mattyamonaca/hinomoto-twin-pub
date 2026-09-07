@@ -25,6 +25,13 @@ def build(graph_path, destination):
             src=web/rel
             if not src.is_file():raise FileNotFoundError(f'Stage-A web file missing: {src}')
             (data/rel).parent.mkdir(parents=True,exist_ok=True);shutil.copy2(src,data/rel)
+    hh=payload['graph'].get('household')
+    if hh:
+        web=Path(graph_path).parent
+        for c,info in hh['codes'].items():
+            src=web/info['file']
+            if not src.is_file():raise FileNotFoundError(f'Stage-B web file missing: {src}')
+            (data/info['file']).parent.mkdir(parents=True,exist_ok=True);shutil.copy2(src,data/info['file'])
     print(f'Site assembled at {destination}; dataset={payload.get("dataset_version", "unspecified")}')
 
 if __name__=='__main__':

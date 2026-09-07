@@ -803,6 +803,44 @@ function derivationEmp(y){
   return h;
 }
 
+/* ---------- stage B: household composition (selected municipalities, experimental) ---------- */
+var HH = G.household || null, HH_STATE = { data: {}, loading: {}, failed: {} };
+function hhAvailable(code){ return !!(HH && HH.codes && HH.codes[code]); }
+function hhLoad(code){
+  if (HH_STATE.data[code] || HH_STATE.loading[code] || HH_STATE.failed[code]) return;
+  HH_STATE.loading[code] = true;
+  fetch(empUrl(HH.codes[code].file)).then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(j){ HH_STATE.data[code] = j; HH_STATE.loading[code] = false; renderPanel(); }).catch(function(e){ HH_STATE.loading[code] = false; HH_STATE.failed[code] = String(e); renderPanel(); });
+}
+var HH_AGE13_TO_18 = [3,4,5,6,7,8,9,10,11,12,13,14,null];   /* model band -> 18-band index; 75+ spans 15..17 */
+function renderHousehold(code){
+  var P = $('panel'), m = G.munis[MI[code]], d = HH_STATE.data[code], h = '';
+  P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--d-muni)'); P.style.setProperty('--soft', 'var(--d-muni-soft)');
+  h += '<span class="eyebrow">世帯構成（段階B・試験）</span><h2>' + esc(m.n) + 'の世帯</h2><p class="sub">2020年国勢調査の世帯表から生成した一般世帯の整数個票（seed 1）</p>';
+  if (!d){ hhLoad(code); P.innerHTML = h + '<p class="note">' + (HH_STATE.failed[code] ? '読み込みに失敗しました：' + esc(HH_STATE.failed[code]) : '世帯データを読み込んでいます…') + '</p>'; return; }
+  var famMax = Math.max.apply(null, d.family_type);
+  h += '<h3 class="dh">分母</h3><div class="vals">' + dl([['一般世帯数', fmtN(d.households) + ' 世帯（期待値 ' + fmtN(d.expected_households) + '。施設等の世帯を除く）'], ['一般世帯の構成員', fmtN(d.members) + ' 人（うち15歳以上 ' + fmtN(d.members_15plus) + '、15歳未満 ' + fmtN(d.members_under_15) + '）'], ['個人モデルの15歳以上人口', fmtN(m.p) + ' 人（施設等の居住者を含む常住人口。世帯の構成員より多い）'], ['所得母集団', '15歳以上の構成員のみ。15歳未満は年収・学歴・就業の属性を持たない']]) + '</div>';
+  h += '<h3 class="dh">家族類型（世帯の割合）</h3>' + mini(d.family_labels.map(function(l, i){ return [d.family_codes[i] + ' ' + l, d.family_type[i], pct(d.family_type[i]/d.households, 1)]; }), famMax);
+  var s = S.sex, aM = S.age, rows = [], sexes = s === null ? [0,1] : [s], bands = aM === null ? [] : (aM === 12 ? [15,16,17] : [HH_AGE13_TO_18[aM]]);
+  function agg(sexes, bands){ var n = 0, acc = { alone: 0, with_spouse: 0, with_child_u18: 0, with_child_any: 0, with_parent: 0, with_65: 0, is_head: 0 }, size = [0,0,0,0,0,0,0]; sexes.forEach(function(sx){ bands.forEach(function(b){ var r = d.by_sex_age[sx*18 + b]; if (!r) return; n += r.n; Object.keys(acc).forEach(function(k){ acc[k] += r[k]*r.n; }); for (var i = 0; i < 7; i++) size[i] += r.size[i]*r.n; }); }); if (!n) return null; Object.keys(acc).forEach(function(k){ acc[k] /= n; }); return { n: n, v: acc, size: size.map(function(x){ return x/n; }) }; }
+  var who = (aM !== null ? AGE[aM] : '15歳以上すべて') + '・' + (s !== null ? SEX[s] : '男女計');
+  var A = agg(sexes, aM === null ? [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17] : bands);
+  if (A){
+    h += '<h3 class="dh">' + esc(who) + 'の構成員から見た世帯</h3><p class="ex" style="font-size:12px;color:var(--ink-2)">分母：この性別・年齢の一般世帯の構成員 ' + fmtN(A.n) + ' 人。「子と同居」は本人が世帯主または配偶者で、同じ世帯に続き柄「子」がいる割合。「親と同居」は本人が世帯主の子であるか、世帯主（配偶者）の父母が同居する割合。</p>' + mini([['単独世帯', A.v.alone, pct(A.v.alone, 1)], ['配偶者と同居', A.v.with_spouse, pct(A.v.with_spouse, 1)], ['18歳未満の子と同居', A.v.with_child_u18, pct(A.v.with_child_u18, 1)], ['子（年齢を問わず）と同居', A.v.with_child_any, pct(A.v.with_child_any, 1)], ['親と同居', A.v.with_parent, pct(A.v.with_parent, 1)], ['65歳以上の世帯員あり', A.v.with_65, pct(A.v.with_65, 1)], ['本人が世帯主', A.v.is_head, pct(A.v.is_head, 1)]], 1);
+    h += '<p class="l" style="margin-top:8px">世帯人数（構成員から見た割合）</p>' + mini(A.size.map(function(v, i){ return [(i < 6 ? (i + 1) + '人' : '7人以上'), v, pct(v, 1)]; }), Math.max.apply(null, A.size));
+  }
+  var U = agg([0,1], [0,1,2]);
+  if (U) h += '<h3 class="dh">15歳未満の構成員（' + fmtN(U.n) + ' 人）</h3><p class="ex" style="font-size:12px;color:var(--ink-2)">所得母集団の外。世帯の生成では0〜14歳を含めて構成員を作る。</p>' + mini([['親と同居（続き柄「子」として）', 1 - U.v.is_head, pct(1 - U.v.is_head, 1)], ['65歳以上の世帯員あり', U.v.with_65, pct(U.v.with_65, 1)]], 1);
+  h += '<h3 class="dh">導出</h3>' + calc([
+    ['世帯主の性別 × 年齢 × 家族類型 × 世帯人数の世帯数を作る', '12-3（世帯主）・12-4（人員）・6-3（人数）を制約に反復比例調整', '家族類型別世帯数・人員・人数別世帯数は最終出力で誤差 0（人数単位）。', [['S14', '12-3 / 12-4 / 6-3']]],
+    ['世帯主セルごとに構成員の続き柄・性別・年齢の期待人数を置く', '13-2（都道府県の続き柄構造）と年齢差の事前分布を X の周辺に合わせる', '役割別期待人数の整数部分は固定枠、端数は混合枠（⌊D⌋/⌈D⌉）。10人以上は平均人数の ⌊m⌋/⌈m⌉ 混合。', [['S14', '13-2、参考表1-4']]],
+    ['整数個票を抽出する', '世帯主セルごとに世帯数を管理丸め（家族類型 × 人数の合計が ±1）、各世帯の構成員を上の生成過程から抽出（seed 1）', '同じ世帯の構成員は世帯主セルを条件に独立に抽出（きょうだいの年齢間隔などは未モデル化）。', [['M5', 'household_b/<code>_population.csv.gz']]],
+    ['15歳以上の構成員に個人属性を結びつける', '性別 × 年齢帯ごとに段階Aのブロック（学歴 × 地位 × 産業 × 年収）から抽出', '学歴 × 年収の周辺は公開中の5属性モデルと一致（期待値）。世帯内の所得・学歴の相関は未観測で、独立に抽出。就業収入の世帯合計を「世帯年収」とは呼ばない。', [['M4', '段階Aブロック'], ['M3', '5属性の周辺']]],
+    ['未使用の公表表で確かめる', '65歳以上世帯員のいる世帯（26-1）、6歳未満（8-1）、家族類型別の15歳未満（9-1）', '整数個票からの集計と公表値の比較は docs/HOUSEHOLD_B.md §7。', [['S14', '26-1 / 8-1 / 9-1']]]
+  ]);
+  h += '<p class="note">' + esc(d.note) + '</p><button class="action" data-go="muni" data-id="' + code + '">個人の属性に戻る</button>';
+  P.innerHTML = h;
+}
+
 function renderInc(){
   var r = incDist(), rows = [], max = 0, y;
   if (!r.defined){ $('list-inc').innerHTML = '<div class="grp">' + esc(scopeName()) + '・' + esc(pathName()) + '　P(年収帯｜…)</div><div class="empty' + (r.loading ? '' : ' undef') + '">' + (r.loading ? LOADING_MSG : UNDEF_MSG) + '</div>'; $('cap-inc').innerHTML = '<b>未定義</b>'; return; }
@@ -834,11 +872,13 @@ var SRC = {
   S9: { fam: 'ess', nm: '2022年就業構造基本調査 全国編 04000', short: '就業構造基本調査 04000', year: 2022, file: 'sources/education/income_education_tidy.csv.gz', url: 'https://www.e-stat.go.jp/dbview?sid=0004008157', what: '全国 × 性別 × 年齢 × 学歴 × 所得（有業者）', use: '学歴と年収の関連の初期分布' },
   S12: {fam:'ess',nm:'2022年就業構造基本調査 全国編 04000（従業上の地位別）',short:'就業構造基本調査 04000 地位別',year:2022,file:'sources/industry/education_status_income_tidy.csv.gz',url:'https://www.e-stat.go.jp/dbview?sid=0004008157',what:'全国 × 性別 × 年齢 × 学歴 × 所得 × 地位（自営・雇用者・正規・非正規）',use:'学歴 × 地位の関連の初期値（段階A）'},
   S13: {fam:'ess',nm:'2022年就業構造基本調査 地域編 表10-1',short:'就業構造基本調査 10-1',year:2022,file:'sources/industry/ess_status_industry_age_tidy.csv.gz',url:'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077583&fileKind=0',what:'全国・都道府県・主要都市 × 性別 × 在学/卒業 × 地位 × 産業 × 年齢',use:'地位 × 産業の関連の初期値（都道府県）と都市行での検証（段階A）'},
+  S14: {fam:'census',nm:'2020年国勢調査 人口等基本集計 世帯表（12-3, 12-4, 6-3, 13-2, 4-3, 9-1, 26-1, 8-1, 参考表1-4）',short:'国勢調査 世帯表',year:2020,file:'sources/household/*.csv.gz',url:'https://www.e-stat.go.jp/stat-search/files?tstat=000001136464',what:'市区町村（一部は都道府県・大都市）× 世帯主の性別・年齢 × 家族類型、世帯人数、続き柄 × 性別 × 年齢、年少・高齢世帯員の有無',use:'段階Bの世帯構成（選択地域・試験）。catalog/household/manifest.json'},
   G1: { fam: 'gen', nm: 'geography.csv / parent_mapping.csv（生成ファイル）', short: '生成ファイル', year: 2020, file: 'data/geography.csv, data/parent_mapping.csv', url: '', what: '地域コード・区分・都道府県コード、政令市と行政区の対応', use: '所属関係と合算の範囲' },
   M1: { fam: 'model', nm: 'model_arrays.npz（税補助なしの内部配列）', short: '内部配列（税補助なし）', year: 2020, file: 'data/model_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '就業構成を反映した段階の分布' },
   M2: { fam: 'model', nm: 'final_arrays.npz（学歴・産業構成を反映した内部配列）', short: '内部配列（M1+M2）', year: 2022, file: 'data/final_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '年齢・性別までの最終分布' },
   M3: { fam: 'model', nm: 'education_leaf_arrays.npz / municipality_model_v2.npz', short: '内部配列（学歴別）', year: 2022, file: 'data/education_leaf_arrays.npz, data/municipality_model_v2.npz', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 年収の人数', use: '学歴別の最終分布（このページでは同じ配分計算を再現）' },
-  M4: { fam: 'model', nm: 'employment_a.npz / employment_a_agg.npz（段階A の配分ブロック）', short: '内部配列（就業・産業）', year: 2022, file: 'data/employment_a.npz, web/employment/agg_*.bin, web/employment_inputs.bin', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 地位 × 産業 × 年収の人数（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計済みブロック）', use: '就業状態・地位・産業の条件付き分布（段階A、試験）' }
+  M4: { fam: 'model', nm: 'employment_a.npz / employment_a_agg.npz（段階A の配分ブロック）', short: '内部配列（就業・産業）', year: 2022, file: 'data/employment_a.npz, web/employment/agg_*.bin, web/employment_inputs.bin', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 地位 × 産業 × 年収の人数（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計済みブロック）', use: '就業状態・地位・産業の条件付き分布（段階A、試験）' },
+  M5: { fam: 'model', nm: 'household_b/<code>.npz / <code>_population.csv.gz（段階B の期待人数表と整数個票）', short: '世帯個票（段階B）', year: 2020, file: 'data/household_b/<code>.npz, data/household_b/<code>_population.csv.gz, web/household/<code>.json', url: '', what: '選択地域の世帯 × 構成員（続き柄・性別・年齢、15歳以上は学歴・地位・産業・年収を結合）', use: '世帯構成の表示と世帯・個人の抽出（試験）' }
 };
 function sid(id){ var r = SRC[id]; return '<button type="button" class="sid ' + r.fam + '" data-src="' + id + '" title="' + esc(r.nm) + '">' + id + '</button>'; }
 function ref(list){ if (!list || !list.length) return ''; return '<span class="refs"><span class="lab">参照データ</span>' + list.map(function(it){ var r = SRC[it[0]]; return '<span class="r">' + sid(it[0]) + (r.url ? '<a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.short) + '</a>' : esc(r.short)) + ' <code>' + esc(r.file.split(', ')[0].split('/').pop()) + '</code>' + (it[1] ? '　' + it[1] : '') + '</span>'; }).join('') + '</span>'; }
@@ -848,8 +888,8 @@ function renderScope(){
 }
 function renderSources(hl){
   var P = $('panel'); P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--line-strong)');
-  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','G1','M1','M2','M3','M4'];
-  P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 11 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json、catalog/education/manifest.json、catalog/industry/manifest.json に記録。</p>';
+  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','G1','M1','M2','M3','M4','M5'];
+  P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 11 表・世帯表 9 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json、catalog/education/manifest.json、catalog/industry/manifest.json に記録。</p>';
   if (hl){ var el = $('src-' + hl); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }
 }
 function calc(steps, start){ start = start || 0; return '<ol class="calc">' + steps.filter(function(x){ return x; }).map(function(st, i){ return '<li' + (st[4] ? ' class="' + st[4] + '"' : '') + '><span class="no">' + (start + i + 1) + '</span><span class="tt">' + st[0] + '</span>' + (st[1] ? '<span class="f">' + st[1] + '</span>' : '') + (st[2] ? '<span class="ex">' + st[2] + '</span>' : '') + ref(st[3]) + '</li>'; }).join('') + '</ol>'; }
@@ -945,6 +985,7 @@ function renderPanel(){
   if (f.dim === 'edge'){ renderEdgePanel(f.id); return; }
   if (f.dim === 'sources'){ renderSources(f.id); return; }
   if (f.dim === 'scope'){ renderScope(); return; }
+  if (f.dim === 'household'){ renderHousehold(f.id); return; }
   P.style.setProperty('--sw', f.dim ? DIM_VAR[f.dim] : 'var(--line-strong)');
   P.style.setProperty('--soft', f.dim ? DIM_SOFT[f.dim] : 'var(--accent-soft)');
   if (!f.dim){
@@ -992,7 +1033,7 @@ function renderPanel(){
         else if (parent) cur.push([esc(parent.n) + 'に占める割合', fmtN(m.p) + ' / ' + fmtN(parent.p) + ' = <b>' + pct(m.p/parent.p) + '</b>', '行政区は親市の内訳。', [['G1', 'parent_mapping.csv']]]);
         h += '<h3 class="dh">' + esc(m.n) + 'の人口と割合の導出</h3>' + calc(pre.concat(cur));
       } else h += '<p class="note">2020年の15歳以上人口が0のため、この地域の分布は定義されません。</p>';
-      h += '<button class="action" data-go="muni" data-id="' + m.c + '">この地域の年齢構成を展開</button>';
+      h += '<button class="action" data-go="muni" data-id="' + m.c + '">この地域の年齢構成を展開</button>' + (hhAvailable(m.c) ? ' <button class="action" data-go="household" data-id="' + m.c + '">世帯構成を見る（段階B・試験）</button>' : '');
     }
     else if (f.dim === 'age' && !dist(scope()).total){ h = '<span class="eyebrow">年齢</span><h2>' + AGE[+f.id] + '</h2><p class="note">2020年の15歳以上人口が 0 人のため、' + esc(scopeName()) + 'の分布は定義できません。</p>'; }
     else if (f.dim === 'sex' && !(sexPop()[0] + sexPop()[1])){ h = '<span class="eyebrow">性別</span><h2>' + SEX[+f.id] + '</h2><p class="note">' + UNDEF_MSG + '</p>' + calc(pre) + aggActions(); }
@@ -1015,7 +1056,7 @@ function renderPanel(){
         ['分母は' + ageTxt + 'の男女合計', '男 ' + fmtN(n2[0]) + ' + 女 ' + fmtN(n2[1]) + ' = ' + fmtN(tot), '', [['S1', 'sex=1,2 の合計']]],
         ['P(' + SEX[sx] + '｜' + esc(scopeName()) + '・' + ageTxt + ') を求める', fmtN(n2[sx]) + ' / ' + fmtN(tot) + ' = <b>' + pct(tot ? n2[sx]/tot : 0) + '</b>', '国勢調査の不詳補完値で、本モデルでは追加推定していない。']
       ];
-      h += '<h3 class="dh">P(' + SEX[sx] + '｜' + esc(scopeName()) + '・' + ageTxt + ') の導出</h3>' + calc(pre.concat(cur, jointStep('sex', sx))) + '<button class="action" data-go="sex" data-id="' + sx + '">この性別の学歴構成を展開</button>';
+      h += '<h3 class="dh">P(' + SEX[sx] + '｜' + esc(scopeName()) + '・' + ageTxt + ') の導出</h3>' + calc(pre.concat(cur, jointStep('sex', sx))) + '<button class="action" data-go="sex" data-id="' + sx + '">この性別の学歴構成を展開</button>' + (S.muni && hhAvailable(S.muni) ? ' <button class="action" data-go="household" data-id="' + S.muni + '">この条件の世帯構成（段階B・試験）</button>' : '');
     }
     else if (f.dim === 'edu'){
       var e = +f.id, r = eduPop(), share = r.den ? r.R[e]/r.den : 0;
@@ -1290,6 +1331,7 @@ $('panel').addEventListener('click', function(ev){
   else if (d === 'muni'){ setOpen('pref', true); setOpen('muni', true); setOpen('age', true); select('muni', id); scrollTo('muni', id); }
   else if (d === 'age' || d === 'sex' || d === 'edu' || d === 'lab' || d === 'sta' || d === 'ind'){ var nx = DIMS[DIMS.indexOf(d) + 1]; setOpen(d, true); setOpen(nx, true); select(d, id); }
   else if (d === 'open'){ setOpen(id, true); renderAll(); }
+  else if (d === 'household'){ S.focus = { dim: 'household', id: id }; renderPanel(); }
   else if (d === 'skipdim'){ var keep = S.focus; skip(id); if (keep.dim === 'inc' && incDist().defined){ S.focus = keep; renderAll(); } else if (keep.dim && keep.dim !== 'edge' && keep.id !== 'hub' && keep.id !== 'all'){ S.focus = keep; renderAll(); } }
   else { setOpen(d, true); select(d, id); }
 });
@@ -1342,7 +1384,7 @@ document.addEventListener('click', function(ev){ if (!ev.target.closest('.search
 
 renderAll();
 /* test hooks (jsdom verification against the Python arrays) */
-window.__hinomoto = { S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
+window.__hinomoto = { renderHousehold: renderHousehold, hhState: HH_STATE, S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
 })();
 </script>
 </body>

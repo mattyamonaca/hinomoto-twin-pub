@@ -1,0 +1,650 @@
+{
+  "code": "47201",
+  "seed": 1,
+  "mean_size_10plus_assumption": 10.652173913042683,
+  "sampling_seconds": 2.4,
+  "model": {
+    "label": "model",
+    "households": 144012,
+    "persons": 309734,
+    "households_per_family_type": {
+      "expected": [
+        21137.0,
+        34053.0,
+        17096.0,
+        7475.0,
+        1552.0,
+        62298.0,
+        400.0
+      ],
+      "sampled": [
+        21137,
+        34054,
+        17095,
+        7476,
+        1552,
+        62298,
+        400
+      ],
+      "max_abs_error": 1.000000000014552,
+      "max_rel_error": 0.00013377926421404682
+    },
+    "households_per_size_bin": {
+      "expected": [
+        62298.0,
+        35740.0,
+        21629.0,
+        14688.0,
+        6754.0,
+        2097.0,
+        592.0,
+        151.0,
+        39.0,
+        23.0
+      ],
+      "sampled": [
+        62298,
+        35739,
+        21629,
+        14688,
+        6754,
+        2096,
+        593,
+        152,
+        40,
+        23
+      ],
+      "max_abs_error": 1.0000000519331707
+    },
+    "members_per_family_type": {
+      "expected": [
+        42274.0,
+        130655.0,
+        42446.0,
+        27261.0,
+        3683.0,
+        62298.0,
+        1100.0
+      ],
+      "sampled": [
+        42274,
+        130664,
+        42435,
+        27273,
+        3691,
+        62298,
+        1099
+      ],
+      "max_rel_error": 0.002172142275309134
+    },
+    "members_sex_age_tv": 0.0026844893563391413,
+    "members_role_sex_age_tv": 0.005348118643558055,
+    "heldout_26_1_elderly_by_size": {
+      "observed": [
+        17779.0,
+        18683.0,
+        7895.0,
+        2983.0,
+        1058.0,
+        476.0,
+        283.0
+      ],
+      "sampled": [
+        20437.0,
+        17655.0,
+        6242.0,
+        4409.0,
+        2289.0,
+        787.0,
+        333.0
+      ],
+      "tv": 0.08245750887186058,
+      "total_ratio": 1.0609272331509245
+    },
+    "heldout_8_1_under6_by_size": {
+      "observed": [
+        0.0,
+        437.0,
+        4031.0,
+        4104.0,
+        2519.0,
+        1002.0,
+        455.0
+      ],
+      "sampled": [
+        0.0,
+        2131.0,
+        3974.0,
+        3709.0,
+        2106.0,
+        741.0,
+        302.0
+      ],
+      "tv": 0.12956469174876997,
+      "total_ratio": 1.033072999681224
+    },
+    "heldout_9_1_under15_by_family_type": {
+      "F1": {
+        "sampled_households_with_under15": 0,
+        "observed": 0.0,
+        "total_households": 21137.0
+      },
+      "F2": {
+        "sampled_households_with_under15": 18508,
+        "observed": 19228.0,
+        "total_households": 34053.0
+      },
+      "F4": {
+        "sampled_households_with_under15": 2493,
+        "observed": 2282.0,
+        "total_households": 7475.0
+      },
+      "F5": {
+        "sampled_households_with_under15": 216,
+        "observed": 116.0,
+        "total_households": 1552.0
+      },
+      "F6": {
+        "sampled_households_with_under15": 0,
+        "observed": 0.0,
+        "total_households": 62298.0
+      }
+    }
+  },
+  "independent": {
+    "label": "independent members",
+    "households": 144012,
+    "persons": 309734,
+    "households_per_family_type": {
+      "expected": [
+        21137.0,
+        34053.0,
+        17096.0,
+        7475.0,
+        1552.0,
+        62298.0,
+        400.0
+      ],
+      "sampled": [
+        21137,
+        34054,
+        17095,
+        7476,
+        1552,
+        62298,
+        400
+      ],
+      "max_abs_error": 1.000000000014552,
+      "max_rel_error": 0.00013377926421404682
+    },
+    "households_per_size_bin": {
+      "expected": [
+        62298.0,
+        35740.0,
+        21629.0,
+        14688.0,
+        6754.0,
+        2097.0,
+        592.0,
+        151.0,
+        39.0,
+        23.0
+      ],
+      "sampled": [
+        62298,
+        35739,
+        21629,
+        14688,
+        6754,
+        2096,
+        593,
+        152,
+        40,
+        23
+      ],
+      "max_abs_error": 1.0000000519331707
+    },
+    "members_per_family_type": {
+      "expected": [
+        42274.0,
+        130655.0,
+        42446.0,
+        27261.0,
+        3683.0,
+        62298.0,
+        1100.0
+      ],
+      "sampled": [
+        42274,
+        130664,
+        42435,
+        27273,
+        3691,
+        62298,
+        1099
+      ],
+      "max_rel_error": 0.002172142275309134
+    },
+    "members_sex_age_tv": 0.0025305080872250942,
+    "members_role_sex_age_tv": 0.21897201447711417,
+    "heldout_26_1_elderly_by_size": {
+      "observed": [
+        17779.0,
+        18683.0,
+        7895.0,
+        2983.0,
+        1058.0,
+        476.0,
+        283.0
+      ],
+      "sampled": [
+        20437.0,
+        19236.0,
+        9831.0,
+        7839.0,
+        4110.0,
+        1427.0,
+        593.0
+      ],
+      "tv": 0.12243151146498317,
+      "total_ratio": 1.2912301401631507
+    },
+    "heldout_8_1_under6_by_size": {
+      "observed": [
+        0.0,
+        437.0,
+        4031.0,
+        4104.0,
+        2519.0,
+        1002.0,
+        455.0
+      ],
+      "sampled": [
+        0.0,
+        3612.0,
+        4106.0,
+        4017.0,
+        2374.0,
+        854.0,
+        399.0
+      ],
+      "tv": 0.20029936754877933,
+      "total_ratio": 1.22425884603124
+    },
+    "heldout_9_1_under15_by_family_type": {
+      "F1": {
+        "sampled_households_with_under15": 5818,
+        "observed": 0.0,
+        "total_households": 21137.0
+      },
+      "F2": {
+        "sampled_households_with_under15": 19618,
+        "observed": 19228.0,
+        "total_households": 34053.0
+      },
+      "F4": {
+        "sampled_households_with_under15": 4028,
+        "observed": 2282.0,
+        "total_households": 7475.0
+      },
+      "F5": {
+        "sampled_households_with_under15": 543,
+        "observed": 116.0,
+        "total_households": 1552.0
+      },
+      "F6": {
+        "sampled_households_with_under15": 0,
+        "observed": 0.0,
+        "total_households": 62298.0
+      }
+    }
+  },
+  "sa_adjusted": {
+    "label": "sa_adjusted",
+    "households": 144012,
+    "persons": 309734,
+    "households_per_family_type": {
+      "expected": [
+        21137.0,
+        34053.0,
+        17096.0,
+        7475.0,
+        1552.0,
+        62298.0,
+        400.0
+      ],
+      "sampled": [
+        21137,
+        34054,
+        17095,
+        7476,
+        1552,
+        62298,
+        400
+      ],
+      "max_abs_error": 1.000000000014552,
+      "max_rel_error": 0.00013377926421404682
+    },
+    "households_per_size_bin": {
+      "expected": [
+        62298.0,
+        35740.0,
+        21629.0,
+        14688.0,
+        6754.0,
+        2097.0,
+        592.0,
+        151.0,
+        39.0,
+        23.0
+      ],
+      "sampled": [
+        62298,
+        35739,
+        21629,
+        14688,
+        6754,
+        2096,
+        593,
+        152,
+        40,
+        23
+      ],
+      "max_abs_error": 1.0000000519331707
+    },
+    "members_per_family_type": {
+      "expected": [
+        42274.0,
+        130655.0,
+        42446.0,
+        27261.0,
+        3683.0,
+        62298.0,
+        1100.0
+      ],
+      "sampled": [
+        42274,
+        130664,
+        42435,
+        27273,
+        3691,
+        62298,
+        1099
+      ],
+      "max_rel_error": 0.002172142275309134
+    },
+    "members_sex_age_tv": 0.0006964482503464811,
+    "members_role_sex_age_tv": 0.008213012863800533,
+    "heldout_26_1_elderly_by_size": {
+      "observed": [
+        17779.0,
+        18683.0,
+        7895.0,
+        2983.0,
+        1058.0,
+        476.0,
+        283.0
+      ],
+      "sampled": [
+        20437.0,
+        18234.0,
+        7189.0,
+        5114.0,
+        2674.0,
+        908.0,
+        381.0
+      ],
+      "tv": 0.07790935232456664,
+      "total_ratio": 1.1175824399373435
+    },
+    "heldout_8_1_under6_by_size": {
+      "observed": [
+        0.0,
+        437.0,
+        4031.0,
+        4104.0,
+        2519.0,
+        1002.0,
+        455.0
+      ],
+      "sampled": [
+        0.0,
+        2156.0,
+        3982.0,
+        3843.0,
+        2250.0,
+        828.0,
+        335.0
+      ],
+      "tv": 0.12614133029748117,
+      "total_ratio": 1.067421102964616
+    },
+    "heldout_9_1_under15_by_family_type": {
+      "F1": {
+        "sampled_households_with_under15": 0,
+        "observed": 0.0,
+        "total_households": 21137.0
+      },
+      "F2": {
+        "sampled_households_with_under15": 18967,
+        "observed": 19228.0,
+        "total_households": 34053.0
+      },
+      "F4": {
+        "sampled_households_with_under15": 2810,
+        "observed": 2282.0,
+        "total_households": 7475.0
+      },
+      "F5": {
+        "sampled_households_with_under15": 229,
+        "observed": 116.0,
+        "total_households": 1552.0
+      },
+      "F6": {
+        "sampled_households_with_under15": 0,
+        "observed": 0.0,
+        "total_households": 62298.0
+      }
+    }
+  },
+  "sa": {
+    "objective_before": 1662.9552525927043,
+    "objective_after": 431.42740474563516,
+    "accepted_moves": 75181,
+    "iterations": 200000,
+    "seconds": 0.8,
+    "note": "moves member ages within a role toward the expected sex x age margin; household composition fixed; head ages untouched only by chance (heads are role 0 and never moved)"
+  },
+  "linkage": {
+    "seconds": 31.8,
+    "members_15plus": 264583,
+    "members_under_15": 45151,
+    "by_sex_age": [
+      {
+        "sex": 1,
+        "age_band": "01",
+        "members": 8140,
+        "model_population_15plus": 8313.0,
+        "tv_education_income": 0.006366104327325577
+      },
+      {
+        "sex": 1,
+        "age_band": "02",
+        "members": 8029,
+        "model_population_15plus": 8246.0,
+        "tv_education_income": 0.03330424731577278
+      },
+      {
+        "sex": 1,
+        "age_band": "03",
+        "members": 8424,
+        "model_population_15plus": 8513.0,
+        "tv_education_income": 0.036693984565336596
+      },
+      {
+        "sex": 1,
+        "age_band": "04",
+        "members": 9159,
+        "model_population_15plus": 9260.0,
+        "tv_education_income": 0.03648514576308429
+      },
+      {
+        "sex": 1,
+        "age_band": "05",
+        "members": 9813,
+        "model_population_15plus": 9923.0,
+        "tv_education_income": 0.040995833429253045
+      },
+      {
+        "sex": 1,
+        "age_band": "06",
+        "members": 10906,
+        "model_population_15plus": 10974.0,
+        "tv_education_income": 0.05267692110929602
+      },
+      {
+        "sex": 1,
+        "age_band": "07",
+        "members": 12489,
+        "model_population_15plus": 12634.0,
+        "tv_education_income": 0.04623927517899047
+      },
+      {
+        "sex": 1,
+        "age_band": "08",
+        "members": 11109,
+        "model_population_15plus": 11298.0,
+        "tv_education_income": 0.050617939074731895
+      },
+      {
+        "sex": 1,
+        "age_band": "09",
+        "members": 9869,
+        "model_population_15plus": 10032.0,
+        "tv_education_income": 0.054238932154250505
+      },
+      {
+        "sex": 1,
+        "age_band": "10",
+        "members": 9209,
+        "model_population_15plus": 9342.0,
+        "tv_education_income": 0.0442203460947477
+      },
+      {
+        "sex": 1,
+        "age_band": "11",
+        "members": 9867,
+        "model_population_15plus": 10001.0,
+        "tv_education_income": 0.026115437322673293
+      },
+      {
+        "sex": 1,
+        "age_band": "12",
+        "members": 7939,
+        "model_population_15plus": 8034.0,
+        "tv_education_income": 0.024101043569513817
+      },
+      {
+        "sex": 1,
+        "age_band": "13",
+        "members": 13759,
+        "model_population_15plus": 13849.0,
+        "tv_education_income": 0.016239705100699362
+      },
+      {
+        "sex": 2,
+        "age_band": "01",
+        "members": 7929,
+        "model_population_15plus": 8159.0,
+        "tv_education_income": 0.006834497100094261
+      },
+      {
+        "sex": 2,
+        "age_band": "02",
+        "members": 7785,
+        "model_population_15plus": 7849.0,
+        "tv_education_income": 0.033658312891030495
+      },
+      {
+        "sex": 2,
+        "age_band": "03",
+        "members": 8061,
+        "model_population_15plus": 8263.0,
+        "tv_education_income": 0.026567971502273843
+      },
+      {
+        "sex": 2,
+        "age_band": "04",
+        "members": 8746,
+        "model_population_15plus": 9169.0,
+        "tv_education_income": 0.02666121478145572
+      },
+      {
+        "sex": 2,
+        "age_band": "05",
+        "members": 9834,
+        "model_population_15plus": 10133.0,
+        "tv_education_income": 0.02417020653295845
+      },
+      {
+        "sex": 2,
+        "age_band": "06",
+        "members": 10644,
+        "model_population_15plus": 10943.0,
+        "tv_education_income": 0.036350183948281184
+      },
+      {
+        "sex": 2,
+        "age_band": "07",
+        "members": 11949,
+        "model_population_15plus": 12439.0,
+        "tv_education_income": 0.029612459056847423
+      },
+      {
+        "sex": 2,
+        "age_band": "08",
+        "members": 10778,
+        "model_population_15plus": 11177.0,
+        "tv_education_income": 0.02709979333751705
+      },
+      {
+        "sex": 2,
+        "age_band": "09",
+        "members": 9605,
+        "model_population_15plus": 10043.0,
+        "tv_education_income": 0.03721680527087515
+      },
+      {
+        "sex": 2,
+        "age_band": "10",
+        "members": 9358,
+        "model_population_15plus": 9846.0,
+        "tv_education_income": 0.026371521787568637
+      },
+      {
+        "sex": 2,
+        "age_band": "11",
+        "members": 10531,
+        "model_population_15plus": 10806.0,
+        "tv_education_income": 0.019435921538640523
+      },
+      {
+        "sex": 2,
+        "age_band": "12",
+        "members": 8778,
+        "model_population_15plus": 9224.0,
+        "tv_education_income": 0.020587103061749983
+      },
+      {
+        "sex": 2,
+        "age_band": "13",
+        "members": 21873,
+        "model_population_15plus": 22784.0,
+        "tv_education_income": 0.007056888332527216
+      }
+    ],
+    "note": "members 15+ draw (education, status, industry, income) from the stage-A block of their sex x age band; no within-household correlation; 0-14 have no attributes",
+    "max_tv_education_income": 0.054238932154250505,
+    "weighted_tv_education_income": 0.02975300150176205
+  }
+}

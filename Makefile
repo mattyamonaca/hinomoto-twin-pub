@@ -21,6 +21,8 @@ help:
 	@echo "verify-web-employment jsdom check: the page reproduces the Python stage-A blocks (needs node + jsdom)"
 	@echo "fetch-household  Fetch/normalize census household tables for stage B"
 	@echo "build-household  Generate household compositions for selected municipalities (stage B, experimental)"
+	@echo "sample-household  Integer households + linked members for the selected municipalities (stage B, Issue #23)"
+	@echo "export-household-web Household summaries for the Explorer (web/household/<code>.json)"
 	@echo "experiment     Compare M0 with M1/M2 (education-composition income re-estimation) on held-out cities"
 	@echo "synthetic      Recovery experiment on virtual populations with known joint distributions"
 	@echo "synthetic-m12  Same with industry: M0/M1/M2/M12 recovery under generating processes that violate the estimator assumptions (Issue #21)"
@@ -91,3 +93,9 @@ fetch-tax-status:
 	$(PYTHON) src/pipeline.py fetch-tax-status
 validate-m12:
 	$(PYTHON) src/pipeline.py validate-m12
+
+.PHONY: sample-household export-household-web
+sample-household:
+	for c in 13103 47201 01555; do $(PYTHON) src/household_sample.py --municipality $$c --population --sa --link-population --seed 1; done
+export-household-web:
+	$(PYTHON) src/pipeline.py export-household-web
