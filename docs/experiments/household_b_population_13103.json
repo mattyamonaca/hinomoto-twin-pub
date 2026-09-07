@@ -2,7 +2,7 @@
   "code": "13103",
   "seed": 1,
   "mean_size_10plus_assumption": 10.0,
-  "sampling_seconds": 1.7,
+  "sampling_seconds": 1.8,
   "model": {
     "label": "model",
     "households": 146083,
@@ -456,7 +456,7 @@
     "note": "moves member ages within a role toward the expected sex x age margin; household composition fixed; head ages untouched only by chance (heads are role 0 and never moved)"
   },
   "linkage": {
-    "seconds": 29.9,
+    "seconds": 29.8,
     "members_15plus": 224355,
     "members_under_15": 34526,
     "by_sex_age": [

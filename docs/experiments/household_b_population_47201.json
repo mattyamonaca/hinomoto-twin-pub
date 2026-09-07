@@ -456,7 +456,7 @@
     "note": "moves member ages within a role toward the expected sex x age margin; household composition fixed; head ages untouched only by chance (heads are role 0 and never moved)"
   },
   "linkage": {
-    "seconds": 31.8,
+    "seconds": 30.0,
     "members_15plus": 264583,
     "members_under_15": 45151,
     "by_sex_age": [

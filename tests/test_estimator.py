@@ -3,6 +3,7 @@ import sys,unittest
 from pathlib import Path
 import base64
 import numpy as np
+import pandas as pd
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 import estimator as es
 import synthetic_population as sp
@@ -249,3 +250,28 @@ class HouseholdSamplingTests(unittest.TestCase):
         for h in hh:
             self.assertEqual(h['size'],len(h['members']))
             for m in h['members']:self.assertEqual(m['in_income_population'],hs.A18.index(m['age_band18'])>=3)
+
+
+class HouseholdWebSummaryTests(unittest.TestCase):
+    """PR #28 review: spouse co-residence is judged from the member's own relationship; 15-19 is not all under 18."""
+    def _summary(self,df):
+        import export_household_web as ew,household_sample as hs
+        from unittest.mock import patch
+        N=np.zeros((7,2,18,10));N[1,0,8,2]=1
+        with patch.object(ew.pd,'read_csv',return_value=df),patch.object(ew.np,'load',return_value={'households':N}):
+            return ew.summarize('00000')
+    def test_child_is_not_marked_as_living_with_spouse(self):
+        df=pd.DataFrame([(1,1,1,2,3,0,0,8),(1,2,1,2,3,1,1,8),(1,3,1,2,3,2,0,2)],columns=['household_id','member_id','family','size_bin','size','role','sex','age18'])
+        out=self._summary(df);rows=out['by_sex_age']
+        self.assertEqual(rows[0*18+8]['with_spouse'],1.0);self.assertEqual(rows[1*18+8]['with_spouse'],1.0)
+        child=rows[0*18+2];self.assertEqual(child['with_spouse'],0.0);self.assertEqual(child['spouse_known'],0.0);self.assertEqual(child['with_parent'],1.0)
+        self.assertEqual(rows[0*18+8]['with_child_u18'],1.0)
+    def test_15_19_children_count_as_under_18_only_in_part(self):
+        import household_sample as hs
+        rows=[];hid=0
+        for i in range(2000):
+            hid+=1;rows+=[(hid,1,1,1,2,0,0,9),(hid,2,1,1,2,2,0,3)]     # head 45-49 with one child aged 15-19
+        df=pd.DataFrame(rows,columns=['household_id','member_id','family','size_bin','size','role','sex','age18'])
+        out=self._summary(df);share=out['by_sex_age'][0*18+9]['with_child_u18']
+        self.assertGreater(share,0.5);self.assertLess(share,0.7)                      # ~3/5, not 1.0
+        agg=hs.presence_tables(df);self.assertAlmostEqual(agg.u18.mean(),hs.U18_SHARE_15_19,delta=0.05);self.assertEqual(agg.u15.sum(),0)

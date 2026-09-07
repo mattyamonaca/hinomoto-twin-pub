@@ -30,6 +30,7 @@ F=['F1','F2','F3','F4','F5','F6','F7'];FL=['夫婦のみ','夫婦と子供','ひ
 R=[f'R{i:02}' for i in range(1,14)];RL=['世帯主','配偶者','子','子の配偶者','世帯主の父母','配偶者の父母','孫','祖父母','兄弟姉妹','他の親族','住み込みの雇人','その他','続き柄不詳']
 A18=[f'A{i:02}' for i in range(18)];A18L=[f'{5*i}〜{5*i+4}歳' for i in range(17)]+['85歳以上']
 D=SOURCES/'household'
+U18_SHARE_15_19=0.6;U18_SEED=18   # ages are 5-year bands: 15-19 holds 15, 16, 17 (under 18) and 18, 19; uniform single years -> 3/5
 
 def age18_to_model(a):
     """18 five-year bands from 0-4 -> 13 model bands from 15-19 (75+ merged); None under 15."""
@@ -111,7 +112,8 @@ def independent_population(sampler,seed=20260907):
 def presence_tables(df):
     """Households with a member 65+ / under 6 (0-4 plus one fifth of 5-9, drawn) / under 15 / under 18, by size and family type."""
     df=df.copy();df['u6']=(df.age18==0)|((df.age18==1)&(np.random.default_rng(1).random(len(df))<.2))
-    g=df.groupby('household_id');agg=pd.DataFrame({'size':g['size'].first(),'family':g['family'].first(),'e65':g['age18'].max()>=13,'u6':g['u6'].any(),'u15':(g['age18'].min()<3),'u18':(g['age18'].min()<=3)})
+    df['u18']=(df.age18<3)|((df.age18==3)&(np.random.default_rng(U18_SEED).random(len(df))<U18_SHARE_15_19))   # 15-19: 3/5 under 18 (uniform single years)
+    g=df.groupby('household_id');agg=pd.DataFrame({'size':g['size'].first(),'family':g['family'].first(),'e65':g['age18'].max()>=13,'u6':g['u6'].any(),'u15':(g['age18'].min()<3),'u18':g['u18'].any()})
     agg['size7']=np.minimum(agg['size'],7)
     return agg
 
