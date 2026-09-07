@@ -18,6 +18,9 @@ help:
 	@echo "verify-employment Verify margins and evaluate on held-out city tables"
 	@echo "fetch-household  Fetch/normalize census household tables for stage B"
 	@echo "build-household  Generate household compositions for selected municipalities (stage B, experimental)"
+	@echo "fetch-workplace  Fetch/normalize census commuting OD/ODI tables for stage C (142 workbooks, about 400 MB)"
+	@echo "build-workplace  Fit residence x workplace x industry for all municipalities (stage C, experimental)"
+	@echo "verify-workplace Check margins and evaluate on the held-out ODI tables"
 	@echo "experiment     Compare M0 with M1/M2 (education-composition income re-estimation) on held-out cities"
 	@echo "synthetic      Recovery experiment on virtual populations with known joint distributions"
 	@echo "site           Assemble UI code and the configured web dataset into dist/site"
@@ -59,3 +62,11 @@ experiment:
 	$(PYTHON) src/pipeline.py experiment
 synthetic:
 	$(PYTHON) src/pipeline.py synthetic
+
+.PHONY: fetch-workplace build-workplace verify-workplace
+fetch-workplace:
+	$(PYTHON) src/pipeline.py fetch-workplace
+build-workplace:
+	$(PYTHON) src/pipeline.py build-workplace
+verify-workplace:
+	$(PYTHON) src/pipeline.py verify-workplace

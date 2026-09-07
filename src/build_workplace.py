@@ -79,7 +79,7 @@ def ipf(x,X,iters=200,tol=0.5,verbose=False):
    if max(e)<tol:break
  return X,hist
 
-def build(sources_dir=None,output_dir=None,reports_dir=None,iters=400,tol=0.1):
+def build(sources_dir=None,output_dir=None,reports_dir=None,iters=1500,tol=0.1):
  t0=time.time();x=load_inputs(sources_dir,output_dir);X0=seed(x)
  # consistency of the inputs before fitting (all from the same census; differences would be parsing errors)
  A=len(x['areas']);tot_o=np.bincount(x['oi'],weights=x['od'],minlength=A);tot_d=np.bincount(x['di'],weights=x['od'],minlength=A)

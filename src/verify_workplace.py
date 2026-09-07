@@ -64,7 +64,7 @@ def evaluate(output_dir=None,sources_dir=None,reports_dir=None,min_cell=100):
  d=np.load(OUT/'workplace_c.npz');x=bw.load_inputs(SRC,OUT);areas=list(d['areas']);ix={a:i for i,a in enumerate(areas)}
  res={'model_version':str(d['model_version']),'checks':checks(d,x)}
  X=d['x'].astype(float);S=d['seed'].astype(float);oi=d['origin'];di=d['dest'];ci=d['category'];od=x['od'];A=len(areas)
- indep=od[:,None]*(x['R'].sum(1)/np.maximum(x['R'].sum((1,2)),1e-12))[oi]
+ indep=od[:,None]*(x['R'].sum(1)/np.maximum(x['R'].sum((1,2)),1e-12)[:,None])[oi]
  wshare=x['W'].sum(1);wshare=wshare/np.maximum(wshare.sum(1,keepdims=True),1e-12);grav=od[:,None]*wshare[di]
  rc=x['R'][oi,ci];rc=rc/np.maximum(rc.sum(1,keepdims=True),1e-12);catb=od[:,None]*rc
  models={'model':X,'seed':S,'independent':indep,'gravity':grav,'category':catb}
