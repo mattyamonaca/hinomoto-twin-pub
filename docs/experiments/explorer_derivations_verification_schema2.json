@@ -38,6 +38,7 @@
   "exp_m12_ok": true,
   "exp_m1_ok": true,
   "exp_a_ok": true,
+  "exp_a_note_text": "8 ケースを各 1 回（5 種類の逸脱シナリオと、対数正規の乱数傾きを seed 1・2・3 で引いた 3 ケース）",
   "a03_uses_m12_experiment": true,
   "a06_uses_m1_experiment": true,
   "a09_uses_stage_a_experiment": true,

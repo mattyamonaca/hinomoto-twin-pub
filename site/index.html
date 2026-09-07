@@ -1101,11 +1101,11 @@ var VMETH = { published: '公表統計との整合（制約に使った統計）
 /* experiments referenced by the assumptions: kept separate so that each assumption shows the right areas,
    generating process and model version (checked against the saved reports by the test) */
 var EXPERIMENTS = {
-  synth_m12: { name: 'M12 の仮想人口実験', script: 'src/synthetic_population_m12.py', report: 'docs/experiments/synthetic_recovery_m12.json', areas: '人工の 6 都道府県 × 20 地域（実在の自治体ではない。人口 1,500〜40 万人を対数正規で生成）', process: '学歴・産業・所得の同時分布を既知にした仮想世界を、日本で公表されている粒度の表（国勢調査相当の人口・就業・学歴・産業、2% 標本の所得調査、税務代理変数）だけで観測', scenarios: 10, seeds: 5, models: 'M0 / M1 / M2 / M12（現行 3.0-M12 と同じ推定器）' },
-  synth_m1: { name: 'M1 の仮想人口実験（Issue #12）', script: 'src/synthetic_population.py', report: 'docs/experiments/synthetic_recovery.json', areas: '人工の 6 都道府県 × 20 地域（実在の自治体ではない）', process: '学歴 × 所得の関連と不詳の相関を変えた仮想世界。産業は含まない', scenarios: 9, seeds: 3, models: 'M0 / M1（産業の傾きを含まない旧実験）' },
-  synth_a: { name: '段階A の未観測関連の実験', script: 'src/synthetic_employment.py', report: 'docs/experiments/employment_a_synthetic.json', areas: '北海道・東京都の実在する市区町村・行政区 250 地域 × 性別 × 年齢 4 区分（2,000 セル）', process: '初期値と異なる生成過程で「真」のブロックを同じ周辺へ射影し、推定器には周辺だけを渡す', scenarios: 8, seeds: 3, models: '段階A（3.0-M12 上の配分）' }
+  synth_m12: { name: 'M12 の仮想人口実験', script: 'src/synthetic_population_m12.py', report: 'docs/experiments/synthetic_recovery_m12.json', areas: '人工の 6 都道府県 × 20 地域（実在の自治体ではない。人口 1,500〜40 万人を対数正規で生成）', process: '学歴・産業・所得の同時分布を既知にした仮想世界を、日本で公表されている粒度の表（国勢調査相当の人口・就業・学歴・産業、2% 標本の所得調査、税務代理変数）だけで観測', scenarios: 10, seeds: 5, cases: 50, design: '10 シナリオ × 5 seed = 50 ケース', models: 'M0 / M1 / M2 / M12（現行 3.0-M12 と同じ推定器）' },
+  synth_m1: { name: 'M1 の仮想人口実験（Issue #12）', script: 'src/synthetic_population.py', report: 'docs/experiments/synthetic_recovery.json', areas: '人工の 6 都道府県 × 20 地域（実在の自治体ではない）', process: '学歴 × 所得の関連と不詳の相関を変えた仮想世界。産業は含まない', scenarios: 9, seeds: 3, cases: 27, design: '9 シナリオ × 3 seed = 27 ケース', models: 'M0 / M1（産業の傾きを含まない旧実験）' },
+  synth_a: { name: '段階A の未観測関連の実験', script: 'src/synthetic_employment.py', report: 'docs/experiments/employment_a_synthetic.json', areas: '北海道・東京都の実在する市区町村・行政区 250 地域 × 性別 × 年齢 4 区分（2,000 セル）', process: '初期値と異なる生成過程で「真」のブロックを同じ周辺へ射影し、推定器には周辺だけを渡す', scenarios: 8, seeds: 1, cases: 8, design: '8 ケースを各 1 回（5 種類の逸脱シナリオと、対数正規の乱数傾きを seed 1・2・3 で引いた 3 ケース）', models: '段階A（3.0-M12 上の配分）' }
 };
-function expNote(id){ var e = EXPERIMENTS[id]; return '［' + e.name + '：' + e.areas + '。' + e.scenarios + ' シナリオ × ' + e.seeds + ' seed、' + e.models + '。生成過程の範囲での評価で、日本の実態の直接検証ではない］'; }
+function expNote(id){ var e = EXPERIMENTS[id]; return '［' + e.name + '：' + e.areas + '。' + e.design + '、' + e.models + '。生成過程の範囲での評価で、日本の実態の直接検証ではない］'; }
 /* whether the current municipality is inside the evaluation set of the independent tax check (validate_m12.py):
    units are municipalities with designated cities aggregated; the unit with no paid workers is excluded */
 var TAX_EXCLUDED = { '07546': '有給就業者が 0 のため評価から除外' };

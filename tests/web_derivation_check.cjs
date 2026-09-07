@@ -100,12 +100,17 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.select('muni', '27100'); H.asmOpen('A05', null); asm.designated_city_unit = txt().indexOf('市計として') >= 0; H.derBack();
   // (2) each synthetic experiment is described with its own areas / scenarios / seeds, matching the saved reports
   const EX = H.EXPERIMENTS; const rM12 = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/synthetic_recovery_m12.json'), 'utf8')), rM1 = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/synthetic_recovery.json'), 'utf8')), rA = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/employment_a_synthetic.json'), 'utf8'));
-  asm.exp_m12_ok = EX.synth_m12.scenarios === Object.keys(rM12.scenarios).length && EX.synth_m12.seeds === rM12.seeds.length && /6 都道府県 × 20 地域/.test(EX.synth_m12.areas);
-  asm.exp_m1_ok = EX.synth_m1.scenarios === Object.keys(rM1.scenarios).length && /人工/.test(EX.synth_m1.areas);
-  asm.exp_a_ok = EX.synth_a.scenarios === Object.keys(rA.scenarios).length && new RegExp(rA.areas + ' 地域').test(EX.synth_a.areas) && /北海道・東京都/.test(EX.synth_a.areas);
+  // design (cases = scenarios x repetitions) is checked against the structure of the saved reports, not only the counts
+  const m12Seeds = rM12.seeds.length, m12Sc = Object.keys(rM12.scenarios).length;
+  asm.exp_m12_ok = EX.synth_m12.scenarios === m12Sc && EX.synth_m12.seeds === m12Seeds && EX.synth_m12.cases === m12Sc*m12Seeds && EX.synth_m12.design.indexOf(m12Sc + ' シナリオ × ' + m12Seeds + ' seed') >= 0 && /6 都道府県 × 20 地域/.test(EX.synth_m12.areas);
+  const m1Sc = Object.keys(rM1.scenarios).length, m1Seeds = rM1.scenarios[Object.keys(rM1.scenarios)[0]].M0.gamma_selected.length;   // one selected gamma per seed
+  asm.exp_m1_ok = EX.synth_m1.scenarios === m1Sc && EX.synth_m1.seeds === m1Seeds && EX.synth_m1.cases === m1Sc*m1Seeds && /人工/.test(EX.synth_m1.areas);
+  const aSc = Object.keys(rA.scenarios), aRandom = aSc.filter(k => /^random_seed_/.test(k)).length, aSingleRun = aSc.every(k => rA.scenarios[k].tv_joint && typeof rA.scenarios[k].tv_joint.weighted_mean === 'number');   // each case run once (no per-seed nesting)
+  asm.exp_a_ok = EX.synth_a.scenarios === aSc.length && EX.synth_a.cases === aSc.length && EX.synth_a.seeds === 1 && aSingleRun && EX.synth_a.design.indexOf(aSc.length + ' ケースを各 1 回') >= 0 && EX.synth_a.design.indexOf(aRandom + ' ケース') >= 0 && !/8 シナリオ × 3 seed/.test(EX.synth_a.design) && new RegExp(rA.areas + ' 地域').test(EX.synth_a.areas) && /北海道・東京都/.test(EX.synth_a.areas);
+  asm.exp_a_note_text = H.EXPERIMENTS.synth_a.design;
   H.asmOpen('A03', null); const tA3 = txt(); asm.a03_uses_m12_experiment = tA3.indexOf('M12 の仮想人口実験') >= 0 && tA3.indexOf('人工の 6 都道府県') >= 0 && tA3.indexOf('北海道・東京都') < 0; H.derBack();
   H.asmOpen('A06', null); const tA6 = txt(); asm.a06_uses_m1_experiment = tA6.indexOf('M1 の仮想人口実験') >= 0 && tA6.indexOf('北海道・東京都') < 0; H.derBack();
-  H.asmOpen('A09', null); const tA9 = txt(); asm.a09_uses_stage_a_experiment = tA9.indexOf('段階A の未観測関連の実験') >= 0 && tA9.indexOf('北海道・東京都') >= 0 && tA9.indexOf('250 地域') >= 0; H.derBack();
+  H.asmOpen('A09', null); const tA9 = txt(); asm.a09_uses_stage_a_experiment = tA9.indexOf('段階A の未観測関連の実験') >= 0 && tA9.indexOf('北海道・東京都') >= 0 && tA9.indexOf('250 地域') >= 0 && tA9.indexOf('8 ケースを各 1 回') >= 0 && tA9.indexOf('8 シナリオ × 3 seed') < 0; H.derBack();
   // (3) A11 distinguishes the expected table (exact) from the integer sample (rounding / sampling errors), values from the saved report
   const rP = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/household_b_population_13103.json'), 'utf8')).model;
   H.select('muni', '13103'); H.asmOpen('A11', null); const t11 = txt();
