@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "criteria": {
+    "max_abs_persons": 0.5,
+    "max_tv": 0.0001,
+    "all_ages_seconds": 2,
+    "margin_tv": 0.00001
+  },
+  "model_version": "3.0-M12",
+  "dataset_version": "2020-2022-3.0-M12-20260907+A+B-trial",
+  "samples": [
+    {
+      "code": "13103",
+      "sex": 0,
+      "age": 4,
+      "persons": 11201.999999999965,
+      "max_abs_error_persons": 0.000005629142862062508,
+      "tv": 1.6677822890968975e-8,
+      "iterations_js": 7,
+      "iterations_py": 7,
+      "ms": 31
+    },
+    {
+      "code": "13103",
+      "sex": 1,
+      "age": 9,
+      "persons": 6040.999999999996,
+      "max_abs_error_persons": 0.000013135140420672542,
+      "tv": 1.9650129400303925e-8,
+      "iterations_js": 10,
+      "iterations_py": 10,
+      "ms": 10
+    },
+    {
+      "code": "01555",
+      "sex": 1,
+      "age": 8,
+      "persons": 613.999999999998,
+      "max_abs_error_persons": 0.000002605563281576906,
+      "tv": 1.532314310468235e-8,
+      "iterations_js": 11,
+      "iterations_py": 11,
+      "ms": 8
+    },
+    {
+      "code": "47201",
+      "sex": 0,
+      "age": 10,
+      "persons": 10000.999999999985,
+      "max_abs_error_persons": 0.00003436254837652086,
+      "tv": 1.5306287985762247e-8,
+      "iterations_js": 9,
+      "iterations_py": 9,
+      "ms": 6
+    },
+    {
+      "code": "27127",
+      "sex": 0,
+      "age": 6,
+      "persons": 6186.000000000004,
+      "max_abs_error_persons": 0.0000031014513837135382,
+      "tv": 1.5965718853810738e-8,
+      "iterations_js": 8,
+      "iterations_py": 8,
+      "ms": 5
+    },
+    {
+      "code": "13103",
+      "sex": 0,
+      "age": 12,
+      "persons": 8026.999999999995,
+      "max_abs_error_persons": 0.0000850434128096822,
+      "tv": 2.1470491863542156e-8,
+      "iterations_js": 6,
+      "iterations_py": 6,
+      "ms": 4
+    }
+  ],
+  "all_ages_one_municipality_seconds": 0.077,
+  "margin_tv_vs_5_attribute_income": 0.0000018879789317567328,
+  "conditional_query": {
+    "condition": "港区 35-39 男 大学等 就業者 正規 情報通信業",
+    "population": 980.0052830374974,
+    "sum_p": 1.0000000000000002,
+    "p_500plus": 0.7548803926163914
+  },
+  "prefecture_scope_ready": true,
+  "prefecture_population": 1009206.9999006374,
+  "page_errors": []
+}

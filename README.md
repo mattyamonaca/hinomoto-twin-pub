@@ -111,7 +111,7 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 
 詳細は [METHOD_V2.md](METHOD_V2.md) の「学歴不詳の扱いと補完モードの仕様」「移植仮定の感度分析」「検証の範囲」を参照してください。
 
-**属性拡張 段階A（Issue #16・#22）**：就業状態（就業・完全失業・非労働力）、従業上の地位・雇用形態（7区分）と産業（大分類20＋該当なし）を、公開中の5属性分布を周辺として固定したまま条件付きで配分する `make build-employment` と `src/persona_v3.py`、Explorer 用の配布 `make export-employment-web`（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計ブロック）を追加しました（試験実装。5属性の公開値は変わりません。本番データセットへの同梱は採否判断後）。設計・検証・未観測の関連の影響・配布形式の採用基準は [docs/EMPLOYMENT_A.md](docs/EMPLOYMENT_A.md)。
+**属性拡張 段階A（Issue #16・#22）**：就業状態（就業・完全失業・非労働力）、従業上の地位・雇用形態（7区分）と産業（大分類20＋該当なし）を、公開中の5属性分布を周辺として固定したまま条件付きで配分する `make build-employment` と `src/persona_v3.py`、Explorer 用の配布 `make export-employment-web`（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計ブロック）を追加しました（2026-09-07 固定版で本番公開。5属性の公開値は変わりません。世帯パネルは港区・那覇市・遠軽町の3地域で試験公開）。設計・検証・未観測の関連の影響・配布形式の採用基準は [docs/EMPLOYMENT_A.md](docs/EMPLOYMENT_A.md)。
 
 **属性拡張 段階B（Issue #16・#23、試験）**：2020年国勢調査の世帯表から、選択した市区町村の世帯構成（家族類型・世帯人数・続き柄・構成員の性別と年齢）を生成し、推定に使わない表で復元を評価する `make build-household` と、世帯・構成員を整数個票として抽出して15歳以上の構成員に学歴・就業・産業・年収を結びつける `src/household_sample.py`（`make sample-household`、`make export-household-web` で Explorer の世帯パネル）を追加しました。一般世帯のみが対象で、世帯内の所得相関は未観測です。設計・検証は [docs/HOUSEHOLD_B.md](docs/HOUSEHOLD_B.md)。
 
