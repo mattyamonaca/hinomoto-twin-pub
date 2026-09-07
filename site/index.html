@@ -262,8 +262,8 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
  .col.pref{width:170px}.col.muni{width:200px}.col.age{width:164px}.col.sex{width:136px}.col.edu{width:180px}.col.inc{width:200px}
  .board-empty{min-height:160px;font-size:12.5px}
  .row{font-size:12px;padding:6px 6px}
- .panel{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;border-radius:14px 14px 0 0;border-left:0;border-right:0;max-height:min(74vh,calc(100vh - 56px));min-height:0;padding:14px 16px 24px;box-shadow:0 -8px 30px rgba(0,0,0,.18);transform:translateY(105%);transition:transform .22s ease-out}
- body.sheet-open .panel{transform:translateY(0)}
+ .panel{position:fixed;top:auto;left:0;right:0;bottom:0;z-index:20;margin:0;border-radius:14px 14px 0 0;border-left:0;border-right:0;max-height:min(74vh,calc(100vh - 56px));min-height:0;padding:14px 16px 24px;box-shadow:0 -8px 30px rgba(0,0,0,.18);transform:translateY(100%);visibility:hidden;pointer-events:none;transition:transform .22s ease-out,visibility 0s linear .22s}
+ body.sheet-open .panel{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .22s ease-out,visibility 0s}
  .sheetbar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:21;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line-strong);box-shadow:0 -4px 18px rgba(0,0,0,.10);font-size:13px;color:var(--ink);cursor:pointer;padding-bottom:max(10px,env(safe-area-inset-bottom))}
  .sheetbar .sbt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .sheetbar .sbt b{font-weight:700}
