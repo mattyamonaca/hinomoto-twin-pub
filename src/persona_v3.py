@@ -86,7 +86,7 @@ class EmploymentDistribution:
    if self.variant!='base':raise ValueError(f'On-demand recomputation reproduces the base variant only (artifact variant: {self.variant})')
    self._x=x
   ids=self.ids(code);ai=age_index(age);si=sex_index(sex)
-  b=bm.block(self._x,si,ai,ids=ids);return {'paid':b['paid'].sum(0),'family':b['family'].sum(0),'nonwork':b['nonwork'].sum(0),'age_band':AGES[ai]}
+  b=bm.block(self._x,si,ai,ids=ids);return {'paid':b['paid'].sum(0),'family':b['family'].sum(0),'nonwork':b['nonwork'].sum(0),'unemployed':b['unemployed'].sum(0),'inactive':b['inactive'].sum(0),'age_band':AGES[ai]}
  def income(self,code,age,sex,education=None,status=None,industry=None):
   b=self.block(code,age,sex);z=b['paid']
   if education is not None:z=z[EDU.index(education)][None]
