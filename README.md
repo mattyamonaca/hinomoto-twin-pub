@@ -115,7 +115,7 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 
 **属性拡張 段階B（Issue #16、試験）**：2020年国勢調査の世帯表から、選択した市区町村の世帯構成（家族類型・世帯人数・続き柄・構成員の性別と年齢）を生成し、推定に使わない表で復元を評価する `make build-household` を追加しました。設計・検証は [docs/HOUSEHOLD_B.md](docs/HOUSEHOLD_B.md)。
 
-**モデル改善の比較実験（Issue #12）**：学歴構成で地域の所得分布を再推定する M1 は、86都市の out-of-fold 比較で加重TVを 0.09328 → 0.09000（3.5%）改善し、仮想人口実験では税務指標が弱い条件で一貫して改善しました。産業構成を加える M2 は単独で 2.1% 改善、M1 との併用では M1 に対して 0.14% の上乗せにとどまります。本番の既定値は M0 のままで、設計・データ契約・評価設定・結果・採否理由は [docs/EXPERIMENT_M12.md](docs/EXPERIMENT_M12.md) にまとめています（`make experiment`、`make synthetic` で再現）。
+**モデル改善の比較実験（Issue #12）**：学歴構成で地域の所得分布を再推定する M1 は、86都市の out-of-fold 比較で加重TVを 0.09328 → 0.09000（3.5%）改善し、仮想人口実験では税務指標が弱い条件で一貫して改善しました。産業構成を加える M2 は単独で 2.1% 改善、M1 との併用では M1 に対して 0.14% の上乗せにとどまります。本番の既定値は M0 のままで、設計・データ契約・評価設定・結果・採否理由は [docs/EXPERIMENT_M12.md](docs/EXPERIMENT_M12.md) にまとめています（`make experiment`、`make synthetic` で再現）。M2/M12 を含む仮想人口評価、独立統計（令和5年度 市町村税課税状況等の調）による全市区町村の整合確認、同一分母での M0/M1/M2/M12 比較と係数感度は [docs/VALIDATION_M12.md](docs/VALIDATION_M12.md)（`make fetch-tax-status`、`make validate-m12`、`make synthetic-m12`）。
 
 ## 元データと再実行
 
