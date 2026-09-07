@@ -1,0 +1,9 @@
+{
+  "staged_vs_direct_max_abs_persons": 0.0,
+  "X_m2_vs_direct_max_abs_persons": 0.0,
+  "tolerance_persons": 1e-09,
+  "tolerance_reason": "identical numpy operations in the same order; only floating-point non-determinism could differ",
+  "X_m1_vs_model_arrays_max_abs_persons": 2.2737367544323206e-12,
+  "X_m1_note": "model_arrays.npz is produced by build.py (v1); the staged X_m1 reproduces it up to the v1/estimator floating-point difference (~1e-7)",
+  "passed": true
+}

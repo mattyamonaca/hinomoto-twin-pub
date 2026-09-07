@@ -275,3 +275,35 @@ class HouseholdWebSummaryTests(unittest.TestCase):
         out=self._summary(df);share=out['by_sex_age'][0*18+9]['with_child_u18']
         self.assertGreater(share,0.5);self.assertLess(share,0.7)                      # ~3/5, not 1.0
         agg=hs.presence_tables(df);self.assertAlmostEqual(agg.u18.mean(),hs.U18_SHARE_15_19,delta=0.05);self.assertEqual(agg.u15.sum(),0)
+
+
+class ProductionStageTests(unittest.TestCase):
+    """Issue #34: staged production build refuses mismatched artifacts and resumes from stored stages."""
+    def _inp(self):
+        rng=np.random.default_rng(0);M=4;P=2
+        inp={'areas':['01101','01102','02201','02202'],'prefs':['01','02'],'pref':np.array([0,0,1,1]),'N':rng.random((M,2,13))*1000+100}
+        inp['pref_target']=np.random.default_rng(1).random((P,2,13,16));inp['pref_target']/=inp['pref_target'].sum(-1,keepdims=True)
+        return inp
+    def test_fingerprint_and_provenance_checks(self):
+        import build_production as bp,tempfile,pathlib,json
+        from unittest.mock import patch
+        inp=self._inp();fp=bp.fingerprint(inp);inp2=dict(inp);inp2['N']=inp['N']*1.01
+        self.assertNotEqual(fp,bp.fingerprint(inp2))
+        with tempfile.TemporaryDirectory() as d:
+            with patch.object(bp,'STAGES',pathlib.Path(d)):
+                bp.save_stage('status',{'W':np.zeros((4,2,13,5))},bp.provenance('status','M12',fp))
+                bp.load_stage('status','M12',fp)
+                with self.assertRaises(ValueError):bp.load_stage('status','M12',bp.fingerprint(inp2))      # other inputs
+                with self.assertRaises(ValueError):bp.load_stage('status','M0',fp)                        # other model
+                bp.save_stage('mixture',{'q0':np.zeros(1)},bp.provenance('mixture','M12',fp,upstream={'status':'deadbeef'}))
+                with self.assertRaises(ValueError):bp.load_stage('mixture','M12',fp,require_upstream={'status':bp.sha_file(pathlib.Path(d)/'status.npz')})   # stale upstream
+                with self.assertRaises(FileNotFoundError):bp.load_stage('calibrated','M12',fp)
+    def test_settings_mismatch_is_refused(self):
+        import build_production as bp,tempfile,pathlib,json
+        from unittest.mock import patch
+        inp=self._inp();fp=bp.fingerprint(inp)
+        with tempfile.TemporaryDirectory() as d:
+            with patch.object(bp,'STAGES',pathlib.Path(d)):
+                pv=json.loads(bp.provenance('status','M12',fp));pv['gamma_education']=1.0
+                bp.save_stage('status',{'W':np.zeros(1)},json.dumps(pv))
+                with self.assertRaises(ValueError):bp.load_stage('status','M12',fp)

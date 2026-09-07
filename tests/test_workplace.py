@@ -103,7 +103,9 @@ class WebExportTests(unittest.TestCase):
    np.savez(td/'data/workplace_c.npz',areas=np.array(x['areas']),origin=x['oi'],dest=x['di'],category=x['ci'],x=X.astype(np.float32),seed=X.astype(np.float32),unknown_workplace=np.ones((4,20),np.float32),industry_codes=np.array(bw.G),categories=np.array(bw.CAT),model_version='test',stage='C')
    pd.DataFrame({'origin':x['areas'],'total':[1]*4,'own':[1]*4,'home':[0.5]*4}).to_csv(td/'sources/workplace/od_origin_summary_tidy.csv.gz',index=False)
    (td/'web/graph.json').write_text(json.dumps({'schema_version':3,'dataset_version':'v','graph':{}}))
+   pd.DataFrame({'table':['9','9','10'],'area':['01101','13101','01102'],'industry':['G01']*3,'weight':[1,1,1],'observed_outside_pairs_share':[0,0,0],'tv_model':[0,0,0],'tv_seed':[0,0,0],'tv_independent':[0,0,0],'tv_gravity':[0,0,0],'tv_category':[0,0,0]}).to_csv(td/'validation/workplace_c_heldout.csv',index=False)
    with patch.object(ew,'OUTPUT',td/'data'),patch.object(ew,'WEB',td/'web'),patch.object(ew,'REPORTS',td/'validation'),patch.object(ew,'SOURCES',td/'sources'):ew.main()
+   ev=json.loads((td/'web/workplace/evaluated_areas.json').read_text());self.assertEqual(ev['table9_residence_areas'],['01101','13101']);self.assertEqual(ev['table10_workplace_areas'],['01102'])
    g=json.loads((td/'web/graph.json').read_text());self.assertEqual(g['graph']['workplace']['version'],'test');self.assertTrue(g['dataset_version'].endswith('+C'))
    idx=json.loads((td/'web/workplace/index.json').read_text())['files']
    for rel,(nb,sha) in idx.items():
