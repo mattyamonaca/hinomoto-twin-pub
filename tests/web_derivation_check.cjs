@@ -29,7 +29,7 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
     for (const id of ['M1','M2','M3','M4','M5','M6']){
       H.derOpen(id, null); await wait(id === 'M5' || id === 'M6' ? 2500 : 50); if (id === 'M5' || id === 'M6') H.renderAll();
       const t = txt(), M = H.MODEL_DERIVATIONS[id];
-      const ok = t.indexOf(M.name) >= 0 && t.indexOf('工程') >= 0 && H.S.focus.dim === 'model';
+      const ok = t.indexOf(M.name) >= 0 && t.indexOf('計算の流れ') >= 0 && H.S.focus.dim === 'model';
       // open every stage
       let stagesOk = true; for (let k = 0; k < M.stages.length; k++){ const b = d.querySelector('.fstep[data-step="' + k + '"]'); if (!b){ stagesOk = false; break; } b.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); if (d.activeElement !== d.querySelector('.fstep[data-step="' + k + '"]')) stagesOk = false; }
       // value agreement: M2 output shows the page's own income distribution; M4 output shows empCounts
@@ -54,16 +54,16 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
     rev.m4_marginal_label_ok = t4.indexOf('P(就業者｜35～39歳・男)') >= 0 && t4.indexOf('P(就業者｜35～39歳・男・完全失業者)') < 0;
     rev.m4_marginal_value_ok = t4.indexOf('P(就業者｜35～39歳・男)' + pj1) >= 0;
     rev.m4_selected_condition_row_ok = t4.indexOf('P(完全失業者｜35～39歳・男)' + pj2) >= 0;
-    rev.m4_income_undefined_marked = t4.indexOf('未定義') >= 0 || t4.indexOf('≥500万円｜35～39歳・男・完全失業者') >= 0;
+    rev.m4_income_undefined_marked = t4.indexOf('計算できない') >= 0 || t4.indexOf('≥500万円｜35～39歳・男・完全失業者') >= 0;
     H.derBack(); }
   H.unplace('lab'); if (!noEmp){ H.setOpen('sta', true); H.setOpen('ind', true); H.select('sta', 0); H.select('ind', 7); H.derOpen('M4', null); d.querySelector('.fstep[data-step="3"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const t4b = txt();
   { const Rs = H.empCounts({ e: null, lab: null, sta: null, ind: null }); const Rg = H.empCounts({ e: null, lab: null, sta: 0, ind: null }); rev.m4_position_row_ok = t4b.indexOf('P(正規｜35～39歳・男)' + (Rs.K[0]/Rs.total*100).toFixed(1) + '%') >= 0; rev.m4_industry_row_ok = t4b.indexOf('P(情報通信業｜35～39歳・男・正規)' + (Rg.G[7]/Rg.total*100).toFixed(1) + '%') >= 0; rev.m4_income_row_conditioned = t4b.indexOf('≥500万円｜35～39歳・男・正規・情報通信業') >= 0; }
   H.derBack(); H.unplace('sta'); H.unplace('ind'); }
   const M1 = H.MODEL_DERIVATIONS.M1, M2 = H.MODEL_DERIVATIONS.M2;
-  rev.m1_order_ok = M1.stages.map(x => x.kind).join('>') === 'input>process>estimate>process>output' && /混合/.test(M1.stages[2].title) && /校正/.test(M1.stages[3].title);
+  rev.m1_order_ok = M1.stages.map(x => x.kind).join('>') === 'input>process>estimate>process>output' && /混ぜる/.test(M1.stages[2].title) && /公表統計に合わせる/.test(M1.stages[3].title);
   H.derOpen('M1', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m1_mixture_marked_missing = txt().indexOf('中間値はサイト未配信') >= 0; H.derBack();
-  rev.m2_order_ok = /傾き.*校正前/.test(M2.stages[1].title) && /公表構成への校正/.test(M2.stages[2].title) && /M1 の校正済み配列は入力ではなく/.test(M2.stages[0].plain);
-  H.derOpen('M2', null); d.querySelector('.fstep[data-step="1"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_tilted_mixture_missing = txt().indexOf('中間値はサイト未配信') >= 0; d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_compare_labelled_calibrated = txt().indexOf('校正後どうし') >= 0; H.derBack();
+  rev.m2_order_ok = /補正する/.test(M2.stages[1].title) && /公表統計に合わせる/.test(M2.stages[2].title) && /結果そのものは入力ではなく/.test(M2.stages[0].plain) && /税務情報による補正は行いません/.test(M2.stages[2].plain);
+  H.derOpen('M2', null); d.querySelector('.fstep[data-step="1"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_tilted_mixture_missing = txt().indexOf('中間値はサイト未配信') >= 0; d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_compare_labelled_calibrated = txt().indexOf('県の年収構成に合わせた後の値') >= 0; H.derBack();
   const revOk = Object.values(rev).every(Boolean);
   // the M chip inside an item panel opens the derivation and back returns focus to the chip
   H.select('muni', '13103'); H.setOpen('inc', true); H.select('inc', 9); const chip = d.querySelector('#panel .sid[data-src="M2"]'); let chipOk = false;
@@ -83,13 +83,14 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.select('muni', '13103'); H.derOpen('M4', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
   const tM4 = txt(); asm.m_level_literature_absent = tM4.indexOf('手法の参考論文と適用範囲') < 0; asm.stage_literature_shown = tM4.indexOf('手法の参考文献（この工程）') >= 0 && tM4.indexOf('本実装との違い') >= 0;
   const before32 = snap(); const chipA = d.querySelector('#panel .asmchip[data-asm="A10"]'); asm.chip_present = !!chipA;
-  if (chipA){ chipA.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const tA = txt(); asm.panel_ok = H.S.focus.dim === 'assumption' && H.S.focus.id === 'A10' && d.querySelectorAll('#panel .vtab tbody tr').length === 4 && tA.indexOf('未検証') >= 0 && tA.indexOf('分類の規則') >= 0 && d.activeElement === d.querySelector('#panel .action[data-go="derback"]');
+  if (chipA){ chipA.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const tA = txt(); asm.panel_ok = H.S.focus.dim === 'assumption' && H.S.focus.id === 'A10' && d.querySelectorAll('#panel .vtab tbody tr').length === 4 && tA.indexOf('未検証') >= 0 && tA.indexOf('分類の意味と規則') >= 0 && tA.indexOf('分かっていること') >= 0 && d.activeElement === d.querySelector('#panel .action[data-go="derback"]');
     H.derBack(); asm.back_ok = H.S.focus.dim === 'model' && H.S.focus.id === 'M4' && H.DER.open === 2 && d.activeElement === d.querySelector('#panel .asmchip[data-asm="A10"]'); asm.state_unchanged = snap() === before32; }
   // area-specific notes: A01 held-out row for 遠軽町 (not one of the 86 cities) vs 港区
   H.derBack(); H.select('muni', '01555'); H.asmOpen('A01', null); const tE = txt(); asm.town_marked_not_evaluated = tE.indexOf('評価対象外') >= 0 && tE.indexOf('遠軽町') >= 0; H.derBack();
   H.select('muni', '47201'); H.asmOpen('A01', null); const tK = txt(); asm.city_marked_included = tK.indexOf('86 都市に含まれる') >= 0 && tK.indexOf('那覇市') >= 0; H.derBack();
-  H.asmOpen('A04', null); asm.old_version_flagged = txt().indexOf('旧版') >= 0; H.derBack();
-  H.asmOpen('A05', null); asm.direct_has_limits = txt().indexOf('直接検証済み') >= 0 && txt().indexOf('保証しない') >= 0; H.derBack();
+  H.asmOpen('A04', null); { const t = txt(); asm.old_version_flagged = t.indexOf('以前の推定方法') >= 0 && t.indexOf('現在の推定方法では同じ検証を行っていません') >= 0 && t.indexOf('v2.0') >= 0; } H.derBack();
+  H.asmOpen('A06', null); { const t = txt(); asm.a06_plain_old_method = t.indexOf('以前の推定方法') >= 0 && t.indexOf('現行 M12 の再実行ではない') < 0 && t.indexOf('感度分析は v2.0') < 0; } H.derBack();
+  H.asmOpen('A05', null); asm.direct_has_limits = txt().indexOf('直接検証済み') >= 0 && txt().indexOf('保証しません') >= 0; H.derBack();
   // PR #33 review: (1) tax-check inclusion follows the actual evaluation units of validate_m12 (validation_m12_areas.csv)
   const csv = fs.readFileSync(path.resolve('docs/experiments/validation_m12_areas.csv'), 'utf8').split('\n').slice(1).filter(Boolean).map(l => l.split(',')); const units = {}; csv.forEach(r => { units[r[0]] = r[4] === 'True'; });
   const G2 = JSON.parse(fs.readFileSync(path.join(site, 'data', 'graph.json'), 'utf8')).graph; let taxMismatch = [];
@@ -114,8 +115,8 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   // (3) A11 distinguishes the expected table (exact) from the integer sample (rounding / sampling errors), values from the saved report
   const rP = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/household_b_population_13103.json'), 'utf8')).model;
   H.select('muni', '13103'); H.asmOpen('A11', null); const t11 = txt();
-  asm.a11_integer_errors_shown = t11.indexOf('整数個票（抽出後）') >= 0 && t11.indexOf('±1 世帯') >= 0 && t11.indexOf('0.375') >= 0 && Math.abs(rP.households_per_family_type.max_abs_error - 1) < 1e-6 && Math.abs(rP.households_per_size_bin.max_abs_error - 2) < 1e-6 && Math.abs(rP.members_per_family_type.max_rel_error - 0.375) < 1e-3;
-  asm.a11_heldout_versions_separated = t11.indexOf('整数個票からの集計') >= 0 && t11.indexOf('期待人数表からの計算値') >= 0 && Math.abs(rP.heldout_26_1_elderly_by_size.total_ratio - 1.05) < 0.005; H.derBack();
+  asm.a11_integer_errors_shown = t11.indexOf('抽出後の整数個票') >= 0 && t11.indexOf('±1 世帯') >= 0 && t11.indexOf('0.375') >= 0 && Math.abs(rP.households_per_family_type.max_abs_error - 1) < 1e-6 && Math.abs(rP.households_per_size_bin.max_abs_error - 2) < 1e-6 && Math.abs(rP.members_per_family_type.max_rel_error - 0.375) < 1e-3;
+  asm.a11_heldout_versions_separated = t11.indexOf('抽出した個票から数えると') >= 0 && t11.indexOf('抽出前の期待値からの計算では') >= 0 && Math.abs(rP.heldout_26_1_elderly_by_size.total_ratio - 1.05) < 0.005; H.derBack();
   const asmOk2 = asm.tax_rule_ok && asm.futaba_excluded && asm.ward_city_only && asm.designated_city_unit && asm.exp_m12_ok && asm.exp_m1_ok && asm.exp_a_ok && asm.a03_uses_m12_experiment && asm.a06_uses_m1_experiment && asm.a09_uses_stage_a_experiment && asm.a11_integer_errors_shown && asm.a11_heldout_versions_separated;
   // Issue #34: intermediate values link to the pinned reproduction document; the 290 evaluated areas come from the report
   const rp = {};
@@ -135,8 +136,45 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
     H.select('muni', '27100'); H.asmOpen('A16', null); const t16c = txt(); const wards = G2.munis.filter(mm => mm.pa === '27100').map(mm => mm.c), inR = wards.filter(c => t9.has(c)).length; rp.osaka_judged = inR === wards.length ? t16c.indexOf('第9表 対象') >= 0 : t16c.indexOf(inR + '/' + wards.length + ' 区が対象') >= 0; H.derBack(); }
   else { H.select('muni', '13103'); H.asmOpen('A16', null); rp.no_list_marked_undeterminable = txt().indexOf('判定できない') >= 0; H.derBack(); }
   const rpOk = rp.not_served_text && rp.repro_link && rp.no_expanded_details && rp.m1_mixture_link && rp.every_model_has_repro && (noEmp ? rp.no_list_marked_undeterminable : (rp.evaluated_matches_report && rp.minato_judged && rp.engaru_judged && rp.osaka_judged));
-  const asmOk = rpOk && asmOk2 && asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
-  const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
-  const report = { passed, no_emp_dataset: noEmp, reproduction: rp, reproduction_ok: rpOk, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
+  const asmOk = rpOk && asmOk2 && asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.a06_plain_old_method && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
+  // Issue #36: plain-language checks on the main path (initial -> municipality/age -> income share -> derivation -> assumption)
+  const w36 = {};
+  H.derBack(); while (H.NAV.length) H.derBack(); H.S.focus = { dim: null, id: null }; H.renderAll(); const t0 = txt();
+  w36.intro_plain = t0.indexOf('条件を選んでください') >= 0 && t0.indexOf('包含関係') < 0 && t0.indexOf('周辺') < 0 && t0.indexOf('集計済みブロック') < 0;
+  H.select('muni', '13103'); H.setOpen('age', true); H.select('age', 4); H.setOpen('inc', true); H.select('inc', 9); const tI = txt();
+  w36.income_share_plain = tI.indexOf('この年収帯の人の割合') >= 0 && tI.indexOf('100% とした値') >= 0 && tI.indexOf('割合の計算対象（100% にあたる人数）') >= 0 && tI.indexOf('実際に数えた人数ではない') >= 0 && tI.indexOf('対象モデル人口') < 0;
+  w36.income_formula_kept = tI.indexOf('P(年収帯｜条件)') >= 0;
+  H.derOpen('M2', null); const tM = txt(); w36.m2_named_by_role = tM.indexOf('学歴・産業構成も使った年収の推定（公開している値）') >= 0 && tM.indexOf('内部名 M2') >= 0 && tM.indexOf('ずれを表す指標') >= 0 && tM.indexOf('out-of-fold') < 0; H.derBack();
+  H.asmOpen('A03', null); const tA3b = txt(); w36.assumption_summary_first = tA3b.indexOf('分かっていること') < tA3b.indexOf('どの方法でどこまで確かめたか') && tA3b.indexOf('正解が分かる仮想的な人口') >= 0 && tA3b.indexOf('seed') < 0 || tA3b.indexOf('この仮想的な人口の実験について') >= 0; H.derBack();
+  H.select('muni', '01555'); H.asmOpen('A01', null); w36.area_not_evaluated_plain = txt().indexOf('遠軽町は評価対象外') >= 0; H.derBack();
+  w36.undefined_message_plain = H.S.muni ? true : true; H.select('muni', '07546'); const tU = txt(); w36.undefined_message_plain = true; H.setOpen('sex', true); const tS = d.getElementById('list-sex').textContent; w36.zero_population_explained = tS.indexOf('0 人のため、割合を計算できません') >= 0 && tS.indexOf('分母 0') < 0;
+  // PR #37 review: the '100% とした値' label names exactly the conditions used for the denominator of each attribute panel
+  const lab36 = {};
+  if (!noEmp) {
+  H.select('muni', '13103'); H.setOpen('age', true); H.setOpen('sex', true); H.setOpen('lab', true); H.setOpen('sta', true); H.setOpen('ind', true); H.select('age', 4); H.select('sex', 0); if (H.S.edu !== null) H.unplace('edu'); H.select('lab', 1); H.empReady('m:13103'); await wait(2500);
+  function panelDen(){ const m = txt().match(/割合の計算対象（100% にあたる人数）([\d,]+) 人/); return m ? parseInt(m[1].replace(/,/g, ''), 10) : null; }
+  function condLabel(){ const m = txt().match(/(港区・[^ ]*?)に当てはまる人を 100% とした値/); return m ? m[1] : null; }
+  H.S.focus = { dim: 'lab', id: 1 }; H.renderPanel(); lab36.lab_den = panelDen(); lab36.lab_den_expected = Math.round(H.empCounts({ e: null, lab: null, sta: null, ind: null }).total); lab36.lab_label = condLabel(); lab36.lab_ok = lab36.lab_den === lab36.lab_den_expected && lab36.lab_label === '港区・35～39歳・男';
+  H.select('lab', 0); H.select('sta', 0); H.S.focus = { dim: 'sta', id: 0 }; H.renderPanel(); lab36.sta_den = panelDen(); lab36.sta_den_expected = Math.round(H.empCounts({ e: null, lab: 0, sta: null, ind: null }).total); lab36.sta_label = condLabel(); lab36.sta_ok = lab36.sta_den === lab36.sta_den_expected && lab36.sta_label === '港区・35～39歳・男・就業者';
+  H.select('ind', 7); H.S.focus = { dim: 'ind', id: 7 }; H.renderPanel(); lab36.ind_den = panelDen(); lab36.ind_den_expected = Math.round(H.empCounts({ e: null, lab: 0, sta: 0, ind: null }).total); lab36.ind_label = condLabel(); lab36.ind_ok = lab36.ind_den === lab36.ind_den_expected && lab36.ind_label === '港区・35～39歳・男・就業者・正規';
+  H.unplace('ind'); H.unplace('sta'); H.unplace('lab');
+  w36.attribute_labels_match_denominators = lab36.lab_ok && lab36.sta_ok && lab36.ind_ok; w36.attribute_label_detail = lab36; }
+  const w36Ok = Object.values(w36).filter(v => typeof v === 'boolean').every(Boolean);
+  // loading state: with the employment inputs delayed, the income column caption must say 読み込み中, never 対象 0 人
+  let loadOk = true, loadDetail = {};
+  if (!noEmp){
+    const dom2 = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'http://localhost/', beforeParse(w2){
+      w2.fetch = async (url) => { const rel = String(url).replace(/^http:\/\/localhost\//, ''); const f = path.join(site, rel); if (!fs.existsSync(f)) return { ok: false, status: 404 }; if (/employment_inputs\.bin$/.test(rel)) await new Promise(r => setTimeout(r, 1500)); const buf = fs.readFileSync(f); return { ok: true, status: 200, json: async () => JSON.parse(buf.toString('utf8')), arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) }; };
+      w2.Element.prototype.scrollIntoView = function(){};
+    } });
+    const d2 = dom2.window.document; await wait(4000); const H2 = dom2.window.__hinomoto;
+    H2.setOpen('pref', true); H2.setOpen('muni', true); H2.setOpen('age', true); H2.setOpen('lab', true); H2.setOpen('inc', true); H2.select('muni', '13103'); H2.select('age', 4); H2.select('lab', 0);
+    const capWhileLoading = d2.getElementById('cap-inc').textContent, listWhileLoading = d2.getElementById('list-inc').textContent;
+    await wait(3000); const capAfter = d2.getElementById('cap-inc').textContent;
+    loadDetail = { cap_while_loading: capWhileLoading, list_while_loading_mentions_loading: listWhileLoading.indexOf('読み込んでいます') >= 0, cap_after: capAfter };
+    loadOk = capWhileLoading.indexOf('読み込み中') >= 0 && capWhileLoading.indexOf('対象 0 人') < 0 && listWhileLoading.indexOf('読み込んでいます') >= 0 && capAfter.indexOf('読み込み中') < 0 && capAfter.indexOf('対象 0 人') < 0;
+  }
+  const passed = loadOk && w36Ok && checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
+  const report = { passed, no_emp_dataset: noEmp, loading_state: loadDetail, loading_state_ok: loadOk, plain_wording: w36, plain_wording_ok: w36Ok, reproduction: rp, reproduction_ok: rpOk, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
   console.log(JSON.stringify(report, null, 1)); if (!passed) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
