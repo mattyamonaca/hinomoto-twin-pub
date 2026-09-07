@@ -325,7 +325,8 @@ def run(code):
  checks=final_checks(x,N,T)
  if not checks['passed']:raise RuntimeError(f"Household output violates constraints: {checks}")
  (OUTPUT/'household_b').mkdir(parents=True,exist_ok=True)
- np.savez_compressed(OUTPUT/'household_b'/f'{code}.npz',households=N,members=T,aggregate=X,family_codes=np.array(F),relationship_codes=np.array(R),age_bands=np.array(A18),code=code)
+ import provenance as pvn
+ np.savez_compressed(OUTPUT/'household_b'/f'{code}.npz',households=N,members=T,aggregate=X,family_codes=np.array(F),relationship_codes=np.array(R),age_bands=np.array(A18),code=code,provenance=np.array(pvn.stamp('household_expected',inputs=sorted(D.glob('*.csv.gz')),settings={'code':code,'prefecture_seed':x['pref']},extra={'layout':'households[F,s_h,a_h,size] expected households; members[F,s_h,a_h,size,role,sex,age] expected members; aggregate[F,role,sex,age]'})))
  rep={'code':code,'name':x['name'],'prefecture_seed':x['pref'],'households':float(N.sum()),'published_households':float(x['H_F'].sum()),'unknown_age_head_share':x['unknown_age_head_share'],'final_checks':checks,'aggregate_ipf':agg,'plan':notes,'evaluation':ev,'elapsed_seconds':round(time.time()-t0,1),'assumptions':['Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).','Unknown-age heads are spread within sex x family type in proportion to known ages.','Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.','Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).','No within-household correlation of income or other individual attributes is modelled.']}
  (REPORTS/f'household_b_{code}.json').write_text(json.dumps(rep,ensure_ascii=False,indent=2))
  return rep

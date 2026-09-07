@@ -61,9 +61,9 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.derBack(); H.unplace('sta'); H.unplace('ind'); }
   const M1 = H.MODEL_DERIVATIONS.M1, M2 = H.MODEL_DERIVATIONS.M2;
   rev.m1_order_ok = M1.stages.map(x => x.kind).join('>') === 'input>process>estimate>process>output' && /混合/.test(M1.stages[2].title) && /校正/.test(M1.stages[3].title);
-  H.derOpen('M1', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m1_mixture_marked_missing = txt().indexOf('この配布版には未収録') >= 0; H.derBack();
+  H.derOpen('M1', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m1_mixture_marked_missing = txt().indexOf('中間値はサイト未配信') >= 0; H.derBack();
   rev.m2_order_ok = /傾き.*校正前/.test(M2.stages[1].title) && /公表構成への校正/.test(M2.stages[2].title) && /M1 の校正済み配列は入力ではなく/.test(M2.stages[0].plain);
-  H.derOpen('M2', null); d.querySelector('.fstep[data-step="1"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_tilted_mixture_missing = txt().indexOf('この配布版には未収録') >= 0; d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_compare_labelled_calibrated = txt().indexOf('校正後どうし') >= 0; H.derBack();
+  H.derOpen('M2', null); d.querySelector('.fstep[data-step="1"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_tilted_mixture_missing = txt().indexOf('中間値はサイト未配信') >= 0; d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rev.m2_compare_labelled_calibrated = txt().indexOf('校正後どうし') >= 0; H.derBack();
   const revOk = Object.values(rev).every(Boolean);
   // the M chip inside an item panel opens the derivation and back returns focus to the chip
   H.select('muni', '13103'); H.setOpen('inc', true); H.select('inc', 9); const chip = d.querySelector('#panel .sid[data-src="M2"]'); let chipOk = false;
@@ -117,8 +117,26 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   asm.a11_integer_errors_shown = t11.indexOf('整数個票（抽出後）') >= 0 && t11.indexOf('±1 世帯') >= 0 && t11.indexOf('0.375') >= 0 && Math.abs(rP.households_per_family_type.max_abs_error - 1) < 1e-6 && Math.abs(rP.households_per_size_bin.max_abs_error - 2) < 1e-6 && Math.abs(rP.members_per_family_type.max_rel_error - 0.375) < 1e-3;
   asm.a11_heldout_versions_separated = t11.indexOf('整数個票からの集計') >= 0 && t11.indexOf('期待人数表からの計算値') >= 0 && Math.abs(rP.heldout_26_1_elderly_by_size.total_ratio - 1.05) < 0.005; H.derBack();
   const asmOk2 = asm.tax_rule_ok && asm.futaba_excluded && asm.ward_city_only && asm.designated_city_unit && asm.exp_m12_ok && asm.exp_m1_ok && asm.exp_a_ok && asm.a03_uses_m12_experiment && asm.a06_uses_m1_experiment && asm.a09_uses_stage_a_experiment && asm.a11_integer_errors_shown && asm.a11_heldout_versions_separated;
-  const asmOk = asmOk2 && asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
+  // Issue #34: intermediate values link to the pinned reproduction document; the 290 evaluated areas come from the report
+  const rp = {};
+  rp.code_ref = H.CODE_REF; rp.pinned = !!H.CODE_REF;
+  H.select('muni', '13103'); H.derOpen('M2', null); d.querySelector('.fstep[data-step="1"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const tR = txt(); const link = d.querySelector('#panel a.repro');
+  rp.not_served_text = tR.indexOf('中間値はサイト未配信') >= 0 && tR.indexOf('この配布版には未収録') < 0; rp.repro_link = !!link && /docs\/PIPELINE\.md#m2-tilt$/.test(link.getAttribute('href')) && (!H.CODE_REF || link.getAttribute('href').indexOf('/blob/' + H.CODE_REF + '/') >= 0);
+  rp.no_expanded_details = tR.indexOf('--stage') < 0 && tR.indexOf('inputs_fingerprint') < 0;   /* commands and versions stay in the document */
+  H.derBack(); H.derOpen('M1', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); rp.m1_mixture_link = !!d.querySelector('#panel a.repro[href$="#m1-mixture"]'); H.derBack();
+  const M = H.MODEL_DERIVATIONS; rp.stages_with_repro = Object.keys(M).map(m => m + ':' + M[m].stages.filter(st => st.repro).length); rp.every_model_has_repro = Object.keys(M).every(m => M[m].stages.some(st => st.repro));
+  const evPath = path.join(site, 'data', 'workplace', 'evaluated_areas.json'); rp.evaluated_file = fs.existsSync(evPath);
+  if (rp.evaluated_file && !noEmp){ const ev = JSON.parse(fs.readFileSync(evPath, 'utf8')); const held = fs.readFileSync(path.resolve(process.env.HINOMOTO_DATA_ROOT || '../hinomoto-twin-data', 'validation', 'workplace_c_heldout.csv'), 'utf8').split('\n').slice(1).filter(Boolean).map(l => l.split(','));
+    const t9 = new Set(held.filter(r => r[0] === '9').map(r => r[1])), t10 = new Set(held.filter(r => r[0] === '10').map(r => r[1]));
+    rp.evaluated_matches_report = ev.table9_residence_areas.length === t9.size && ev.table9_residence_areas.every(c => t9.has(c)) && ev.table10_workplace_areas.length === t10.size && ev.table10_workplace_areas.every(c => t10.has(c)) && ev.table9_residence_areas.length === 290;
+    H.wpEvaluated(); await wait(1500);
+    H.select('muni', '13103'); H.asmOpen('A16', null); const t16 = txt(); rp.minato_judged = (t16.indexOf('港区は評価対象に含まれる') >= 0) === t9.has('13103') && t16.indexOf('判定できない') < 0; H.derBack();
+    H.select('muni', '01555'); H.asmOpen('A16', null); const t16b = txt(); rp.engaru_judged = (t16b.indexOf('遠軽町は評価対象外') >= 0) === !t9.has('01555') && t16b.indexOf('判定できない') < 0; H.derBack();
+    H.select('muni', '27100'); H.asmOpen('A16', null); const t16c = txt(); const wards = G2.munis.filter(mm => mm.pa === '27100').map(mm => mm.c), inR = wards.filter(c => t9.has(c)).length; rp.osaka_judged = inR === wards.length ? t16c.indexOf('第9表 対象') >= 0 : t16c.indexOf(inR + '/' + wards.length + ' 区が対象') >= 0; H.derBack(); }
+  else { H.select('muni', '13103'); H.asmOpen('A16', null); rp.no_list_marked_undeterminable = txt().indexOf('判定できない') >= 0; H.derBack(); }
+  const rpOk = rp.not_served_text && rp.repro_link && rp.no_expanded_details && rp.m1_mixture_link && rp.every_model_has_repro && (noEmp ? rp.no_list_marked_undeterminable : (rp.evaluated_matches_report && rp.minato_judged && rp.engaru_judged && rp.osaka_judged));
+  const asmOk = rpOk && asmOk2 && asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
   const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
-  const report = { passed, no_emp_dataset: noEmp, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
+  const report = { passed, no_emp_dataset: noEmp, reproduction: rp, reproduction_ok: rpOk, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
   console.log(JSON.stringify(report, null, 1)); if (!passed) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });

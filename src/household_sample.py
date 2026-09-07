@@ -239,7 +239,7 @@ def main():
     a=p.parse_args();S=HouseholdSampler(a.municipality,a.data_dir)
     if a.population:
         t0=time.time();df=S.population(a.seed);t1=time.time()-t0
-        rep={'code':S.code,'seed':a.seed,'mean_size_10plus_assumption':float(S.mean_size[9]),'sampling_seconds':round(t1,1),'model':evaluate_population(S,df,'model'),'independent':evaluate_population(S,independent_population(S,a.seed),'independent members')}
+        import provenance as pvn;rep={'code':S.code,'seed':a.seed,'provenance':json.loads(pvn.stamp('household_population',upstream={'expected_table':S.dir/'household_b'/f'{S.code}.npz'},settings={'seed':a.seed,'sa':bool(a.sa),'link':bool(a.link_population)})),'mean_size_10plus_assumption':float(S.mean_size[9]),'sampling_seconds':round(t1,1),'model':evaluate_population(S,df,'model'),'independent':evaluate_population(S,independent_population(S,a.seed),'independent members')}
         if a.sa:
             adj,info=sa_adjust(df,S);rep['sa_adjusted']=evaluate_population(S,adj,'sa_adjusted');rep['sa']=info
         out=OUTPUT/'household_b'

@@ -25,7 +25,7 @@ def main():
         ids=list(range(len(areas))) if p==0 else [i for i,m in enumerate(areas) if m.startswith(f'{p:02}')]
         agg.append(norm(ed[ids].sum(0)).transpose(1,0,2,3))
     g.update(pop=np.asarray(pops).tolist(),xc=encode(bs),xd=encode(xs),e=encode(ers),rs=encode(rs),ag=encode(agg),q=inp['shapes'].tolist(),encoding='float64',sens={},sens_or=None)
-    meta=json.loads((OUTPUT/'model_metadata.json').read_text());payload.update(dataset_version='2020-2022-'+meta['model_version']+'-20260906',model=meta)
+    meta=json.loads((OUTPUT/'model_metadata.json').read_text());payload.update(dataset_version='2020-2022-'+meta['model_version']+'-20260906',model=meta,code_ref=meta.get('code_commit','unknown'))
     payload['schema_version']=2
     # Verify serialized values directly against the same arrays used by the API exports.
     for key,expected in [('xd',xs),('xc',bs),('e',ers),('rs',rs),('ag',agg)]:

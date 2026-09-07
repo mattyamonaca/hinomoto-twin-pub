@@ -21,6 +21,7 @@ Output: data/workplace_c.npz (pair list + X, unknown-workplace counts, margin er
 """
 from paths import SOURCES,OUTPUT,REPORTS
 import json,time,sys
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
@@ -87,7 +88,7 @@ def build(sources_dir=None,output_dir=None,reports_dir=None,iters=1500,tol=0.1):
  X,hist=ipf(x,X0.copy(),iters,tol,verbose=True)
  e=hist[-1];ind_tv=None
  out=output_dir or OUTPUT;rep=reports_dir or REPORTS
- np.savez_compressed(out/'workplace_c.npz',areas=np.array(x['areas']),origin=x['oi'].astype(np.int32),dest=x['di'].astype(np.int32),category=x['ci'].astype(np.int8),x=X.astype(np.float32),seed=X0.astype(np.float32),unknown_workplace=x['U'].astype(np.float32),industry_codes=np.array(G),categories=np.array(CAT),model_version=MODEL_VERSION,stage='C')
+ np.savez_compressed(out/'workplace_c.npz',areas=np.array(x['areas']),origin=x['oi'].astype(np.int32),dest=x['di'].astype(np.int32),category=x['ci'].astype(np.int8),x=X.astype(np.float32),seed=X0.astype(np.float32),unknown_workplace=x['U'].astype(np.float32),industry_codes=np.array(G),categories=np.array(CAT),model_version=MODEL_VERSION,stage='C',provenance=np.array(__import__('provenance').stamp('workplace_fit',inputs=sorted((Path(sources_dir) if sources_dir else SOURCES).joinpath('workplace').glob('*.csv.gz')),settings={'model_version':MODEL_VERSION,'iters':iters,'tol':tol},extra={'layout':'x[pair,industry] fitted persons; seed[pair,industry] initial values; unknown_workplace[area,industry]; convergence summary in validation/workplace_c_build.json'})))
  report={'model_version':MODEL_VERSION,'pairs':int(len(x['od'])),'areas':A,'employed_known_workplace':float(x['od'].sum()),'employed_unknown_workplace':float(x['U'].sum()),'input_consistency':chk,'ipf':{'iterations':e[0],'max_abs_error_persons':{'pair':e[1],'residence_category_industry':e[2],'workplace_category_industry':e[3]},'history':hist,'converged':bool(max(e[1:])<tol),'tolerance_persons':tol},'seed_vs_fit_tv_weighted':float((0.5*np.abs(X/np.maximum(X.sum(1,keepdims=True),1e-12)-X0/np.maximum(X0.sum(1,keepdims=True),1e-12)).sum(1)*x['od']).sum()/x['od'].sum()),'nonnegative':bool((X>=0).all()),'elapsed_seconds':round(time.time()-t0,1),'file_bytes':int((out/'workplace_c.npz').stat().st_size)}
  (rep/'workplace_c_build.json').write_text(json.dumps(report,ensure_ascii=False,indent=1));print(json.dumps({k:v for k,v in report.items() if k!='ipf'},ensure_ascii=False));print('ipf',report['ipf']['max_abs_error_persons'],'iterations',e[0])
  return report

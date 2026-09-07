@@ -97,7 +97,7 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 
 **学歴と所得を独立に掛け合わせてはいません。** 一方、全国の学歴別所得の関連を地域に移植する仮定があり、実測された市区町村別学歴・所得の同時分布ではありません。内部整合性の検証と、小地域での精度保証は区別してください。
 
-[推定方法・制約・限界（v2）](METHOD_V2.md)／[基礎モデル（v1）](METHOD.md)／[全出典](SOURCES.md)
+[推定方法・制約・限界（v2）](METHOD_V2.md)／[基礎モデル（v1）](METHOD.md)／[全出典](SOURCES.md)／[工程間の入出力と再現手順](docs/PIPELINE.md)
 
 ### 検証の範囲と感度分析
 
@@ -130,7 +130,7 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 | `site/` | 分布を埋め込まない画面コード | 対象 |
 | `$HINOMOTO_DATA_ROOT/raw/` | 元Excel・所得表レスポンス | 対象外 |
 | `$HINOMOTO_DATA_ROOT/sources/` | 正規化済み入力 | 対象外 |
-| `$HINOMOTO_DATA_ROOT/data/` | 全分布・計算用配列・推定例 | 対象外 |
+| `$HINOMOTO_DATA_ROOT/data/` | 全分布・計算用配列・推定例。`data/stages/` に所得モデルの中間成果物（status / mixture / calibrated、来歴付き。[docs/PIPELINE.md](docs/PIPELINE.md)） | 対象外 |
 | `$HINOMOTO_DATA_ROOT/validation/` | 検証結果・処理品質 | 対象外 |
 | `$HINOMOTO_DATA_ROOT/web/` | 公開ページ用データ | 対象外 |
 

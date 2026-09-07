@@ -1,6 +1,29 @@
 {
  "passed": true,
  "no_emp_dataset": false,
+ "reproduction": {
+  "code_ref": "b4a03510df6e39d87ce6b77e89a88276ca688f3e",
+  "pinned": true,
+  "not_served_text": true,
+  "repro_link": true,
+  "no_expanded_details": true,
+  "m1_mixture_link": true,
+  "stages_with_repro": [
+   "M1:3",
+   "M2:2",
+   "M3:1",
+   "M4:1",
+   "M5:2",
+   "M6:1"
+  ],
+  "every_model_has_repro": true,
+  "evaluated_file": true,
+  "evaluated_matches_report": true,
+  "minato_judged": true,
+  "engaru_judged": true,
+  "osaka_judged": true
+ },
+ "reproduction_ok": true,
  "assumptions": {
   "missing_ids": [],
   "bad_entries": [],
