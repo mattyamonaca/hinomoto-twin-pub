@@ -1,6 +1,36 @@
 {
  "passed": true,
  "no_emp_dataset": false,
+ "assumptions": {
+  "missing_ids": [],
+  "bad_entries": [],
+  "unreferenced": [],
+  "lit_missing": [],
+  "m_level_literature_absent": true,
+  "shared_A04_in": [
+   "M2",
+   "M3",
+   "M4"
+  ],
+  "literature_stages": [
+   "M1:2",
+   "M2:1",
+   "M3:1",
+   "M4:1",
+   "M5:1",
+   "M6:1"
+  ],
+  "stage_literature_shown": true,
+  "chip_present": true,
+  "panel_ok": true,
+  "back_ok": true,
+  "state_unchanged": true,
+  "town_marked_not_evaluated": true,
+  "city_marked_included": true,
+  "old_version_flagged": true,
+  "direct_has_limits": true
+ },
+ "assumptions_ok": true,
  "review_cases": {
   "m4_marginal_label_ok": true,
   "m4_marginal_value_ok": true,

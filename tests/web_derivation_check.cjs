@@ -72,7 +72,26 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.derOpen('M4', null); H.derOpen('M3', null); H.derOpen('M2', null); H.derOpen('M1', null); const depthBefore = H.NAV.length; H.derOpen('M4', null); const cycleOk = H.NAV.length < depthBefore; while (H.NAV.length) H.derBack();
   // sources list has derivation buttons
   d.getElementById('srcbtn').dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const srcBtns = d.querySelectorAll('#panel .action[data-go="model"]').length;
-  const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && errs.length === 0;
-  const report = { passed, no_emp_dataset: noEmp, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
+  // Issue #32: assumption registry integrity, assumption panel, per-stage literature, area-specific evaluation notes
+  const A = H.ASSUMPTIONS, MA = H.MODEL_ASSUMPTIONS, LIT = H.MODEL_LITERATURE, asm = { missing_ids: [], bad_entries: [], unreferenced: [], lit_missing: [], m_level_literature_absent: true };
+  const referenced = new Set();
+  Object.keys(MA).forEach(m => { MA[m].forEach(id => { referenced.add(id); if (!A[id]) asm.missing_ids.push(m + ':' + id); }); H.MODEL_DERIVATIONS[m].stages.forEach((st, i) => { (st.asm || []).forEach(id => { referenced.add(id); if (!A[id]) asm.missing_ids.push(m + '/' + i + ':' + id); else if (MA[m].indexOf(id) < 0) asm.missing_ids.push(m + '/' + i + ' not in list:' + id); }); (st.lit || []).forEach(l => { if (!LIT[l.k]) asm.lit_missing.push(m + '/' + i + ':' + l.k); }); }); });
+  Object.keys(A).forEach(id => { const a = A[id]; if (!['direct','indirect','none'].includes(a.cls) || !['published','heldout','synthetic','sensitivity'].every(k => a.methods[k] && ['done','not','na'].includes(a.methods[k].s) && a.methods[k].t) || !a.links.length || !a.text || !a.reason || !a.limits) asm.bad_entries.push(id); if (!referenced.has(id)) asm.unreferenced.push(id); });
+  asm.shared_A04_in = Object.keys(MA).filter(m => MA[m].indexOf('A04') >= 0);
+  asm.literature_stages = Object.keys(MA).map(m => m + ':' + H.MODEL_DERIVATIONS[m].stages.filter(st => st.lit && st.lit.length).length);
+  // open M4, stage 2 (3-margin IPF), click A10, check the panel, go back
+  H.select('muni', '13103'); H.derOpen('M4', null); d.querySelector('.fstep[data-step="2"]').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  const tM4 = txt(); asm.m_level_literature_absent = tM4.indexOf('手法の参考論文と適用範囲') < 0; asm.stage_literature_shown = tM4.indexOf('手法の参考文献（この工程）') >= 0 && tM4.indexOf('本実装との違い') >= 0;
+  const before32 = snap(); const chipA = d.querySelector('#panel .asmchip[data-asm="A10"]'); asm.chip_present = !!chipA;
+  if (chipA){ chipA.dispatchEvent(new w.MouseEvent('click', { bubbles: true })); const tA = txt(); asm.panel_ok = H.S.focus.dim === 'assumption' && H.S.focus.id === 'A10' && d.querySelectorAll('#panel .vtab tbody tr').length === 4 && tA.indexOf('未検証') >= 0 && tA.indexOf('分類の規則') >= 0 && d.activeElement === d.querySelector('#panel .action[data-go="derback"]');
+    H.derBack(); asm.back_ok = H.S.focus.dim === 'model' && H.S.focus.id === 'M4' && H.DER.open === 2 && d.activeElement === d.querySelector('#panel .asmchip[data-asm="A10"]'); asm.state_unchanged = snap() === before32; }
+  // area-specific notes: A01 held-out row for 遠軽町 (not one of the 86 cities) vs 港区
+  H.derBack(); H.select('muni', '01555'); H.asmOpen('A01', null); const tE = txt(); asm.town_marked_not_evaluated = tE.indexOf('評価対象外') >= 0 && tE.indexOf('遠軽町') >= 0; H.derBack();
+  H.select('muni', '47201'); H.asmOpen('A01', null); const tK = txt(); asm.city_marked_included = tK.indexOf('86 都市に含まれる') >= 0 && tK.indexOf('那覇市') >= 0; H.derBack();
+  H.asmOpen('A04', null); asm.old_version_flagged = txt().indexOf('旧版') >= 0; H.derBack();
+  H.asmOpen('A05', null); asm.direct_has_limits = txt().indexOf('直接検証済み') >= 0 && txt().indexOf('保証しない') >= 0; H.derBack();
+  const asmOk = asm.missing_ids.length === 0 && asm.bad_entries.length === 0 && asm.unreferenced.length === 0 && asm.lit_missing.length === 0 && asm.m_level_literature_absent && asm.stage_literature_shown && asm.chip_present && asm.panel_ok && asm.back_ok && asm.state_unchanged && asm.town_marked_not_evaluated && asm.city_marked_included && asm.old_version_flagged && asm.direct_has_limits && asm.literature_stages.every(x => !/:0$/.test(x));
+  const passed = checks.every(Boolean) && chipOk && cycleOk && srcBtns === 6 && revOk && asmOk && errs.length === 0;
+  const report = { passed, no_emp_dataset: noEmp, assumptions: asm, assumptions_ok: asmOk, review_cases: rev, review_cases_ok: revOk, results, chip_back_focus_ok: chipOk, cycle_guard_ok: cycleOk, source_list_buttons: srcBtns, page_errors: errs };
   console.log(JSON.stringify(report, null, 1)); if (!passed) process.exit(1);
 })().catch(e => { console.error(e); process.exit(1); });
