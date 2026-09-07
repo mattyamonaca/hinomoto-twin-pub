@@ -1,7 +1,7 @@
 {
-  "dataset_version": "2020-2022-3.0-M12-20260907+A+B-trial",
-  "archive_url": "https://github.com/mattyamonaca/hinomoto-twin-pub/releases/download/data-v3.0-m12-ab-20260907/hinomoto-m12-ab-dataset.tar.gz",
-  "sha256": "02b49b78cd75d8ed2bfe070edc27022a3caa1947e59e7adf5e2ef6ca14738783",
+  "dataset_version": "2020-2022-3.0-M12-20260907+A+B-trial+C",
+  "archive_url": "https://github.com/mattyamonaca/hinomoto-twin-pub/releases/download/data-v3.0-m12-abc-20260907/hinomoto-m12-abc-dataset.tar.gz",
+  "sha256": "26e443eb2611a8ecc20a27bf81fcafa2df31087774d36c9262e8a7045bc8a934",
   "model": "M12",
   "model_version": "3.0-M12",
   "previous_baseline": "catalog/baseline.json"

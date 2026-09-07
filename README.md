@@ -155,3 +155,5 @@ python src/verify_education.py
 従来のCSV・NPZ・地域別JSONと `src/persona.py` はv1の形式で利用できます。v1の説明書は [README_V1.md](README_V1.md) に残しています。v2の生成結果には `_v2` または `sex_education` を含む名前を付けています。
 
 開発方針：[CONTRIBUTING.md](CONTRIBUTING.md)。ソフトウェアライセンスは所有者による選定前です：[LICENSE_STATUS.md](LICENSE_STATUS.md)。
+
+**勤務地パネル（2026-09-07 試験公開）**：市区町村から「勤務地を見る」で居住者の勤務地／その地域で働く人の居住地を表示します。流入側は産業のみ条件付け可能です。詳細・推定上の限界は [docs/WORKPLACE_C.md](docs/WORKPLACE_C.md)。
