@@ -19,6 +19,8 @@ STAGES = {
     'fetch-employment': ['fetch_employment.py'],
     'build-employment': ['build_employment.py'],
     'verify-employment': ['verify_employment.py'],
+    'fetch-household': ['download_household.py'],
+    'build-household': ['build_household.py'],
     'experiment': ['experiment_models.py'],
     'synthetic': ['synthetic_population.py'],
     'site': ['build_site.py'],

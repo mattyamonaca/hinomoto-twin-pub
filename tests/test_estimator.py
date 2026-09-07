@@ -82,3 +82,74 @@ class StageAContractTests(unittest.TestCase):
         with patch.object(ve,'evaluate',return_value={'passed':False}):
             with self.assertRaises(SystemExit) as cm:ve.main()
             self.assertEqual(cm.exception.code,1)
+
+class HouseholdTests(unittest.TestCase):
+    def test_ipf_nd_matches_all_margins(self):
+        import build_household as bh
+        rng=np.random.default_rng(5);seed=rng.random((3,4,5,6))+0.1
+        z0=rng.random((3,4,5,6));A=z0.sum((0,1));B=z0.sum((2,3))
+        z,it,err=bh.ipf_nd(seed,[((2,3),A),((0,1),B)],iters=2000,tol=1e-10)
+        self.assertTrue(np.allclose(z.sum((0,1)),A,atol=1e-6));self.assertTrue(np.allclose(z.sum((2,3)),B,atol=1e-6))
+    def test_gap_prior_rows_normalized_and_ordered(self):
+        import build_household as bh
+        P=bh.gap_prior(bh.AGE_MID,30,6,+1)
+        self.assertTrue(np.allclose(P.sum(1),1));self.assertLess(np.argmax(P[8]),8)   # children of a 40-44 head are younger
+
+class HouseholdReviewCases(unittest.TestCase):
+    """Regression cases from the PR #18 review: presence counts must follow a composition consistent with fixed member counts."""
+    def _world(self,T,N):
+        import build_household as bh
+        x={'code':'x','persons':T.sum((0,1,2,3,4)),'size':N.sum((0,1,2)),'P_F':T.sum((1,2,3,4,5,6)),'married':np.zeros((2,18)),'city_rel':None,'unknown_age_head_share':0.}
+        return bh,x
+    def test_two_role_fixed_slot_gives_certain_presence(self):
+        # 100 two-person households, head 40-44, the other member is 65-69 with role child 50% / other relative 50%
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18));N[3,0,8,1]=100;T[3,0,8,1,0,0,8]=100;T[3,0,8,1,2,0,13]=50;T[3,0,8,1,9,0,13]=50
+        bh,x=self._world(T,N)
+        import pandas as pd
+        from unittest.mock import patch
+        empty=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])
+        with patch.object(pd,'read_csv',return_value=empty):
+            res=bh.evaluate(x,N,T)
+        self.assertEqual(round(res['_presence_debug']['elderly_size2']),100)
+    def test_under6_not_double_counted(self):
+        # 100 three-person households: head 30-34, one child 0-4, one other member 5-9 -> exactly 100 households with a member under 6 (0-4) ... +20 expected from 5-9 at most once
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18));N[1,0,6,2]=100;T[1,0,6,2,0,0,6]=100;T[1,0,6,2,2,0,0]=100;T[1,0,6,2,9,0,1]=100
+        bh,x=self._world(T,N)
+        import pandas as pd
+        from unittest.mock import patch
+        empty=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])
+        with patch.object(pd,'read_csv',return_value=empty):
+            res=bh.evaluate(x,N,T)
+        self.assertEqual(round(res['_presence_debug']['under6_size3']),100)
+
+
+class HouseholdMixedSlotCases(unittest.TestCase):
+    """PR #18 follow-up (P2): the 10+ size bin has a non-integer mean size; fractional expected counts must keep their members."""
+    def _table(self,elderly):
+        # F4 households in the 10+ bin: head 40-44, nine non-elderly members, plus `elderly` members aged 65-69 per 100 households
+        N=np.zeros((7,2,18,10));T=np.zeros((7,2,18,10,13,2,18));N[3,0,8,9]=100;T[3,0,8,9,0,0,8]=100;T[3,0,8,9,2,0,8]=900;T[3,0,8,9,4,0,13]=elderly
+        return N,T
+    def _elderly(self,N,T):
+        import build_household as bh
+        w=np.zeros(18);w[13:]=1
+        return bh.presence_count(N,T,w,size_k=9)
+    def test_reviewer_case_mean_size_10_4(self):
+        N,T=self._table(40);self.assertAlmostEqual(self._elderly(N,T),40.,places=6)
+    def test_fraction_below_half(self):
+        N,T=self._table(30);self.assertAlmostEqual(self._elderly(N,T),30.,places=6)
+    def test_fraction_at_or_above_half(self):
+        N,T=self._table(70);self.assertAlmostEqual(self._elderly(N,T),70.,places=6)
+    def test_integer_mean_size(self):
+        N,T=self._table(100);self.assertAlmostEqual(self._elderly(N,T),100.,places=6)
+    def test_mixed_roles_share_fractional_slots(self):
+        # 0.4 mixed slots split between two roles: 65-69 with probability 0.25 (10 persons) and 40-44 (30 persons) -> 0.4*0.25 = 10 households
+        N,T=self._table(10);T[3,0,8,9,9,0,8]=30
+        self.assertAlmostEqual(self._elderly(N,T),10.,places=6)
+    def test_evaluate_reports_10plus_bin(self):
+        import build_household as bh,pandas as pd
+        from unittest.mock import patch
+        N,T=self._table(40)
+        x={'code':'x','persons':T.sum((0,1,2,3,4)),'size':N.sum((0,1,2)),'P_F':T.sum((1,2,3,4,5,6)),'married':np.zeros((2,18)),'city_rel':None,'unknown_age_head_share':0.}
+        with patch.object(pd,'read_csv',return_value=pd.DataFrame(columns=['area','age_class','elderly_class','family_type'])):
+            res=bh.evaluate(x,N,T)
+        self.assertAlmostEqual(res['_presence_debug']['elderly_size10p'],40.,places=6)
