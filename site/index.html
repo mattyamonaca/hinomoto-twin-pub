@@ -241,6 +241,38 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .panel .action{display:inline-block;margin-top:4px;font-size:12.5px;padding:5px 10px;border:1px solid var(--line-strong);border-radius:4px;color:var(--ink)}
 .panel .action:hover{background:var(--surface-2)}
 @media (max-width:1100px){.board-wrap{grid-template-columns:1fr}.panel{position:static}.palette{position:static;flex-direction:row;flex-wrap:wrap}.pnode{grid-template-columns:auto 1fr}}
+/* phone layout: palette becomes a sticky strip, the board scrolls sideways with snap, the panel becomes a bottom sheet */
+.sheetbar{display:none}.edgehint .narrow{display:none}
+@media (max-width:640px){
+ .app{padding:14px 14px 96px}
+ .top{grid-template-columns:1fr 1fr;gap:8px 10px;padding-bottom:12px;margin-bottom:12px}
+ .top .brand{grid-column:1/-1}.top .brand .eyebrow{font-size:10px}.top h1{font-size:1.02rem;line-height:1.35}
+ .top .crumb{grid-column:1/-1;min-height:0}.top .search{grid-column:1/-1}
+ .srcbtn{padding:7px 10px;font-size:12.5px}
+ .edgehint{font-size:12px;line-height:1.6;margin:0 0 10px;text-align:left}.edgehint .wide{display:none}.edgehint .narrow{display:inline}
+ .top h1{word-break:keep-all;overflow-wrap:anywhere}
+ .board-wrap{gap:10px}
+ .palette{position:sticky;top:0;z-index:5;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:8px;margin:0 -14px;border-radius:0;border-left:0;border-right:0;scrollbar-width:none}
+ .palette::-webkit-scrollbar{display:none}
+ .palette .eyebrow,.palette .hint{display:none}
+ .pnode{flex:0 0 auto;grid-template-columns:auto auto;padding:5px 8px;gap:6px}
+ .pnode .c{width:24px;height:24px;font-size:9px}.pnode .t{font-size:12px}.pnode .s{max-width:72px;font-size:10px}
+ .board-scroll{margin:0 -14px;padding:0 14px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+ .board{gap:22px}.col{scroll-snap-align:start}
+ .col.pref{width:170px}.col.muni{width:200px}.col.age{width:164px}.col.sex{width:136px}.col.edu{width:180px}.col.inc{width:200px}
+ .board-empty{min-height:160px;font-size:12.5px}
+ .row{font-size:12px;padding:6px 6px}
+ .panel{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;border-radius:14px 14px 0 0;border-left:0;border-right:0;max-height:min(74vh,calc(100vh - 56px));min-height:0;padding:14px 16px 24px;box-shadow:0 -8px 30px rgba(0,0,0,.18);transform:translateY(105%);transition:transform .22s ease-out}
+ body.sheet-open .panel{transform:translateY(0)}
+ .sheetbar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:21;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line-strong);box-shadow:0 -4px 18px rgba(0,0,0,.10);font-size:13px;color:var(--ink);cursor:pointer;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+ .sheetbar .sbt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .sheetbar .sbt b{font-weight:700}
+ .sheetbar .sbx{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line-strong);border-radius:4px;padding:4px 8px;background:var(--surface)}
+ body.sheet-open .sheetbar{border-top-color:var(--line);box-shadow:none;background:var(--surface)}
+ body.sheet-open .panel{padding-bottom:calc(52px + env(safe-area-inset-bottom))}
+ .panel .bars{height:40px}
+}
+@media (prefers-reduced-motion:reduce){.panel{transition:none}}
 
 footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:var(--ink-2)}
@@ -256,7 +288,7 @@ footer a{color:var(--ink-2)}
   <div class="search"><input id="q" type="search" placeholder="市区町村を検索（名称・5桁コード）" autocomplete="off" aria-label="市区町村を検索"><div class="res" id="q-res" role="listbox"></div></div>
 </header>
 
-<p class="edgehint">左のパレットからノードを選ぶと中央に配置され、配置したノードが左から順に連なります。各列の先頭の「…でまとめる」を選ぶと、その次元を選ばずに合算のまま次の列へ進めます。各項目をクリックすると、その値がどう導出されたかが右に段階的に表示されます。</p>
+<p class="edgehint"><span class="wide">左のパレットからノードを選ぶと中央に配置され、配置したノードが左から順に連なります。各列の先頭の「…でまとめる」を選ぶと、その次元を選ばずに合算のまま次の列へ進めます。各項目をクリックすると、その値がどう導出されたかが右に段階的に表示されます。</span><span class="narrow">上のノードをタップすると下に展開され、選んだノードが左から順に連なります（横にスクロール）。各項目をタップすると、その値の導出過程が画面下のパネルに表示されます。</span></p>
 <div class="board-wrap">
   <aside class="palette" id="palette" aria-label="次元ノード">
     <span class="eyebrow">ノード</span>
@@ -300,6 +332,7 @@ footer a{color:var(--ink-2)}
   </div>
   <aside class="panel" id="panel" aria-live="polite"></aside>
 </div>
+<button class="sheetbar" id="sheetbar" type="button" aria-controls="panel" aria-expanded="false"><span class="sbt" id="sheetbar-t">属性パネル</span><span class="sbx" id="sheetbar-x">開く</span></button>
 
 <footer>ノードをクリックすると、そのノードに属する要素が右隣の列に展開され、属性が右パネルに表示されます。項目をクリックすると、その値の導出過程が段階的に表示されます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。学歴 × 年収の配分は、モデルと同じ初期値と制約（全国の学歴別年収分布、地域の学歴別就業率、学歴人数、年齢・性別の年収分布）を埋め込み、ページ内で同じ反復比例調整を再計算しています（M1+M2の最終配列を使用）。都道府県・全国は市区町村（行政区を除く）の合算値です。国勢調査 2020・就業構造基本調査 2022・市区町村のすがた 2024 を加工したモデル推定であり、実測値ではありません。</footer>
 </div>
@@ -952,6 +985,28 @@ $('panel').addEventListener('click', function(ev){
 });
 function scrollTo(dim, id){ var el = document.querySelector('#list-' + dim + ' .row[data-id="' + id + '"]'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(drawEdges, 350); }
 window.addEventListener('resize', function(){ requestAnimationFrame(drawEdges); });
+/* ---------- phone bottom sheet ---------- */
+(function(){
+  var mq = window.matchMedia ? window.matchMedia('(max-width:640px)') : { matches: false, addEventListener: function(){} }, bar = $('sheetbar'), P = $('panel'), lastHTML = P.innerHTML;
+  function setOpen(o){ document.body.classList.toggle('sheet-open', o); bar.setAttribute('aria-expanded', o ? 'true' : 'false'); $('sheetbar-x').textContent = o ? '閉じる' : '開く'; }
+  function title(){ var h = P.querySelector('h2'), e = P.querySelector('.eyebrow'); return (e ? '<span class="eyebrow">' + e.textContent + '</span>　' : '') + '<b>' + (h ? h.textContent : '属性パネル') + '</b>'; }
+  bar.addEventListener('click', function(){ setOpen(!document.body.classList.contains('sheet-open')); });
+  new MutationObserver(function(){
+    if (P.innerHTML === lastHTML) return; lastHTML = P.innerHTML;
+    $('sheetbar-t').innerHTML = title();
+    if (mq.matches && S.focus.dim){ setOpen(true); P.scrollTop = 0; }
+  }).observe(P, { childList: true });
+  $('sheetbar-t').innerHTML = title();
+  mq.addEventListener('change', function(){ if (!mq.matches) setOpen(false); });
+  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') setOpen(false); });
+  /* bring a newly placed column into view on the narrow board */
+  var prevPlaced = placed().join(',');
+  new MutationObserver(function(){
+    var now = placed().join(','); if (now === prevPlaced) return; var added = placed().filter(function(d){ return prevPlaced.split(',').indexOf(d) < 0; }); prevPlaced = now;
+    if (mq.matches && added.length){ var col = document.querySelector('.col.' + added[added.length-1]); if (col) col.scrollIntoView({ block: 'nearest', inline: 'start', behavior: 'smooth' }); }
+  }).observe($('board'), { attributes: true, subtree: true, attributeFilter: ['hidden'] });
+})();
+
 
 /* ---------- search ---------- */
 var q = $('q'), qr = $('q-res'), qi = -1;
