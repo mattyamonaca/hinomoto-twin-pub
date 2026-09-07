@@ -92,3 +92,22 @@ class ApiTests(unittest.TestCase):
    with self.assertRaises(ValueError):m.workplace('00001',None,{'G03':1.})
 
 if __name__=='__main__':unittest.main()
+
+class WebExportTests(unittest.TestCase):
+ def test_files_reproduce_pair_totals_and_index(self):
+  import json,hashlib,pandas as pd,export_workplace_web as ew
+  from unittest.mock import patch
+  x,N=toy_world(3);X,_=bw.ipf(x,bw.seed(x).copy(),iters=300,tol=1e-6)
+  with tempfile.TemporaryDirectory() as td:
+   td=Path(td);(td/'data').mkdir();(td/'web').mkdir();(td/'validation').mkdir();(td/'sources'/'workplace').mkdir(parents=True)
+   np.savez(td/'data/workplace_c.npz',areas=np.array(x['areas']),origin=x['oi'],dest=x['di'],category=x['ci'],x=X.astype(np.float32),seed=X.astype(np.float32),unknown_workplace=np.ones((4,20),np.float32),industry_codes=np.array(bw.G),categories=np.array(bw.CAT),model_version='test',stage='C')
+   pd.DataFrame({'origin':x['areas'],'total':[1]*4,'own':[1]*4,'home':[0.5]*4}).to_csv(td/'sources/workplace/od_origin_summary_tidy.csv.gz',index=False)
+   (td/'web/graph.json').write_text(json.dumps({'schema_version':3,'dataset_version':'v','graph':{}}))
+   with patch.object(ew,'OUTPUT',td/'data'),patch.object(ew,'WEB',td/'web'),patch.object(ew,'REPORTS',td/'validation'),patch.object(ew,'SOURCES',td/'sources'):ew.main()
+   g=json.loads((td/'web/graph.json').read_text());self.assertEqual(g['graph']['workplace']['version'],'test');self.assertTrue(g['dataset_version'].endswith('+C'))
+   idx=json.loads((td/'web/workplace/index.json').read_text())['files']
+   for rel,(nb,sha) in idx.items():
+    b=(td/'web'/rel).read_bytes();self.assertEqual(len(b),nb);self.assertEqual(hashlib.sha256(b).hexdigest(),sha)
+   o=json.loads((td/'web/workplace/o_01101.json').read_text());tot=sum(sum(r[2]) for r in o['rows'])
+   self.assertAlmostEqual(tot,float(X[x['oi']==0].sum()),delta=0.01*len(o['rows'])*20)
+   d=json.loads((td/'web/workplace/d_13101.json').read_text());self.assertAlmostEqual(sum(sum(r[2]) for r in d['rows']),float(X[x['di']==x['areas'].index('13101')].sum()),delta=0.5)

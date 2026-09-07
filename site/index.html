@@ -245,6 +245,7 @@ code{font-family:var(--font-mono);font-size:.92em;background:var(--surface-2);pa
 .panel .mini .n{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
 .panel .action{display:inline-block;margin-top:4px;font-size:12.5px;padding:5px 10px;border:1px solid var(--line-strong);border-radius:4px;color:var(--ink)}
 .panel .action:hover{background:var(--surface-2)}
+.panel .action.on{background:var(--soft);border-color:var(--sw);font-weight:700}
 @media (max-width:1100px){.board-wrap{grid-template-columns:1fr}.panel{position:static}.palette{position:static;flex-direction:row;flex-wrap:wrap}.pnode{grid-template-columns:auto 1fr}}
 /* phone layout: palette becomes a sticky strip, the board scrolls sideways with snap, the panel becomes a bottom sheet */
 .sheetbar{display:none}.edgehint .narrow{display:none}
@@ -784,7 +785,7 @@ function empItemHtml(dim, id){
   if (!cnt) h += '<p class="note">この条件では「' + esc(nm) + '」の推定人数が 0 人のため、右の列の分布は定義できません。</p>' + aggActions();
   h += '<h3 class="dh">P(' + esc(nm) + '｜' + scopeTxt + ') の導出</h3>' + calc(pre.concat(cur.filter(function(x){ return x; }), jointStep(dim, id)));
   var nxt = DIMS[DIMS.indexOf(dim) + 1];
-  h += '<button class="action" data-go="' + dim + '" data-id="' + id + '">この区分の' + DIM_LABEL[nxt] + 'を展開</button>';
+  h += '<button class="action" data-go="' + dim + '" data-id="' + id + '">この区分の' + DIM_LABEL[nxt] + 'を展開</button>' + (dim === 'ind' && id > 0 && S.muni && wpAvailable() ? ' <button class="action" data-go="workplace" data-id="' + S.muni + '">この産業の勤務地を見る（段階C・試験）</button>' : '');
   return h;
 }
 /* income derivation when a labour-status / position / industry condition is selected */
@@ -841,6 +842,104 @@ function renderHousehold(code){
   P.innerHTML = h;
 }
 
+/* ---------- stage C: residence x workplace x industry (experimental) ---------- */
+var WP = G.workplace || null, WP_STATE = { data: {}, loading: {}, failed: {}, mode: 'residence' };
+var WP_CAT = ['自市区町村（自宅・不詳・外国を含む）','自市内の他区','同じ都道府県の他市町村','他の都道府県'], WP_CAT_D = ['勤務地の市区町村に住む','同じ市の他区に住む','同じ都道府県の他市町村に住む','他の都道府県に住む'];
+function wpAvailable(){ return !!WP; }
+/* leaf codes of the selected municipality (wards of a designated city) */
+function wpLeaves(code){ var m = G.munis[MI[code]]; if (m.s === 'aggregated_wards') return G.munis.filter(function(w){ return w.pa === code; }).map(function(w){ return w.c; }); return [code]; }
+function wpFile(side, code){ return 'workplace/' + (side === 'residence' ? 'o_' : 'd_') + code + '.json'; }
+function wpLoad(side, code){
+  var key = wpFile(side, code); if (WP_STATE.data[key] || WP_STATE.loading[key] || WP_STATE.failed[key]) return;
+  WP_STATE.loading[key] = true;
+  fetch(empUrl(key)).then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(j){
+    if (j.model_version !== WP.version) throw new Error('勤務地データの版が graph.json と一致しません（' + j.model_version + ' / ' + WP.version + '）');
+    WP_STATE.data[key] = j; WP_STATE.loading[key] = false; renderPanel();
+  }).catch(function(e){ WP_STATE.loading[key] = false; WP_STATE.failed[key] = String(e); renderPanel(); });
+}
+function wpReady(side, code){ var ok = true; wpLeaves(code).forEach(function(c){ var k = wpFile(side, c); if (!WP_STATE.data[k]){ ok = false; wpLoad(side, c); } }); return ok; }
+/* industry condition for the workplace panel: a fixed industry, or the stage-A industry mixture of the selected age/sex/education */
+function wpCondition(side){
+  /* what the workplace panel can condition on: an industry (both sides); on the residence side also the stage-A
+     employed persons of the selected age / sex / education / labour status / position (mixture over industries);
+     non-employed selections have no workplace; the inflow side applies the industry only */
+  var hasAttr = S.age !== null || S.sex !== null || S.edu !== null || S.lab !== null || S.sta !== null, attrLabel = pathName();
+  if (S.ind === 0 || (S.lab !== null && S.lab !== 0) || (S.sta !== null && S.sta >= 5)) return { kind: 'none', reason: S.ind === 0 ? '産業「該当なし（非就業）」' : S.lab !== null && S.lab !== 0 ? '就業状態「' + LAB[S.lab] + '」' : '地位「' + STA[S.sta] + '」' };
+  var ind = S.ind !== null ? { kind: 'industry', g: S.ind - 1, label: IND[S.ind] } : { kind: 'all', label: '全産業' };
+  if (side === 'workplace'){ ind.ignored = hasAttr ? attrLabel : null; return ind; }
+  if (!hasAttr) return ind;
+  if (!empAvailable()) return { kind: 'unsupported', label: attrLabel };
+  if (!empReady(scope())) return { kind: 'loading', label: attrLabel };
+  var R = empCounts({ e: S.edu, lab: 0, sta: S.sta, ind: null }), w = new Float64Array(20), tot = 0, gg;
+  for (gg = 0; gg < 20; gg++){ w[gg] = R.G[gg + 1]; tot += w[gg]; }
+  if (!(tot > 0)) return { kind: 'undefined', label: attrLabel };
+  if (ind.kind === 'industry'){ ind.n = R.G[S.ind]; ind.attr = attrLabel; ind.nAll = tot; return ind; }
+  for (gg = 0; gg < 20; gg++) w[gg] /= tot;
+  return { kind: 'mix', w: w, n: tot, attr: attrLabel, label: attrLabel + 'の就業者の産業構成で混合' };
+}
+/* same arithmetic as persona_v4.workplace() / residence() */
+function wpCompute(side, code, cond){
+  var leaves = wpLeaves(code), rows = [], unk = new Float64Array(20), home = 0, ids = {}, g, i;
+  leaves.forEach(function(c){ ids[c] = true; var j = WP_STATE.data[wpFile(side, c)]; rows = rows.concat(j.rows); if (side === 'residence'){ for (g = 0; g < 20; g++) unk[g] += j.unknown[g]; home += j.home; } });
+  var col = new Float64Array(20), total = 0; rows.forEach(function(r){ for (g = 0; g < 20; g++){ col[g] += r[2][g]; total += r[2][g]; } });
+  var weights = null, unkShare = null;
+  if (cond.kind === 'mix'){
+    var share = new Float64Array(20), wk = new Float64Array(20), ws = 0, us = 0;
+    for (g = 0; g < 20; g++){ share[g] = (col[g] + unk[g]) > 0 ? unk[g]/(col[g] + unk[g]) : 0; wk[g] = cond.w[g]*(1 - share[g]); ws += wk[g]; us += cond.w[g]*share[g]; }
+    if (ws <= 0) return null;
+    for (g = 0; g < 20; g++) wk[g] = ws ? wk[g]/ws : 0; weights = wk; unkShare = us;
+  } else if (cond.kind === 'industry'){ unkShare = (col[cond.g] + unk[cond.g]) > 0 ? unk[cond.g]/(col[cond.g] + unk[cond.g]) : 0; }
+  else { var ku = 0, kk = 0; for (g = 0; g < 20; g++){ ku += unk[g]; kk += col[g]; } unkShare = (kk + ku) > 0 ? ku/(kk + ku) : 0; }
+  var agg = {}, cats = [0,0,0,0], tot = 0;
+  rows.forEach(function(r){
+    var m = 0;
+    if (cond.kind === 'industry') m = r[2][cond.g];
+    else if (cond.kind === 'mix'){ for (g = 0; g < 20; g++) if (col[g] > 0) m += r[2][g]/col[g]*weights[g]; m *= total; }
+    else for (g = 0; g < 20; g++) m += r[2][g];
+    if (!m) return; agg[r[0]] = (agg[r[0]] || 0) + m; cats[r[1]] += m; tot += m;
+  });
+  if (tot <= 0) return null;
+  var list = Object.keys(agg).map(function(c){ return { c: c, n: agg[c] }; }).sort(function(a, b){ return b.n - a.n; });
+  var own = 0; leaves.forEach(function(c){ own += agg[c] || 0; });
+  return { list: list, cats: cats.map(function(v){ return v/tot; }), tot: tot, own: own, home: home, unkShare: unkShare, rows: rows.length };
+}
+function renderWorkplace(code){
+  var P = $('panel'), m = G.munis[MI[code]], side = WP_STATE.mode, h = '', cond = wpCondition(side);
+  P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--d-ind)'); P.style.setProperty('--soft', 'var(--d-ind-soft)');
+  var toggle = '<div class="tags"><button class="action' + (side === 'residence' ? ' on' : '') + '" data-go="wpmode" data-id="residence" data-code="' + code + '"' + (side === 'residence' ? ' aria-pressed="true"' : '') + '>' + esc(m.n) + 'に居住する人の勤務地</button> <button class="action' + (side === 'workplace' ? ' on' : '') + '" data-go="wpmode" data-id="workplace" data-code="' + code + '"' + (side === 'workplace' ? ' aria-pressed="true"' : '') + '>' + esc(m.n) + 'へ働きに来る人の居住地</button></div>';
+  h += '<span class="eyebrow">勤務地（段階C・試験）</span><h2>' + esc(m.n) + (side === 'residence' ? 'に住む就業者の勤務地' : 'で働く就業者の居住地') + '</h2><p class="sub">2020年国勢調査 従業地・通学地集計（15歳以上就業者・男女計）から推定した居住地 × 勤務地 × 産業の表</p>' + toggle;
+  if (cond.kind === 'none'){ P.innerHTML = h + '<p class="note">選択中の' + esc(cond.reason) + 'には勤務地がありません（就業者だけが勤務地を持つ）。就業状態・地位・産業を選び直すか、まとめてください。</p>'; return; }
+  if (cond.kind === 'unsupported'){ P.innerHTML = h + '<p class="note">年齢・性別・学歴・地位の条件（' + esc(cond.label) + '）を勤務地に結びつけるには段階A のデータが必要ですが、このデータセットには含まれていません。条件をまとめると全産業の分布を表示します。</p>'; return; }
+  if (cond.kind === 'loading'){ P.innerHTML = h + '<p class="note">' + LOADING_MSG + '（選択条件の就業者数を求めています）</p>'; return; }
+  if (cond.kind === 'undefined'){ P.innerHTML = h + '<p class="note">選択条件（' + esc(cond.label) + '）の就業者が 0 人のため、勤務地の分布は定義できません。</p>'; return; }
+  if (!wpReady(side, code)){ var fails = Object.keys(WP_STATE.failed).filter(function(k){ return WP_STATE.failed[k]; }); P.innerHTML = h + '<p class="note">' + (fails.length ? '読み込みに失敗しました：' + esc(WP_STATE.failed[fails[0]]) : '勤務地データを読み込んでいます…') + '</p>'; return; }
+  var R = wpCompute(side, code, cond);
+  if (!R){ P.innerHTML = h + '<p class="note">この条件（' + esc(cond.label || '') + '）に該当する' + (side === 'residence' ? '勤務地既知の就業者' : '就業者') + 'がいないため、分布は定義できません。</p>'; return; }
+  var condTxt = cond.kind === 'industry' ? esc(cond.label) : cond.kind === 'mix' ? esc(cond.label) : '全産業';
+  /* denominator: with an attribute condition the persons are the stage-A employed persons of that condition times the
+     known-workplace rate; the census total of all workers of the municipality is shown separately as a reference */
+  var den = R.tot, denRows = [];
+  if (cond.n !== undefined){ den = cond.n*(1 - R.unkShare); denRows.push(['分母（推定）', fmtN(den) + ' 人 = ' + esc(cond.attr) + 'の就業者 ' + fmtN(cond.n) + ' 人（段階A のモデル人数' + (cond.kind === 'industry' ? '、' + esc(cond.label) : '') + '）× 勤務地既知率 ' + pct(1 - R.unkShare, 1)], ['参考：' + esc(m.n) + 'の勤務地が分かる就業者（全属性' + (cond.kind === 'industry' ? '、' + esc(cond.label) : '') + '）', fmtN(R.tot) + ' 人（2020年国勢調査）。分布の形はこの人数から求め、上の人数は条件の規模を示す']); }
+  else denRows.push([side === 'residence' ? '勤務地が分かる就業者' : 'この市区町村で働く就業者', fmtN(R.tot) + ' 人（' + condTxt + '）']);
+  if (side === 'residence') denRows.push(['勤務地不詳（分布の外数）', pct(R.unkShare, 1) + '。従業地「不詳」の就業者は分布に含めない']); else denRows.push(['注意', '従業地による人数は「働きに来る人」で、通学者等を含む昼間人口ではない。勤務地不詳の常住者は除く']);
+  if (cond.ignored) denRows.push(['適用しない条件', esc(cond.ignored) + '。働きに来る人の居住地は産業でのみ条件付けできる（各居住地の年齢・性別・学歴の構成は流入側では観測されない）']);
+  denRows.push(['単位', '2020年10月の15歳以上就業者（男女計）。' + (cond.attr ? '年齢・性別・学歴・地位とは産業を介してのみ結びつく（条件付き独立の仮定）。段階A は2020年人口・2022年所得のモデルで、人数の母集団が国勢調査の就業者と一致しない' : '年齢・性別・学歴とは産業を介してのみ結びつく（条件付き独立の仮定）')]);
+  h += '<h3 class="dh">分母</h3><div class="vals">' + dl(denRows) + '</div>';
+  var top = R.list.slice(0, 15), mx = top.length ? top[0].n : 1;
+  h += '<h3 class="dh">' + (side === 'residence' ? '勤務地の市区町村（上位15）' : '居住地の市区町村（上位15）') + '</h3>' + mini(top.map(function(x){ var mm = G.munis[MI[x.c]]; return [(mm ? esc(mm.n) : x.c) + (mm && mm.pa ? '（' + esc(G.munis[MI[mm.pa]].n) + '）' : ''), x.n, pct(x.n/R.tot, 1) + (cond.n !== undefined ? '（' + fmtN(x.n/R.tot*den) + '人）' : '')]; }), mx);
+  h += '<p class="l" style="margin-top:8px">通勤区分</p>' + mini((side === 'residence' ? WP_CAT : WP_CAT_D).map(function(l, i){ return [l, R.cats[i], pct(R.cats[i], 1)]; }), 1);
+  if (side === 'residence' && cond.kind === 'all' && R.own > 0) h += '<p class="ex" style="font-size:12px;color:var(--ink-2)">自市区町村で従業する人のうち自宅で従業：' + pct(R.home/R.own, 1) + '（原表の「自宅」。産業を条件にすると原表にないため表示しない）</p>';
+  h += '<h3 class="dh">導出</h3>' + calc([
+    ['常住地 × 従業地の就業者数を取る', esc(m.n) + (m.s === 'aggregated_wards' ? '（各区の合計）' : '') + ' の OD 行 ' + fmtN(R.rows) + ' ペア', '第3表（常住地による従業地別就業者数、全市区町村ペア）。従業地「不詳」は別枠。', [['S15', '第3表 15歳以上就業者']]],
+    ['居住側・勤務側の産業別人数を通勤区分ごとに合わせる', '自市区町村／自市内他区／県内他市町村／他県 × 産業20 の周辺', '第8表（常住地側と従業地側）。従業地側からは従業地不詳の常住者を差し引く。', [['S15', '第8表 産業（大分類）× 通勤区分']]],
+    ['ペアごとの産業内訳を反復比例調整で求める', 'X[居住地, 勤務地, 産業] を OD・居住側周辺・勤務側周辺の3つに整合', '初期値は OD × 区分内の産業比（居住側 × 勤務側）。区分の中でどの市区町村へ行くかの産業差だけを推定する。', [['M6', 'workplace_c.npz']]],
+    cond.kind === 'industry' ? ['産業を' + esc(cond.label) + 'に絞る', 'X[…, ' + IND_CODE[S.ind] + '] の列', cond.attr ? '年齢・性別・学歴・地位（' + esc(cond.attr) + '）は分布の形を変えず（産業を介した条件付き独立）、人数の規模だけを段階A の就業者数で置く。' : '', null] : cond.kind === 'mix' ? ['選択した年齢・性別・学歴の産業構成で混合する', 'P(勤務地｜居住地, 条件) = Σ_g P(g｜居住地, 条件, 勤務地既知) P(勤務地｜居住地, g)', '段階Aの産業構成（全就業者）を勤務地既知者に条件付け直してから混合（産業ごとの不詳率が異なるため）。年齢・性別・学歴と勤務地の直接の関連はどの表にもなく、産業を介した条件付き独立を仮定。', [['M4', '段階A P(産業｜…)']]] : ['産業を合算する', 'Σ_g X[…, g]', '', null],
+    [side === 'residence' ? 'P(勤務地｜居住地' + (cond.kind !== 'all' ? ', 条件' : '') + ') を求める' : 'P(居住地｜勤務地' + (cond.kind !== 'all' ? ', 産業' : '') + ') を求める', '勤務地' + (side === 'residence' ? '既知' : '') + 'の就業者 ' + fmtN(R.tot) + ' 人で割る' + (cond.n !== undefined ? '。人数は条件の就業者 ' + fmtN(cond.n) + ' 人 × 既知率で表示' : ''), '推定に使っていない第9・10表（大都市等 290 地域）との比較は docs/WORKPLACE_C.md §4（P(勤務地｜居住地, 産業) の TV 0.034、産業を無視すると 0.141）。大都市等以外の産業別勤務地は未検証。', [['S15', '第9・10表（検証のみ）']]]
+  ]);
+  h += '<p class="note">所得と勤務地の関連は未観測で、勤務地を条件にした年収分布は提供しない。勤務地の追加は年齢・性別・学歴・年収・就業の公開分布を変えない。</p><button class="action" data-go="muni" data-id="' + code + '">個人の属性に戻る</button>';
+  P.innerHTML = h;
+}
+
 function renderInc(){
   var r = incDist(), rows = [], max = 0, y;
   if (!r.defined){ $('list-inc').innerHTML = '<div class="grp">' + esc(scopeName()) + '・' + esc(pathName()) + '　P(年収帯｜…)</div><div class="empty' + (r.loading ? '' : ' undef') + '">' + (r.loading ? LOADING_MSG : UNDEF_MSG) + '</div>'; $('cap-inc').innerHTML = '<b>未定義</b>'; return; }
@@ -873,12 +972,14 @@ var SRC = {
   S12: {fam:'ess',nm:'2022年就業構造基本調査 全国編 04000（従業上の地位別）',short:'就業構造基本調査 04000 地位別',year:2022,file:'sources/industry/education_status_income_tidy.csv.gz',url:'https://www.e-stat.go.jp/dbview?sid=0004008157',what:'全国 × 性別 × 年齢 × 学歴 × 所得 × 地位（自営・雇用者・正規・非正規）',use:'学歴 × 地位の関連の初期値（段階A）'},
   S13: {fam:'ess',nm:'2022年就業構造基本調査 地域編 表10-1',short:'就業構造基本調査 10-1',year:2022,file:'sources/industry/ess_status_industry_age_tidy.csv.gz',url:'https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077583&fileKind=0',what:'全国・都道府県・主要都市 × 性別 × 在学/卒業 × 地位 × 産業 × 年齢',use:'地位 × 産業の関連の初期値（都道府県）と都市行での検証（段階A）'},
   S14: {fam:'census',nm:'2020年国勢調査 人口等基本集計 世帯表（12-3, 12-4, 6-3, 13-2, 4-3, 9-1, 26-1, 8-1, 参考表1-4）',short:'国勢調査 世帯表',year:2020,file:'sources/household/*.csv.gz',url:'https://www.e-stat.go.jp/stat-search/files?tstat=000001136464',what:'市区町村（一部は都道府県・大都市）× 世帯主の性別・年齢 × 家族類型、世帯人数、続き柄 × 性別 × 年齢、年少・高齢世帯員の有無',use:'段階Bの世帯構成（選択地域・試験）。catalog/household/manifest.json'},
+  S15: {fam:'census',nm:'2020年国勢調査 従業地・通学地による人口・就業状態等集計（第3表、第8表；第9・10表は検証のみ）',short:'国勢調査 従業地集計',year:2020,file:'sources/workplace/*.csv.gz',url:'https://www.e-stat.go.jp/stat-search/files?tstat=000001136467',what:'常住地 × 従業地の就業者数（全市区町村ペア）、市区町村 × 産業 × 通勤区分の就業者数、大都市等の産業別 ODI',use:'段階Cの居住地 × 勤務地 × 産業（試験）。catalog/workplace/manifest.json（142 ファイル）'},
   G1: { fam: 'gen', nm: 'geography.csv / parent_mapping.csv（生成ファイル）', short: '生成ファイル', year: 2020, file: 'data/geography.csv, data/parent_mapping.csv', url: '', what: '地域コード・区分・都道府県コード、政令市と行政区の対応', use: '所属関係と合算の範囲' },
   M1: { fam: 'model', nm: 'model_arrays.npz（税補助なしの内部配列）', short: '内部配列（税補助なし）', year: 2020, file: 'data/model_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '就業構成を反映した段階の分布' },
   M2: { fam: 'model', nm: 'final_arrays.npz（学歴・産業構成を反映した内部配列）', short: '内部配列（M1+M2）', year: 2022, file: 'data/final_arrays.npz', url: '', what: '地域 × 性別 × 年齢 × 年収（17成分）の人数', use: '年齢・性別までの最終分布' },
   M3: { fam: 'model', nm: 'education_leaf_arrays.npz / municipality_model_v2.npz', short: '内部配列（学歴別）', year: 2022, file: 'data/education_leaf_arrays.npz, data/municipality_model_v2.npz', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 年収の人数', use: '学歴別の最終分布（このページでは同じ配分計算を再現）' },
   M4: { fam: 'model', nm: 'employment_a.npz / employment_a_agg.npz（段階A の配分ブロック）', short: '内部配列（就業・産業）', year: 2022, file: 'data/employment_a.npz, web/employment/agg_*.bin, web/employment_inputs.bin', url: '', what: '地域 × 性別 × 年齢 × 学歴 × 地位 × 産業 × 年収の人数（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計済みブロック）', use: '就業状態・地位・産業の条件付き分布（段階A、試験）' },
-  M5: { fam: 'model', nm: 'household_b/<code>.npz / <code>_population.csv.gz（段階B の期待人数表と整数個票）', short: '世帯個票（段階B）', year: 2020, file: 'data/household_b/<code>.npz, data/household_b/<code>_population.csv.gz, web/household/<code>.json', url: '', what: '選択地域の世帯 × 構成員（続き柄・性別・年齢、15歳以上は学歴・地位・産業・年収を結合）', use: '世帯構成の表示と世帯・個人の抽出（試験）' }
+  M5: { fam: 'model', nm: 'household_b/<code>.npz / <code>_population.csv.gz（段階B の期待人数表と整数個票）', short: '世帯個票（段階B）', year: 2020, file: 'data/household_b/<code>.npz, data/household_b/<code>_population.csv.gz, web/household/<code>.json', url: '', what: '選択地域の世帯 × 構成員（続き柄・性別・年齢、15歳以上は学歴・地位・産業・年収を結合）', use: '世帯構成の表示と世帯・個人の抽出（試験）' },
+  M6: { fam: 'model', nm: 'workplace_c.npz / web/workplace/{o,d}_<code>.json（段階C の居住地 × 勤務地 × 産業）', short: '勤務地表（段階C）', year: 2020, file: 'data/workplace_c.npz, web/workplace/o_<code>.json, d_<code>.json', url: '', what: '常住地 × 従業地（244,944 ペア）× 産業20 の就業者数（IPF 推定）と勤務地不詳数', use: '居住する人の勤務地／働きに来る人の居住地（試験）' }
 };
 function sid(id){ var r = SRC[id]; return '<button type="button" class="sid ' + r.fam + '" data-src="' + id + '" title="' + esc(r.nm) + '">' + id + '</button>'; }
 function ref(list){ if (!list || !list.length) return ''; return '<span class="refs"><span class="lab">参照データ</span>' + list.map(function(it){ var r = SRC[it[0]]; return '<span class="r">' + sid(it[0]) + (r.url ? '<a href="' + r.url + '" target="_blank" rel="noopener">' + esc(r.short) + '</a>' : esc(r.short)) + ' <code>' + esc(r.file.split(', ')[0].split('/').pop()) + '</code>' + (it[1] ? '　' + it[1] : '') + '</span>'; }).join('') + '</span>'; }
@@ -888,8 +989,8 @@ function renderScope(){
 }
 function renderSources(hl){
   var P = $('panel'); P.classList.remove('edge'); P.style.setProperty('--sw', 'var(--line-strong)');
-  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','G1','M1','M2','M3','M4','M5'];
-  P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 11 表・世帯表 9 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json、catalog/education/manifest.json、catalog/industry/manifest.json に記録。</p>';
+  var order = ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','S15','G1','M1','M2','M3','M4','M5','M6'];
+  P.innerHTML = '<span class="eyebrow">参照データ一覧</span><h2>データソース</h2><p class="sub">公表統計 11 表・世帯表 9 表・従業地集計 4 表と生成ファイル</p><p>すべて総務省統計局・e-Stat の公表データを加工したものです。各ステップの「参照データ」チップを押すと、ここで該当行が強調されます。</p><ul class="srclist">' + order.map(function(id){ var r = SRC[id]; return '<li id="src-' + id + '"' + (hl === id ? ' class="hl"' : '') + '>' + sid(id) + '<span class="nm">' + esc(r.nm) + '</span><br><span class="meta">' + esc(r.what) + '<br>用途：' + esc(r.use) + '<br><code>' + esc(r.file) + '</code>' + (r.url ? '　<a href="' + r.url + '" target="_blank" rel="noopener">e-Stat ↗</a>' : '') + '</span></li>'; }).join('') + '</ul><p class="src">取得日 2026-09-05／06。原表と加工済み表の SHA-256 は catalog/manifest.json、catalog/education/manifest.json、catalog/industry/manifest.json に記録。</p>';
   if (hl){ var el = $('src-' + hl); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }
 }
 function calc(steps, start){ start = start || 0; return '<ol class="calc">' + steps.filter(function(x){ return x; }).map(function(st, i){ return '<li' + (st[4] ? ' class="' + st[4] + '"' : '') + '><span class="no">' + (start + i + 1) + '</span><span class="tt">' + st[0] + '</span>' + (st[1] ? '<span class="f">' + st[1] + '</span>' : '') + (st[2] ? '<span class="ex">' + st[2] + '</span>' : '') + ref(st[3]) + '</li>'; }).join('') + '</ol>'; }
@@ -986,6 +1087,7 @@ function renderPanel(){
   if (f.dim === 'sources'){ renderSources(f.id); return; }
   if (f.dim === 'scope'){ renderScope(); return; }
   if (f.dim === 'household'){ renderHousehold(f.id); return; }
+  if (f.dim === 'workplace'){ renderWorkplace(f.id); return; }
   P.style.setProperty('--sw', f.dim ? DIM_VAR[f.dim] : 'var(--line-strong)');
   P.style.setProperty('--soft', f.dim ? DIM_SOFT[f.dim] : 'var(--accent-soft)');
   if (!f.dim){
@@ -1033,7 +1135,7 @@ function renderPanel(){
         else if (parent) cur.push([esc(parent.n) + 'に占める割合', fmtN(m.p) + ' / ' + fmtN(parent.p) + ' = <b>' + pct(m.p/parent.p) + '</b>', '行政区は親市の内訳。', [['G1', 'parent_mapping.csv']]]);
         h += '<h3 class="dh">' + esc(m.n) + 'の人口と割合の導出</h3>' + calc(pre.concat(cur));
       } else h += '<p class="note">2020年の15歳以上人口が0のため、この地域の分布は定義されません。</p>';
-      h += '<button class="action" data-go="muni" data-id="' + m.c + '">この地域の年齢構成を展開</button>' + (hhAvailable(m.c) ? ' <button class="action" data-go="household" data-id="' + m.c + '">世帯構成を見る（段階B・試験）</button>' : '');
+      h += '<button class="action" data-go="muni" data-id="' + m.c + '">この地域の年齢構成を展開</button>' + (hhAvailable(m.c) ? ' <button class="action" data-go="household" data-id="' + m.c + '">世帯構成を見る（段階B・試験）</button>' : '') + (wpAvailable() && m.p ? ' <button class="action" data-go="workplace" data-id="' + m.c + '">勤務地を見る（段階C・試験）</button>' : '');
     }
     else if (f.dim === 'age' && !dist(scope()).total){ h = '<span class="eyebrow">年齢</span><h2>' + AGE[+f.id] + '</h2><p class="note">2020年の15歳以上人口が 0 人のため、' + esc(scopeName()) + 'の分布は定義できません。</p>'; }
     else if (f.dim === 'sex' && !(sexPop()[0] + sexPop()[1])){ h = '<span class="eyebrow">性別</span><h2>' + SEX[+f.id] + '</h2><p class="note">' + UNDEF_MSG + '</p>' + calc(pre) + aggActions(); }
@@ -1332,6 +1434,8 @@ $('panel').addEventListener('click', function(ev){
   else if (d === 'age' || d === 'sex' || d === 'edu' || d === 'lab' || d === 'sta' || d === 'ind'){ var nx = DIMS[DIMS.indexOf(d) + 1]; setOpen(d, true); setOpen(nx, true); select(d, id); }
   else if (d === 'open'){ setOpen(id, true); renderAll(); }
   else if (d === 'household'){ S.focus = { dim: 'household', id: id }; renderPanel(); }
+  else if (d === 'workplace'){ S.focus = { dim: 'workplace', id: id }; renderPanel(); }
+  else if (d === 'wpmode'){ WP_STATE.mode = id; S.focus = { dim: 'workplace', id: b.dataset.code }; renderPanel(); }
   else if (d === 'skipdim'){ var keep = S.focus; skip(id); if (keep.dim === 'inc' && incDist().defined){ S.focus = keep; renderAll(); } else if (keep.dim && keep.dim !== 'edge' && keep.id !== 'hub' && keep.id !== 'all'){ S.focus = keep; renderAll(); } }
   else { setOpen(d, true); select(d, id); }
 });
@@ -1384,7 +1488,7 @@ document.addEventListener('click', function(ev){ if (!ev.target.closest('.search
 
 renderAll();
 /* test hooks (jsdom verification against the Python arrays) */
-window.__hinomoto = { renderHousehold: renderHousehold, hhState: HH_STATE, S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
+window.__hinomoto = { renderWorkplace: renderWorkplace, wpCompute: wpCompute, wpCondition: wpCondition, wpState: WP_STATE, wpReady: wpReady, renderHousehold: renderHousehold, hhState: HH_STATE, S: S, empBlock: empBlock, empCounts: empCounts, empReady: empReady, incDist: incDist, select: select, setOpen: setOpen, renderAll: renderAll, skip: skip, unplace: unplace, state: EMP_STATE };
 })();
 </script>
 </body>

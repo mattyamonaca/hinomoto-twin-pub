@@ -90,7 +90,7 @@ python src/dataset.py check
 
 ## 公開ページ
 
-画面は `data/graph.json` を非同期に読み込みます。形式は `schema_version`（1〜3）、`dataset_version`、`graph` のオブジェクトです。schema 3 では `graph.emp` に段階A（就業状態・地位・産業）の全国・都道府県パラメータと、`data/employment_inputs.bin`（市区町村 × 性別 × 年齢の周辺 27 値、float32）、`data/employment/agg_<code>.bin`（全国・都道府県・政令市の集計ブロック、float32）のファイル名と SHA-256 を持ち、画面はそれらを必要時に取得します。形式の詳細は `catalog/employment_schema.json`。schema 2 のデータでは段階Aのノードは「未配信」と表示されます。`graph.household` があれば、対象市区町村の `data/household/<code>.json`（段階Bの世帯構成の要約）を市区町村パネルから読み込みます。`?data=https://example.org/graph.json` で別の配信先も指定できます（別ドメインでは配信元のCORS設定が必要）。読み込み失敗時は画面に案内を表示します。
+画面は `data/graph.json` を非同期に読み込みます。形式は `schema_version`（1〜3）、`dataset_version`、`graph` のオブジェクトです。schema 3 では `graph.emp` に段階A（就業状態・地位・産業）の全国・都道府県パラメータと、`data/employment_inputs.bin`（市区町村 × 性別 × 年齢の周辺 27 値、float32）、`data/employment/agg_<code>.bin`（全国・都道府県・政令市の集計ブロック、float32）のファイル名と SHA-256 を持ち、画面はそれらを必要時に取得します。形式の詳細は `catalog/employment_schema.json`。schema 2 のデータでは段階Aのノードは「未配信」と表示されます。`graph.workplace` があれば、市区町村パネルの「勤務地を見る」で `data/workplace/o_<code>.json`（居住する人の勤務地）と `d_<code>.json`（働きに来る人の居住地）を読み込みます（形式は `catalog/workplace_schema.json`）。`graph.household` があれば、対象市区町村の `data/household/<code>.json`（段階Bの世帯構成の要約）を市区町村パネルから読み込みます。`?data=https://example.org/graph.json` で別の配信先も指定できます（別ドメインでは配信元のCORS設定が必要）。読み込み失敗時は画面に案内を表示します。
 
 ```sh
 make site
