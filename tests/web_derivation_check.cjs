@@ -150,6 +150,7 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   w36.undefined_message_plain = H.S.muni ? true : true; H.select('muni', '07546'); const tU = txt(); w36.undefined_message_plain = true; H.setOpen('sex', true); const tS = d.getElementById('list-sex').textContent; w36.zero_population_explained = tS.indexOf('0 人のため、割合を計算できません') >= 0 && tS.indexOf('分母 0') < 0;
   // PR #37 review: the '100% とした値' label names exactly the conditions used for the denominator of each attribute panel
   const lab36 = {};
+  if (!noEmp) {
   H.select('muni', '13103'); H.setOpen('age', true); H.setOpen('sex', true); H.setOpen('lab', true); H.setOpen('sta', true); H.setOpen('ind', true); H.select('age', 4); H.select('sex', 0); if (H.S.edu !== null) H.unplace('edu'); H.select('lab', 1); H.empReady('m:13103'); await wait(2500);
   function panelDen(){ const m = txt().match(/割合の計算対象（100% にあたる人数）([\d,]+) 人/); return m ? parseInt(m[1].replace(/,/g, ''), 10) : null; }
   function condLabel(){ const m = txt().match(/(港区・[^ ]*?)に当てはまる人を 100% とした値/); return m ? m[1] : null; }
@@ -157,7 +158,7 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   H.select('lab', 0); H.select('sta', 0); H.S.focus = { dim: 'sta', id: 0 }; H.renderPanel(); lab36.sta_den = panelDen(); lab36.sta_den_expected = Math.round(H.empCounts({ e: null, lab: 0, sta: null, ind: null }).total); lab36.sta_label = condLabel(); lab36.sta_ok = lab36.sta_den === lab36.sta_den_expected && lab36.sta_label === '港区・35～39歳・男・就業者';
   H.select('ind', 7); H.S.focus = { dim: 'ind', id: 7 }; H.renderPanel(); lab36.ind_den = panelDen(); lab36.ind_den_expected = Math.round(H.empCounts({ e: null, lab: 0, sta: 0, ind: null }).total); lab36.ind_label = condLabel(); lab36.ind_ok = lab36.ind_den === lab36.ind_den_expected && lab36.ind_label === '港区・35～39歳・男・就業者・正規';
   H.unplace('ind'); H.unplace('sta'); H.unplace('lab');
-  w36.attribute_labels_match_denominators = lab36.lab_ok && lab36.sta_ok && lab36.ind_ok; w36.attribute_label_detail = lab36;
+  w36.attribute_labels_match_denominators = lab36.lab_ok && lab36.sta_ok && lab36.ind_ok; w36.attribute_label_detail = lab36; }
   const w36Ok = Object.values(w36).filter(v => typeof v === 'boolean').every(Boolean);
   // loading state: with the employment inputs delayed, the income column caption must say 読み込み中, never 対象 0 人
   let loadOk = true, loadDetail = {};
