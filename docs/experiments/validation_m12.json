@@ -1,0 +1,1106 @@
+{
+  "protocol": "Issue #21: M0 / M1 / M2 / M12 on the same denominator, coefficient sensitivity, and an independent municipal check.\n\nEverything below was fixed before the numbers were produced (docs/VALIDATION_M12.md, section 2).\nPart A  Held-out city cells (86 cities x age, 1,118 cells; out-of-fold by prefecture mod 5, exactly as experiment_models.py):\n        weighted mean, equal-city mean, median, p90, max, max city worsening vs M0, absolute error of the shares\n        >=300 / >=500 / >=700 万円, by city size class. Same cells and weights for every model.\nPart B  Coefficient sensitivity around the production M12 (gamma=1.5, gamma2=1.0, beta=0): in-sample city TV and the change of\n        the municipal distributions P(y|m,s,a) for neighbouring coefficients, by area type (市 / 町村 / 区).\nPart C  Independent municipal check with the FY2023 市町村税課税状況等の調 (2022 income; not an input of any model; the M0 tax\n        proxy is the FY2022 市区町村のすがた, so M0 is also run with beta=0 as the fair baseline):\n        within-prefecture log deviation of the model mean paid-worker income vs the tax indicators, correlations by area\n        type, and the direction consistency of the M12 - M0 change with the tax residual. Pre-registered support rule:\n        M12 is \"supported\" if corr(model, t1) is not lower than M0(beta=0) by more than 0.01 in every area group and the\n        direction-consistency correlation is positive with a bootstrap 95% interval excluding 0. The rule does not change\n        the production model; it is reported.\nOutputs: validation/validation_m12.json, validation_m12_areas.csv (per-municipality indicators), validation_m12_cells.csv.\n",
+  "production": {
+    "gamma_edu": 1.5,
+    "gamma_ind": 1.0,
+    "beta": 0.0
+  },
+  "adoption_rule": {
+    "min_relative_tv_improvement": 0.01,
+    "median_must_not_worsen": true,
+    "max_city_mean_worsening_tv": 0.02
+  },
+  "inputs": {
+    "catalog_manifest_sha256": "abd15120e3c2f2a49eda08f297f44afc9173350723ebfbfca06f25582ee685d9",
+    "industry_manifest_sha256": "482b7ffcb5213a657ffcc885c2cbdcc0438c724f87be6535875b06daf78da19b",
+    "education_manifest_sha256": "78a67a4ceead57347c50af46f91411a886890d982b1ea0c75ea682efbb04bc06",
+    "tax_status_manifest_sha256": "7c71697be4458f8a861e1c171880e200a0402201fa55fec3eea9940ac65d1b73",
+    "production_json": {
+      "dataset_version": "2020-2022-3.0-M12-20260906",
+      "archive_url": "https://github.com/mattyamonaca/hinomoto-twin-pub/releases/download/data-v3.0-m12-20260906/hinomoto-m12-dataset.tar.gz",
+      "sha256": "d84497114b1dbdeac53f4765c26fe7aa79932a187c2b6b88d2c143777c860be6",
+      "model": "M12",
+      "model_version": "3.0-M12",
+      "previous_baseline": "catalog/baseline.json"
+    }
+  },
+  "area_counts": {
+    "town_village": 926,
+    "ward": 198,
+    "city": 772
+  },
+  "A_heldout_same_denominator": {
+    "M0": {
+      "weighted_mean": 0.0932774684048284,
+      "equal_city_mean": 0.13517858828363843,
+      "equal_cell_mean": 0.13517858828363843,
+      "median": 0.12084663470657914,
+      "p90": 0.22639764995095615,
+      "max": 0.4366019234863793,
+      "fold_selection": [
+        [
+          0.0,
+          0.0,
+          0.6
+        ],
+        [
+          0.0,
+          0.0,
+          0.5
+        ],
+        [
+          0.0,
+          0.0,
+          0.5
+        ],
+        [
+          0.0,
+          0.0,
+          0.5
+        ],
+        [
+          0.0,
+          0.0,
+          0.6
+        ]
+      ],
+      "abs_error_share_ge300": 0.026455922044505916,
+      "abs_error_share_ge500": 0.025496001420587104,
+      "abs_error_share_ge700": 0.02139671660215384,
+      "by_city_size_class": {
+        "large_ge250k": 0.07462547344284509,
+        "medium_175k_250k": 0.14415198061588871,
+        "small_lt175k": 0.12825959999522266
+      },
+      "vs_M0_notax": {
+        "weighted_mean_change": -0.0006740432482078141,
+        "relative_improvement": 0.007174373635381981,
+        "fraction_cells_improved": 0.5348837209302325,
+        "max_city_mean_worsening": 0.007616545581137563,
+        "worst_city": "28204",
+        "meets_pre_registered_rule": false
+      }
+    },
+    "M0_notax": {
+      "weighted_mean": 0.09395151165303622,
+      "equal_city_mean": 0.13527912817585558,
+      "equal_cell_mean": 0.13527912817585558,
+      "median": 0.1216292585339586,
+      "p90": 0.22909107215421284,
+      "max": 0.42622688435633405,
+      "fold_selection": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "abs_error_share_ge300": 0.028131209093290203,
+      "abs_error_share_ge500": 0.028900140106129457,
+      "abs_error_share_ge700": 0.024124755537971738,
+      "by_city_size_class": {
+        "large_ge250k": 0.07548615634549946,
+        "medium_175k_250k": 0.14426099180032334,
+        "small_lt175k": 0.12866039085257588
+      }
+    },
+    "M1": {
+      "weighted_mean": 0.0900015036690568,
+      "equal_city_mean": 0.13079859560239215,
+      "equal_cell_mean": 0.13079859560239215,
+      "median": 0.11569344614824367,
+      "p90": 0.22435609732297856,
+      "max": 0.42916013269619413,
+      "fold_selection": [
+        [
+          2.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "abs_error_share_ge300": 0.026376490263414085,
+      "abs_error_share_ge500": 0.022508963655749132,
+      "abs_error_share_ge700": 0.01649616930206697,
+      "by_city_size_class": {
+        "large_ge250k": 0.07184797750349307,
+        "medium_175k_250k": 0.13982261899397458,
+        "small_lt175k": 0.12362854428292246
+      },
+      "vs_M0": {
+        "weighted_mean_change": -0.003275964735771587,
+        "relative_improvement": 0.03512064372881296,
+        "fraction_cells_improved": 0.59391771019678,
+        "max_city_mean_worsening": 0.009089864811583774,
+        "worst_city": "28201",
+        "meets_pre_registered_rule": true
+      }
+    },
+    "M2": {
+      "weighted_mean": 0.0913232511871136,
+      "equal_city_mean": 0.13291447182667457,
+      "equal_cell_mean": 0.13291447182667454,
+      "median": 0.1189496218999413,
+      "p90": 0.2226108433281119,
+      "max": 0.43949108749054766,
+      "fold_selection": [
+        [
+          0.0,
+          2.0,
+          0.3
+        ],
+        [
+          0.0,
+          2.0,
+          0.3
+        ],
+        [
+          0.0,
+          2.0,
+          0.3
+        ],
+        [
+          0.0,
+          2.0,
+          0.3
+        ],
+        [
+          0.0,
+          2.0,
+          0.3
+        ]
+      ],
+      "abs_error_share_ge300": 0.025427511352556262,
+      "abs_error_share_ge500": 0.02371527904203074,
+      "abs_error_share_ge700": 0.019239210403296687,
+      "by_city_size_class": {
+        "large_ge250k": 0.0727889142081065,
+        "medium_175k_250k": 0.1417711324500841,
+        "small_lt175k": 0.12622977876429017
+      },
+      "vs_M0": {
+        "weighted_mean_change": -0.0019542172177148096,
+        "relative_improvement": 0.020950581647793065,
+        "fraction_cells_improved": 0.5885509838998211,
+        "max_city_mean_worsening": 0.011241283405371017,
+        "worst_city": "30201",
+        "meets_pre_registered_rule": true
+      }
+    },
+    "M12": {
+      "weighted_mean": 0.08987449861370037,
+      "equal_city_mean": 0.13062597232742965,
+      "equal_cell_mean": 0.13062597232742962,
+      "median": 0.11519764333506291,
+      "p90": 0.22377591649734255,
+      "max": 0.42615885244698976,
+      "fold_selection": [
+        [
+          1.5,
+          1.0,
+          0.0
+        ],
+        [
+          1.5,
+          1.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.5,
+          0.0
+        ],
+        [
+          1.5,
+          1.0,
+          0.0
+        ],
+        [
+          1.5,
+          1.0,
+          0.0
+        ]
+      ],
+      "abs_error_share_ge300": 0.026105953195193078,
+      "abs_error_share_ge500": 0.022326890100190643,
+      "abs_error_share_ge700": 0.016641325966795333,
+      "by_city_size_class": {
+        "large_ge250k": 0.07168199867459653,
+        "medium_175k_250k": 0.13987521100364958,
+        "small_lt175k": 0.12347405580325825
+      },
+      "vs_M0": {
+        "weighted_mean_change": -0.003402969791128026,
+        "relative_improvement": 0.036482227158642355,
+        "fraction_cells_improved": 0.6234347048300537,
+        "max_city_mean_worsening": 0.00958738559365024,
+        "worst_city": "28201",
+        "meets_pre_registered_rule": true
+      },
+      "vs_M1": {
+        "weighted_mean_change": -0.00012700505535643953,
+        "relative_improvement": 0.0014111437051479436,
+        "fraction_cells_improved": 0.5286225402504472,
+        "max_city_mean_worsening": 0.004774204359327879
+      }
+    }
+  },
+  "B_city_in_sample_sensitivity": {
+    "[1.5, 1.0, 0.0]": {
+      "in_sample_weighted_tv": 0.0896656420893785,
+      "in_sample_median": 0.11488134521597718
+    },
+    "[1.0, 1.0, 0.0]": {
+      "in_sample_weighted_tv": 0.08989532836422538,
+      "in_sample_median": 0.11517149211330108
+    },
+    "[2.0, 1.0, 0.0]": {
+      "in_sample_weighted_tv": 0.08999238132405632,
+      "in_sample_median": 0.11487918503276018
+    },
+    "[1.5, 0.5, 0.0]": {
+      "in_sample_weighted_tv": 0.08972632792103324,
+      "in_sample_median": 0.11512456845490923
+    },
+    "[1.5, 1.5, 0.0]": {
+      "in_sample_weighted_tv": 0.08977916110151911,
+      "in_sample_median": 0.11602487040292198
+    },
+    "[1.5, 1.0, 0.3]": {
+      "in_sample_weighted_tv": 0.089883481572661,
+      "in_sample_median": 0.11511879410140338
+    },
+    "[2.0, 0.0, 0.0]": {
+      "in_sample_weighted_tv": 0.0900015036690568,
+      "in_sample_median": 0.11569344614824367
+    },
+    "[0.0, 2.0, 0.3]": {
+      "in_sample_weighted_tv": 0.0913232511871136,
+      "in_sample_median": 0.1189496218999413
+    },
+    "[0.0, 0.0, 0.5]": {
+      "in_sample_weighted_tv": 0.09324528636330558,
+      "in_sample_median": 0.1208915678967166
+    },
+    "[0.0, 0.0, 0.0]": {
+      "in_sample_weighted_tv": 0.09395151165303622,
+      "in_sample_median": 0.1216292585339586
+    }
+  },
+  "B_municipal_change_from_production": {
+    "[1.0, 1.0, 0.0]": {
+      "weighted_mean_tv": 0.010381821631015194,
+      "p90": 0.02730261000969118,
+      "max": 0.22659367333268737,
+      "weighted_mean_tv_city": 0.009419787961993711,
+      "p90_city": 0.022690585479408304,
+      "weighted_mean_tv_town_village": 0.012481818561876822,
+      "p90_town_village": 0.031605973214782764,
+      "weighted_mean_tv_ward": 0.01171936874345004,
+      "p90_ward": 0.023719892793701437
+    },
+    "[2.0, 1.0, 0.0]": {
+      "weighted_mean_tv": 0.010130533325734688,
+      "p90": 0.02507355629558762,
+      "max": 0.19392896978048269,
+      "weighted_mean_tv_city": 0.009194467220088516,
+      "p90_city": 0.02123682395046331,
+      "weighted_mean_tv_town_village": 0.01186953097578503,
+      "p90_town_village": 0.028452849964596478,
+      "weighted_mean_tv_ward": 0.011506712749241145,
+      "p90_ward": 0.02321513599566266
+    },
+    "[1.5, 0.5, 0.0]": {
+      "weighted_mean_tv": 0.007008502098580698,
+      "p90": 0.028895645074677463,
+      "max": 0.2040446112106377,
+      "weighted_mean_tv_city": 0.006387025857880147,
+      "p90_city": 0.017900608846108442,
+      "weighted_mean_tv_town_village": 0.012052553111098091,
+      "p90_town_village": 0.03832140522903834,
+      "weighted_mean_tv_ward": 0.006966972243469015,
+      "p90_ward": 0.014336669804033355
+    },
+    "[1.5, 1.5, 0.0]": {
+      "weighted_mean_tv": 0.006964306181937866,
+      "p90": 0.02844001788293721,
+      "max": 0.1900006944488784,
+      "weighted_mean_tv_city": 0.006345602063997411,
+      "p90_city": 0.017630827002205408,
+      "weighted_mean_tv_town_village": 0.011988552728614522,
+      "p90_town_village": 0.03797267324455859,
+      "weighted_mean_tv_ward": 0.006922299777150495,
+      "p90_ward": 0.014095878886403419
+    },
+    "[1.5, 1.0, 0.3]": {
+      "weighted_mean_tv": 0.007631731480762139,
+      "p90": 0.018707643028031472,
+      "max": 0.08416571221615181,
+      "weighted_mean_tv_city": 0.006851657608332155,
+      "p90_city": 0.016117475683370703,
+      "weighted_mean_tv_town_village": 0.009412898191585625,
+      "p90_town_village": 0.020975335078371234,
+      "weighted_mean_tv_ward": 0.008697048516653675,
+      "p90_ward": 0.014188259331713379
+    },
+    "[2.0, 0.0, 0.0]": {
+      "weighted_mean_tv": 0.011848906001311277,
+      "p90": 0.05533859023190554,
+      "max": 0.4147179534181178,
+      "weighted_mean_tv_city": 0.011265222165448643,
+      "p90_city": 0.03320282683504064,
+      "weighted_mean_tv_town_village": 0.023117754844907,
+      "p90_town_village": 0.07318558917170036,
+      "weighted_mean_tv_ward": 0.010205843486672826,
+      "p90_ward": 0.022619478348952886
+    },
+    "[0.0, 2.0, 0.3]": {
+      "weighted_mean_tv": 0.026591759208232275,
+      "p90": 0.08895286806247986,
+      "max": 0.7449724483829665,
+      "weighted_mean_tv_city": 0.024555065371809202,
+      "p90_city": 0.06291220341020601,
+      "weighted_mean_tv_town_village": 0.04089110711185947,
+      "p90_town_village": 0.11139318382524609,
+      "weighted_mean_tv_ward": 0.027003550247658936,
+      "p90_ward": 0.05403928300940776
+    },
+    "[0.0, 0.0, 0.5]": {
+      "weighted_mean_tv": 0.03850942613890242,
+      "p90": 0.11503717287262893,
+      "max": 0.7551393843646637,
+      "weighted_mean_tv_city": 0.034675525335966295,
+      "p90_city": 0.08515652068782946,
+      "weighted_mean_tv_town_village": 0.052169335259509925,
+      "p90_town_village": 0.13908995404011767,
+      "weighted_mean_tv_ward": 0.04254042650055173,
+      "p90_ward": 0.08529885470069466
+    },
+    "[0.0, 0.0, 0.0]": {
+      "weighted_mean_tv": 0.042342730729299775,
+      "p90": 0.11974301549417585,
+      "max": 0.725860308802301,
+      "weighted_mean_tv_city": 0.03827057324964857,
+      "p90_city": 0.09236132256234826,
+      "weighted_mean_tv_town_village": 0.056587579538247834,
+      "p90_town_village": 0.14019445015380777,
+      "weighted_mean_tv_ward": 0.04668905948626622,
+      "p90_ward": 0.09176663970787213
+    }
+  },
+  "C_independent_tax_check": {
+    "units": 1741,
+    "units_compared": 1740,
+    "units_excluded_no_paid_workers": 1,
+    "correlations": {
+      "M0": {
+        "all": {
+          "m1_vs_t1": {
+            "n": 1740,
+            "pearson": 0.8132034331757506,
+            "spearman": 0.8561473367806157
+          },
+          "m1_vs_t2": {
+            "n": 1740,
+            "pearson": 0.7020236383475857,
+            "spearman": 0.7058885594002787
+          },
+          "m3_vs_t3": {
+            "n": 1740,
+            "pearson": 0.46465110009725435,
+            "spearman": 0.6880136463204695
+          }
+        },
+        "city": {
+          "m1_vs_t1": {
+            "n": 772,
+            "pearson": 0.890254564058356,
+            "spearman": 0.8916307111343607
+          },
+          "m1_vs_t2": {
+            "n": 772,
+            "pearson": 0.8024756785617457,
+            "spearman": 0.7917673852348207
+          },
+          "m3_vs_t3": {
+            "n": 772,
+            "pearson": 0.616671239589661,
+            "spearman": 0.7074435365497395
+          }
+        },
+        "town_village": {
+          "m1_vs_t1": {
+            "n": 925,
+            "pearson": 0.7638770905416051,
+            "spearman": 0.808750370521429
+          },
+          "m1_vs_t2": {
+            "n": 925,
+            "pearson": 0.6186149158256885,
+            "spearman": 0.5985665388257182
+          },
+          "m3_vs_t3": {
+            "n": 925,
+            "pearson": 0.35446756590558237,
+            "spearman": 0.5962984549161655
+          }
+        },
+        "designated_city": {
+          "m1_vs_t1": {
+            "n": 20,
+            "pearson": 0.8932169269132926,
+            "spearman": 0.7503759398496239
+          },
+          "m1_vs_t2": {
+            "n": 20,
+            "pearson": 0.7912977051488848,
+            "spearman": 0.35939849624060144
+          },
+          "m3_vs_t3": {
+            "n": 20,
+            "pearson": 0.4624612307469253,
+            "spearman": 0.41654135338345866
+          }
+        },
+        "tokyo_ward": {
+          "m1_vs_t1": {
+            "n": 23,
+            "pearson": 0.9554003751458867,
+            "spearman": 0.9812252964426879
+          },
+          "m1_vs_t2": {
+            "n": 23,
+            "pearson": 0.9724354986779847,
+            "spearman": 0.9812252964426879
+          },
+          "m3_vs_t3": {
+            "n": 23,
+            "pearson": -0.35334582387219177,
+            "spearman": -0.017786561264822136
+          }
+        }
+      },
+      "M0_notax": {
+        "all": {
+          "m1_vs_t1": {
+            "n": 1740,
+            "pearson": 0.5339059962217472,
+            "spearman": 0.6292826849216845
+          },
+          "m1_vs_t2": {
+            "n": 1740,
+            "pearson": 0.46340111220099783,
+            "spearman": 0.4939920743615082
+          },
+          "m3_vs_t3": {
+            "n": 1740,
+            "pearson": 0.4330486972771373,
+            "spearman": 0.626823932213225
+          }
+        },
+        "city": {
+          "m1_vs_t1": {
+            "n": 772,
+            "pearson": 0.6116859158063535,
+            "spearman": 0.6371011956134403
+          },
+          "m1_vs_t2": {
+            "n": 772,
+            "pearson": 0.5454708687833645,
+            "spearman": 0.5501840521775151
+          },
+          "m3_vs_t3": {
+            "n": 772,
+            "pearson": 0.5495566933122752,
+            "spearman": 0.5783808087372941
+          }
+        },
+        "town_village": {
+          "m1_vs_t1": {
+            "n": 925,
+            "pearson": 0.4887835561514477,
+            "spearman": 0.5916152005136887
+          },
+          "m1_vs_t2": {
+            "n": 925,
+            "pearson": 0.4094218389874075,
+            "spearman": 0.4009020178350632
+          },
+          "m3_vs_t3": {
+            "n": 925,
+            "pearson": 0.33848470825170396,
+            "spearman": 0.5574930842317452
+          }
+        },
+        "designated_city": {
+          "m1_vs_t1": {
+            "n": 20,
+            "pearson": 0.5322957630886326,
+            "spearman": 0.15939849624060148
+          },
+          "m1_vs_t2": {
+            "n": 20,
+            "pearson": 0.48548295569038485,
+            "spearman": -0.019548872180451125
+          },
+          "m3_vs_t3": {
+            "n": 20,
+            "pearson": 0.18921560841770899,
+            "spearman": 0.13383458646616542
+          }
+        },
+        "tokyo_ward": {
+          "m1_vs_t1": {
+            "n": 23,
+            "pearson": 0.8527758718781498,
+            "spearman": 0.8764822134387351
+          },
+          "m1_vs_t2": {
+            "n": 23,
+            "pearson": 0.8748883546526801,
+            "spearman": 0.8715415019762847
+          },
+          "m3_vs_t3": {
+            "n": 23,
+            "pearson": -0.3548116240835026,
+            "spearman": 0.021739130434782608
+          }
+        }
+      },
+      "M1": {
+        "all": {
+          "m1_vs_t1": {
+            "n": 1740,
+            "pearson": 0.7212100801215828,
+            "spearman": 0.7754843746616972
+          },
+          "m1_vs_t2": {
+            "n": 1740,
+            "pearson": 0.7543145352076379,
+            "spearman": 0.7533610057296911
+          },
+          "m3_vs_t3": {
+            "n": 1740,
+            "pearson": 0.37833152573851603,
+            "spearman": 0.5651363477723803
+          }
+        },
+        "city": {
+          "m1_vs_t1": {
+            "n": 772,
+            "pearson": 0.8812725658769835,
+            "spearman": 0.8694303178432455
+          },
+          "m1_vs_t2": {
+            "n": 772,
+            "pearson": 0.8233467598103205,
+            "spearman": 0.808264647879731
+          },
+          "m3_vs_t3": {
+            "n": 772,
+            "pearson": 0.43541541905628306,
+            "spearman": 0.4590236295208859
+          }
+        },
+        "town_village": {
+          "m1_vs_t1": {
+            "n": 925,
+            "pearson": 0.5969569165302374,
+            "spearman": 0.6798317017755464
+          },
+          "m1_vs_t2": {
+            "n": 925,
+            "pearson": 0.6570530289014606,
+            "spearman": 0.6502237532475114
+          },
+          "m3_vs_t3": {
+            "n": 925,
+            "pearson": 0.30336019821571875,
+            "spearman": 0.5462086124721115
+          }
+        },
+        "designated_city": {
+          "m1_vs_t1": {
+            "n": 20,
+            "pearson": 0.9394086632007724,
+            "spearman": 0.8481203007518796
+          },
+          "m1_vs_t2": {
+            "n": 20,
+            "pearson": 0.831306165426031,
+            "spearman": 0.6616541353383457
+          },
+          "m3_vs_t3": {
+            "n": 20,
+            "pearson": 0.029746105963915723,
+            "spearman": 0.0781954887218045
+          }
+        },
+        "tokyo_ward": {
+          "m1_vs_t1": {
+            "n": 23,
+            "pearson": 0.8874833724277641,
+            "spearman": 0.9841897233201581
+          },
+          "m1_vs_t2": {
+            "n": 23,
+            "pearson": 0.9279521769378808,
+            "spearman": 0.9891304347826088
+          },
+          "m3_vs_t3": {
+            "n": 23,
+            "pearson": -0.36656278245579454,
+            "spearman": 0.09486166007905138
+          }
+        }
+      },
+      "M2": {
+        "all": {
+          "m1_vs_t1": {
+            "n": 1740,
+            "pearson": 0.5060782771290921,
+            "spearman": 0.6417558486170862
+          },
+          "m1_vs_t2": {
+            "n": 1740,
+            "pearson": 0.561047000138813,
+            "spearman": 0.6549858086590545
+          },
+          "m3_vs_t3": {
+            "n": 1740,
+            "pearson": 0.5030677103119262,
+            "spearman": 0.650610020770869
+          }
+        },
+        "city": {
+          "m1_vs_t1": {
+            "n": 772,
+            "pearson": 0.7479830831709913,
+            "spearman": 0.8073768387123814
+          },
+          "m1_vs_t2": {
+            "n": 772,
+            "pearson": 0.697796311639857,
+            "spearman": 0.7321424449643733
+          },
+          "m3_vs_t3": {
+            "n": 772,
+            "pearson": 0.6033512725077411,
+            "spearman": 0.6079252147531871
+          }
+        },
+        "town_village": {
+          "m1_vs_t1": {
+            "n": 925,
+            "pearson": 0.3480756721257113,
+            "spearman": 0.4502860994005703
+          },
+          "m1_vs_t2": {
+            "n": 925,
+            "pearson": 0.4402404508764379,
+            "spearman": 0.5117266867158876
+          },
+          "m3_vs_t3": {
+            "n": 925,
+            "pearson": 0.40179474854394687,
+            "spearman": 0.5371834458227547
+          }
+        },
+        "designated_city": {
+          "m1_vs_t1": {
+            "n": 20,
+            "pearson": 0.8206227424584234,
+            "spearman": 0.6240601503759398
+          },
+          "m1_vs_t2": {
+            "n": 20,
+            "pearson": 0.751891805628024,
+            "spearman": 0.431578947368421
+          },
+          "m3_vs_t3": {
+            "n": 20,
+            "pearson": 0.38295724814821513,
+            "spearman": 0.39999999999999997
+          }
+        },
+        "tokyo_ward": {
+          "m1_vs_t1": {
+            "n": 23,
+            "pearson": 0.9513958840539263,
+            "spearman": 0.9901185770750988
+          },
+          "m1_vs_t2": {
+            "n": 23,
+            "pearson": 0.97492179066075,
+            "spearman": 0.9940711462450593
+          },
+          "m3_vs_t3": {
+            "n": 23,
+            "pearson": -0.399773567834383,
+            "spearman": 0.07608695652173912
+          }
+        }
+      },
+      "M12": {
+        "all": {
+          "m1_vs_t1": {
+            "n": 1740,
+            "pearson": 0.6427612094488544,
+            "spearman": 0.7104464444688964
+          },
+          "m1_vs_t2": {
+            "n": 1740,
+            "pearson": 0.7130809626108519,
+            "spearman": 0.7322382908837597
+          },
+          "m3_vs_t3": {
+            "n": 1740,
+            "pearson": 0.47316134901324036,
+            "spearman": 0.6178306080278408
+          }
+        },
+        "city": {
+          "m1_vs_t1": {
+            "n": 772,
+            "pearson": 0.8553500794646955,
+            "spearman": 0.8610010340472989
+          },
+          "m1_vs_t2": {
+            "n": 772,
+            "pearson": 0.8033123625585775,
+            "spearman": 0.7973835084961172
+          },
+          "m3_vs_t3": {
+            "n": 772,
+            "pearson": 0.5300721440251543,
+            "spearman": 0.4967250300346311
+          }
+        },
+        "town_village": {
+          "m1_vs_t1": {
+            "n": 925,
+            "pearson": 0.48014578242944933,
+            "spearman": 0.5543059858826598
+          },
+          "m1_vs_t2": {
+            "n": 925,
+            "pearson": 0.6027097957364189,
+            "spearman": 0.6173389776413535
+          },
+          "m3_vs_t3": {
+            "n": 925,
+            "pearson": 0.3834480794729189,
+            "spearman": 0.5621102171426146
+          }
+        },
+        "designated_city": {
+          "m1_vs_t1": {
+            "n": 20,
+            "pearson": 0.9157013969096701,
+            "spearman": 0.7834586466165413
+          },
+          "m1_vs_t2": {
+            "n": 20,
+            "pearson": 0.8198030360235524,
+            "spearman": 0.6225563909774435
+          },
+          "m3_vs_t3": {
+            "n": 20,
+            "pearson": 0.07353221579794265,
+            "spearman": 0.04962406015037594
+          }
+        },
+        "tokyo_ward": {
+          "m1_vs_t1": {
+            "n": 23,
+            "pearson": 0.9022158208800944,
+            "spearman": 0.9851778656126482
+          },
+          "m1_vs_t2": {
+            "n": 23,
+            "pearson": 0.9395975244225179,
+            "spearman": 0.991106719367589
+          },
+          "m3_vs_t3": {
+            "n": 23,
+            "pearson": -0.4153595967071465,
+            "spearman": 0.17391304347826086
+          }
+        }
+      }
+    },
+    "direction_consistency": {
+      "M12_minus_M0_notax:all": {
+        "n": 1740,
+        "corr_change_vs_residual": 0.5120968089199854,
+        "bootstrap_95": [
+          0.4401597577795569,
+          0.5818499792977633
+        ],
+        "fraction_moved_toward_tax": 0.8844827586206897
+      },
+      "M12_minus_M0_notax:city": {
+        "n": 772,
+        "corr_change_vs_residual": 0.8128105395150323,
+        "bootstrap_95": [
+          0.77993707592498,
+          0.8402034359618441
+        ],
+        "fraction_moved_toward_tax": 0.8898963730569949
+      },
+      "M12_minus_M0_notax:town_village": {
+        "n": 925,
+        "corr_change_vs_residual": 0.2640571313333834,
+        "bootstrap_95": [
+          0.17273077048333815,
+          0.3732729959275759
+        ],
+        "fraction_moved_toward_tax": 0.8767567567567568
+      },
+      "M12_minus_M0_notax:designated_city": {
+        "n": 20,
+        "corr_change_vs_residual": 0.8983814806138097,
+        "bootstrap_95": [
+          0.6762931206613271,
+          0.9745136997472008
+        ],
+        "fraction_moved_toward_tax": 1.0
+      },
+      "M12_minus_M0_notax:tokyo_ward": {
+        "n": 23,
+        "corr_change_vs_residual": 0.8454658887594315,
+        "bootstrap_95": [
+          0.7854852168713093,
+          0.9343851885661253
+        ],
+        "fraction_moved_toward_tax": 0.9130434782608695
+      },
+      "M12_minus_M0:all": {
+        "n": 1740,
+        "corr_change_vs_residual": 0.17518740585402923,
+        "bootstrap_95": [
+          0.08380186915786732,
+          0.273632089835118
+        ],
+        "fraction_moved_toward_tax": 0.8160919540229885
+      },
+      "M12_minus_M0:city": {
+        "n": 772,
+        "corr_change_vs_residual": 0.6170516675879236,
+        "bootstrap_95": [
+          0.5621774455453159,
+          0.6666519918723562
+        ],
+        "fraction_moved_toward_tax": 0.8238341968911918
+      },
+      "M12_minus_M0:town_village": {
+        "n": 925,
+        "corr_change_vs_residual": -0.11414566564882574,
+        "bootstrap_95": [
+          -0.21283962357452718,
+          -9.257902932704936e-05
+        ],
+        "fraction_moved_toward_tax": 0.8086486486486486
+      },
+      "M12_minus_M0:designated_city": {
+        "n": 20,
+        "corr_change_vs_residual": 0.7733243408750808,
+        "bootstrap_95": [
+          0.5144721846063162,
+          0.935306364861256
+        ],
+        "fraction_moved_toward_tax": 0.9
+      },
+      "M12_minus_M0:tokyo_ward": {
+        "n": 23,
+        "corr_change_vs_residual": 0.3705474436948097,
+        "bootstrap_95": [
+          0.02870730740270798,
+          0.7303364680026387
+        ],
+        "fraction_moved_toward_tax": 0.782608695652174
+      },
+      "M1_minus_M0_notax:all": {
+        "n": 1740,
+        "corr_change_vs_residual": 0.6211316002899623,
+        "bootstrap_95": [
+          0.5581002996180913,
+          0.6893395796523444
+        ],
+        "fraction_moved_toward_tax": 0.8902298850574712
+      },
+      "M1_minus_M0_notax:city": {
+        "n": 772,
+        "corr_change_vs_residual": 0.8415848460859162,
+        "bootstrap_95": [
+          0.8141401932000835,
+          0.8669574656152288
+        ],
+        "fraction_moved_toward_tax": 0.8911917098445595
+      },
+      "M1_minus_M0_notax:town_village": {
+        "n": 925,
+        "corr_change_vs_residual": 0.4353013371738672,
+        "bootstrap_95": [
+          0.34121806408518407,
+          0.539962878301289
+        ],
+        "fraction_moved_toward_tax": 0.8886486486486487
+      },
+      "M1_minus_M0_notax:designated_city": {
+        "n": 20,
+        "corr_change_vs_residual": 0.9224939546736574,
+        "bootstrap_95": [
+          0.7364619764751612,
+          0.9786686456723437
+        ],
+        "fraction_moved_toward_tax": 1.0
+      },
+      "M1_minus_M0_notax:tokyo_ward": {
+        "n": 23,
+        "corr_change_vs_residual": 0.8228321199561042,
+        "bootstrap_95": [
+          0.7613182970287167,
+          0.934061528803769
+        ],
+        "fraction_moved_toward_tax": 0.8260869565217391
+      },
+      "M2_minus_M0_notax:all": {
+        "n": 1740,
+        "corr_change_vs_residual": 0.33287403615638084,
+        "bootstrap_95": [
+          0.2565291713014462,
+          0.40311824488480297
+        ],
+        "fraction_moved_toward_tax": 0.8143678160919541
+      },
+      "M2_minus_M0_notax:city": {
+        "n": 772,
+        "corr_change_vs_residual": 0.6655777926069517,
+        "bootstrap_95": [
+          0.6084893310735235,
+          0.7163051312973712
+        ],
+        "fraction_moved_toward_tax": 0.8160621761658031
+      },
+      "M2_minus_M0_notax:town_village": {
+        "n": 925,
+        "corr_change_vs_residual": 0.12261649613891945,
+        "bootstrap_95": [
+          0.034346629691093304,
+          0.20922344822366726
+        ],
+        "fraction_moved_toward_tax": 0.8097297297297297
+      },
+      "M2_minus_M0_notax:designated_city": {
+        "n": 20,
+        "corr_change_vs_residual": 0.8109150712131257,
+        "bootstrap_95": [
+          0.4788543859609626,
+          0.9283712757816682
+        ],
+        "fraction_moved_toward_tax": 0.85
+      },
+      "M2_minus_M0_notax:tokyo_ward": {
+        "n": 23,
+        "corr_change_vs_residual": 0.926951794956343,
+        "bootstrap_95": [
+          0.8982042590031831,
+          0.970780674958554
+        ],
+        "fraction_moved_toward_tax": 0.9130434782608695
+      },
+      "M12_minus_M1:all": {
+        "n": 1740,
+        "corr_change_vs_residual": -0.08350997617626939,
+        "bootstrap_95": [
+          -0.15044469306461308,
+          -0.016050526578760018
+        ],
+        "fraction_moved_toward_tax": 0.46379310344827585
+      },
+      "M12_minus_M1:city": {
+        "n": 772,
+        "corr_change_vs_residual": -0.00017671696617020595,
+        "bootstrap_95": [
+          -0.09219007878987034,
+          0.08356020723335905
+        ],
+        "fraction_moved_toward_tax": 0.4520725388601036
+      },
+      "M12_minus_M1:town_village": {
+        "n": 925,
+        "corr_change_vs_residual": -0.11067280858990937,
+        "bootstrap_95": [
+          -0.18995885752700592,
+          -0.02945242289705623
+        ],
+        "fraction_moved_toward_tax": 0.4681081081081081
+      },
+      "M12_minus_M1:designated_city": {
+        "n": 20,
+        "corr_change_vs_residual": -0.4888833946641409,
+        "bootstrap_95": [
+          -0.7409995126148587,
+          -0.2075094397380712
+        ],
+        "fraction_moved_toward_tax": 0.35
+      },
+      "M12_minus_M1:tokyo_ward": {
+        "n": 23,
+        "corr_change_vs_residual": 0.7354903068357554,
+        "bootstrap_95": [
+          0.4829604704536894,
+          0.8693141035676504
+        ],
+        "fraction_moved_toward_tax": 0.782608695652174
+      }
+    },
+    "pre_registered_support_rule": {
+      "correlation_not_worse_than_M0_notax_by_group": true,
+      "direction_consistency_positive_ci": true,
+      "supported": true
+    }
+  },
+  "dependence_on_prefecture_aggregates": "pref_target (ESS prefecture income shares) and ess_cat (prefecture status x income) include the 86 evaluation cities; seed_q for towns comes from the prefecture 表3-1 row; edu_rate for most municipalities is the prefecture education x labour table; ind_q is national. Held-out city cells are therefore not independent of the inputs.",
+  "elapsed_seconds": 76.9
+}

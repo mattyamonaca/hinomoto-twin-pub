@@ -23,6 +23,9 @@ help:
 	@echo "verify-workplace Check margins and evaluate on the held-out ODI tables"
 	@echo "experiment     Compare M0 with M1/M2 (education-composition income re-estimation) on held-out cities"
 	@echo "synthetic      Recovery experiment on virtual populations with known joint distributions"
+	@echo "synthetic-m12  Same with industry: M0/M1/M2/M12 recovery under generating processes that violate the estimator assumptions (Issue #21)"
+	@echo "fetch-tax-status Fetch FY2023 市町村税課税状況等の調 municipal tables (independent evaluation only)"
+	@echo "validate-m12   Same-denominator comparison, coefficient sensitivity and the independent tax check for M12 (Issue #21)"
 	@echo "site           Assemble UI code and the configured web dataset into dist/site"
 	@echo "test           Run storage/data-contract tests without the national dataset"
 install:
@@ -70,3 +73,9 @@ build-workplace:
 	$(PYTHON) src/pipeline.py build-workplace
 verify-workplace:
 	$(PYTHON) src/pipeline.py verify-workplace
+synthetic-m12:
+	$(PYTHON) src/pipeline.py synthetic-m12
+fetch-tax-status:
+	$(PYTHON) src/pipeline.py fetch-tax-status
+validate-m12:
+	$(PYTHON) src/pipeline.py validate-m12

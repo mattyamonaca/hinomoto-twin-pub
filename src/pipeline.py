@@ -26,6 +26,9 @@ STAGES = {
     'verify-workplace': ['verify_workplace.py'],
     'experiment': ['experiment_models.py'],
     'synthetic': ['synthetic_population.py'],
+    'synthetic-m12': ['synthetic_population_m12.py'],
+    'fetch-tax-status': ['fetch_tax_status.py'],
+    'validate-m12': ['validate_m12.py'],
     'site': ['build_site.py'],
 }
 
