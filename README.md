@@ -296,3 +296,39 @@ python src/verify_education.py
 開発方針：[CONTRIBUTING.md](CONTRIBUTING.md)。ソフトウェアライセンスは所有者による選定前です：[LICENSE_STATUS.md](LICENSE_STATUS.md)。
 
 **勤務地パネル（2026-09-07 試験公開）**：市区町村から「勤務地を見る」で居住者の勤務地／その地域で働く人の居住地を表示します。流入側は産業のみ条件付け可能です。詳細・推定上の限界は [docs/WORKPLACE_C.md](docs/WORKPLACE_C.md)。
+
+## 利用しているデータベース・統計と参考論文
+
+### データベース・統計
+
+主な取得元は、総務省統計局の調査結果を公開する **[政府統計の総合窓口 e-Stat](https://www.e-stat.go.jp/)** です。以下の統計表を加工して分布を推定しています。人口・地域境界は2020年、主な仕事の年間収入は2022年が基準です。
+
+| 統計・提供元 | 使用する表・基準年 | 本プロジェクトでの用途 |
+|---|---|---|
+| **国勢調査：人口・就業状態**（総務省統計局） | 2020年。不詳補完結果の[人口・参考表1-4](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032144437&fileKind=0)、[就業・参考表1](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201519&fileKind=0)、[参考表5-1](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201523&fileKind=0)、補完前の[表3-1](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201197&fileKind=0) | 市区町村別の年齢・性別人口、就業状態・従業上の地位の人数。年齢別の就業形態構成の推定にも使用 |
+| **国勢調査：学歴・産業**（総務省統計局） | 2020年。就業状態等基本集計の[表11-2](https://www.e-stat.go.jp/dbview?sid=0003450543)、[表12-1](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201218&fileKind=0)、[表6-3](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032201184&fileKind=0) | 地域ごとの学歴・産業構成、学歴と就業状態の関連。地域別年収の補正と属性の配分に使用 |
+| **就業構造基本調査**（総務省統計局） | 2022年。[地域編02300](https://www.e-stat.go.jp/dbview?sid=0004008500)、[全国編04000](https://www.e-stat.go.jp/dbview?sid=0004008157)、[地域編表24](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077604&fileKind=0)、[表10-1](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040077583&fileKind=0) | 都道府県別の年収構成、学歴・就業形態・産業と年収の関連。都市の公表値は検証にも使用（係数選択などの開発にも使っているため、完全に独立したテストではない） |
+| **国勢調査：世帯**（総務省統計局） | 2020年。人口等基本集計の表12-3・12-4・6-3・13-2・6-1、参考表1-4。表4-3・8-1・9-1・26-1などで整合確認・検証。[原表一覧](catalog/household/manifest.json) | 試験公開している世帯人数・家族類型・続き柄・構成員の年齢の生成と検証。地域別に使った表の役割は[世帯の設計資料](docs/HOUSEHOLD_B.md)に記載 |
+| **国勢調査：従業地・通学地**（総務省統計局） | 2020年。[従業地・通学地による人口・就業状態等集計](https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200521&tstat=000001136464&cycle=0&tclass1=000001136469&tclass2val=0)の第3・8・9・10表 | 第3・8表で居住地・勤務地・産業の分布を推定。第9・10表は推定に使わず検証に使用。通学者は対象に含めない |
+| **市町村税課税状況等の調**（総務省） | [令和5年度（2023年度）](https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/ichiran09_23.html)、第2・11表の市町村別内訳。原則2022年中の所得 | 推定に使わない税務統計との地域別の整合確認。課税所得は就業年収と定義・対象者が異なるため、年収分布の正解データとは扱わない |
+| **社会・人口統計体系／市区町村のすがた2024**（総務省統計局） | [C 経済基盤](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040186223&fileKind=0)。課税対象所得・納税義務者数の2022年度値（原則2021年中の所得） | 過去モデルの税務補正と比較・参考表示。**現在公開している年収分布の税務補正には使っていない** |
+
+表番号は調査・集計区分ごとに異なります。例えば国勢調査の「就業状態等基本集計 表6-3」と「人口等基本集計 表6-3」は別の表です。所得・学歴の定義は、[就業構造基本調査の用語解説](https://www.stat.go.jp/data/shugyou/2022/pdf/yougo.pdf)と[国勢調査ユーザーズガイド](https://www.stat.go.jp/data/kokusei/2020/kekka/pdf/u_guide_2020.pdf)を参照しています。
+
+原表URL・加工内容は [SOURCES.md](SOURCES.md)、取得ファイルの記録は [基本統計](catalog/manifest.json)・[学歴](catalog/education/manifest.json)・[産業／就業](catalog/industry/manifest.json)・[世帯](catalog/household/manifest.json)・[勤務地](catalog/workplace/manifest.json)・[検証用税務統計](catalog/tax_status/manifest.json)にあります。各記録には取得時点やファイルのSHA-256を保存しています。再取得・加工の手順は [DATA.md](DATA.md) と [工程間の入出力・再現手順](docs/PIPELINE.md)を参照してください。
+
+### 手法・検証の参考論文
+
+以下は、計算方法や検証設計を考える際に参照した研究です。**本プロジェクトの独自仮定や、日本の各地域の推定精度をそのまま実証する論文ではありません。** 公開抄録・書誌のみ確認したものは、その範囲を明示しています。
+
+| 論文 | 参考にした点・適用範囲 |
+|---|---|
+| **Lovelace, Birkin, Ballas & van Leeuwen（2015）** “[Evaluating the Performance of Iterative Proportional Fitting for Spatial Microsimulation](https://www.jasss.org/18/2/21.html)”, JASSS 18(2), 21. DOI: 10.18564/jasss.2768 | 公表された集計値に合うまで繰り返し配分を調整する **IPF（反復比例調整）** と、その初期値・空セルへの感度を確かめる方法。本文を参照。所得・学歴・就業・世帯・勤務地の配分や整合処理の参考 |
+| **杉浦翔・村田忠彦・原田拓弥（2019）**「[賃金構造基本統計調査に基づく合成人口の労働者への就業属性別の所得の割当て](https://www.jstage.jst.go.jp/article/iscie/32/2/32_69/_article/-char/ja)」システム制御情報学会論文誌 32(2). DOI: 10.5687/iscie.32.69 | 就業属性と所得を結び付ける設計の参考。公開抄録・書誌を参照。本プロジェクトの入力は就業構造基本調査であり、論文の賃金データや割当て方法をそのまま使うものではない |
+| **原田拓弥・村田忠彦・枡井大貴（2018）**「[家族類型と世帯内の役割を考慮したSA法による大規模世帯の合成](https://www.jstage.jst.go.jp/article/sicetr/54/9/54_705/_article/-char/ja)」計測自動制御学会論文集 54(9), 705–717. DOI: 10.9746/sicetr.54.705 | 家族類型・続き柄を考慮した世帯合成の参考。公開抄録・書誌を参照。本実装は論文のSA（焼きなまし）法の再現ではなく、期待人数の表を反復比例調整で生成する |
+| **Murata, Iwase & Harada（2023）** “[Workplace Assignment to Workers in Synthetic Populations in Japan](https://doi.org/10.1109/TCSS.2022.3217614)”, IEEE Transactions on Computational Social Systems 10(4), 1914–1923 | 居住地と勤務地の集計に産業情報を組み合わせる入力設計の参考。既存の調査記録では抄録・紹介記事を参照し、本文は未確認。本実装の制約・初期値・評価指標は独自設計 |
+| **堀上駿太・村田忠彦（2026）**「[合成人口データにおける全自治体の就業者への従業地割当て](https://www.jstage.jst.go.jp/article/sicetr/62/6/62_228/_article/-char/ja)」計測自動制御学会論文集 62(6). DOI: 10.9746/sicetr.62.228 | 居住地・勤務地・産業を多次元IPFで整合させる方針の参考。公開抄録のみ参照、本文は未確認。本実装は論文の手順の再現ではなく、町丁目などへの配分も行わない |
+| **原田拓弥・村田忠彦・高橋真吾（2022）**「[仮想都市の統計情報による合成人口データの評価](https://www.jstage.jst.go.jp/article/sicetr/58/7/58_345/_article/-char/ja)」計測自動制御学会論文集 58(7). DOI: 10.9746/sicetr.58.345 | 正解が分かる仮想人口から一部の集計表だけを渡し、隠した属性の組み合わせを復元できるか評価する設計の参考。本プロジェクトの仮想人口の生成条件・指標は独自で、実在地域の精度保証とは区別する |
+| **原田拓弥・松本渉・村田忠彦（2024）**「[合成人口データの意義と利用可能性―仮想都市データの有用性と秘匿性の評価から―](https://www.stat.go.jp/training/2kenkyu/ihou/81/pdf/2-2-814.pdf)」統計研究彙報 81 | 合成人口の評価対象と、保証できない範囲を整理する際の参考。本プロジェクトの精度や秘匿性が、この論文によって評価されたという意味ではない |
+
+各研究と実装の対応・相違は、[所得モデルの比較実験](docs/EXPERIMENT_M12.md)・[世帯の設計](docs/HOUSEHOLD_B.md)・[勤務地の設計](docs/WORKPLACE_C.md)・[画面の参考文献表示](docs/EXPLORER_DERIVATIONS.md)に記載しています。関連研究の入口として[大阪大学・村田研究室の合成人口研究一覧](https://www.sde.cmc.osaka-u.ac.jp/synthetic_population)も参照しました。同研究グループが配布する合成人口データそのものを、本プロジェクトの入力として使用しているわけではありません。
