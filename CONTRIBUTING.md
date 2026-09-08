@@ -32,4 +32,4 @@ Python 3.11以上の仮想環境で `make install`、`make dataset`、`make buil
 
 `make install-source` の後 `make test` を実行します。全国データを使わず、設定の切替、インポート時の副作用、データ形式、上書き拒否、アーカイブの整合性を確認します。統計計算を変える場合は、外部データを使う `make build`・`make verify` も必要です。
 
-文書はREADMEを入口とし、現在の方法はMETHOD.md、現在の検証状況はdocs/VALIDATION.md、再現手順はDATA.mdへ更新します。新しいモデル識別子ごとに利用者向け説明書を増やさず、過去の判断はdocs/archive/または詳細実験記録に残してください。
+文書はREADMEを入口とし、現在の方法はMETHOD.md、現在の検証状況はdocs/VALIDATION.md、再現手順はDATA.mdへ更新します。新しいモデル識別子ごとに利用者向け説明書を増やさず、過去の文書はGitの履歴、検証根拠は詳細実験記録で参照できるようにしてください。

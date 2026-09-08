@@ -63,7 +63,7 @@ python src/verify.py
 
 表定義・原ファイル・加工済みファイルのSHA-256は `catalog/education/manifest.json` に記録しています。再取得は `src/fetch_education.py`、加工は `src/parse_education.py`、モデルは `src/build_education.py`、出力は `src/export_education.py`、検証は `src/verify_education.py` です。
 
-学歴の対応付けは[国勢調査公式ユーザーズガイド](https://www.stat.go.jp/data/kokusei/2020/kekka/pdf/u_guide_2020.pdf)と[就業構造基本調査用語解説](https://www.stat.go.jp/data/shugyou/2022/pdf/yougo.pdf)を参照しました。専門学校の修業年数・卒業時期等の対応に近似があることはMETHOD_V2.mdに記載しています。調査結果を加工・推定したもので、政府による市区町村別学歴・所得推計ではありません。
+学歴の対応付けは[国勢調査公式ユーザーズガイド](https://www.stat.go.jp/data/kokusei/2020/kekka/pdf/u_guide_2020.pdf)と[就業構造基本調査用語解説](https://www.stat.go.jp/data/shugyou/2022/pdf/yougo.pdf)を参照しました。専門学校の修業年数・卒業時期等の対応に近似があることはMETHOD.mdに記載しています。調査結果を加工・推定したもので、政府による市区町村別学歴・所得推計ではありません。
 
 ## M2・段階A：産業・就業状態の追加で使用した統計
 
