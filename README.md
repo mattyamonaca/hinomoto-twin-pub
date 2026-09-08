@@ -11,6 +11,18 @@
 
 都道府県 → 市区町村 → 年齢 → 性別 → 学歴 → 年収帯のノードを展開し、各項目の値がどの統計からどう導出されたかをステップ形式で確認できます。推定方法の詳細は [logic.html](https://mattyamonaca.github.io/hinomoto-twin-pub/logic.html) にまとめています。
 
+## ドキュメント案内
+
+現在の公開仕様は次の文書にまとめています。ファイル名の版番号や開発履歴を追う必要はありません。
+
+| 調べたいこと | 読む文書 |
+|---|---|
+| サイトの使い方・属性の指定・出典の概要 | このREADME |
+| 何をどう推定しているか | [推定方法](METHOD.md) |
+| どこまで確かめられているか | [検証結果と限界](docs/VALIDATION.md) |
+| データ取得・保存場所・再計算 | [データと再現手順](DATA.md) |
+| 原表URL・取得記録 | [統計の出典](SOURCES.md) |
+
 ## 可視化サイトの使い方
 
 **[Hinomoto Twin Explorer を開く](https://mattyamonaca.github.io/hinomoto-twin-pub/)**
@@ -213,72 +225,32 @@ Pythonからは `src/persona_v2.py` の `PersonaDistributionV2` を読み込み�
 
 ## 推定と検証
 
-性別はv1で使っていた内部の人口・所得配列を出力に残しています。学歴は2020国勢調査11-2の市区町村別年齢・性別・学校区分人口を基準にします。学歴と就業の関連を国勢調査12-1、学歴と年収の関連を2022就業構造基本調査04000から取り出し、地域の人口と従来の所得分布の双方に合うよう調整します。
+地域の人口・就業構成に、学歴・産業と所得の関連を組み合わせて推定します。年齢構成は市区町村別の国勢調査に基づきます。学歴と所得を独立に掛け合わせる方法ではありません。一方、全国の関連を地域へ当てはめる仮定があり、すべての組み合わせを実測した分布ではありません。
 
-**学歴と所得を独立に掛け合わせてはいません。** 一方、全国の学歴別所得の関連を地域に移植する仮定があり、実測された市区町村別学歴・所得の同時分布ではありません。内部整合性の検証と、小地域での精度保証は区別してください。
+計算の流れと独自仮定は [推定方法](METHOD.md)、現在の検証状況と未確認の範囲は [検証結果と限界](docs/VALIDATION.md)に統一しています。
 
-[推定方法・制約・限界（v2）](METHOD_V2.md)／[基礎モデル（v1）](METHOD.md)／[全出典](SOURCES.md)／[工程間の入出力と再現手順](docs/PIPELINE.md)
-
-### 検証の範囲と感度分析
-
-| 項目 | 内容 |
-|---|---|
-| 検証できた範囲 | 86都市 × 年齢13区分の就業者の所得構成（TV 0.09328、税係数の都道府県単位交差検証） |
-| 未検証の範囲 | 町村・行政区、性別別、学歴別の所得構成、非就業者を含む住民全体の分布 |
-| 集計表示の意味 | 公開ページの都道府県・全国は市区町村モデルの加重集計。公表値と一致するのは都道府県 × 性別 × 年齢 × 所得既知の有業者の構成比のみで、年齢・性別をまとめた集計は公表表の総数行と一致しない |
-| 感度分析 | `python src/sensitivity_education.py` → `validation/education_sensitivity.json`。有業所得の初期形状にある学歴差を半分に弱めると学歴別の500万円以上の割合は平均1.9ポイント、初期形状の学歴差を除く（学歴別就業率は維持）と4.2ポイント、就業率の学歴差も除くと4.5ポイント動く。平滑化・所得不詳・学歴不詳の扱いに対する感度は0.1〜0.4ポイント |
-| 学歴不詳 | 独立区分として保持。不詳率は地域・年齢・性別で大きく異なり（全国13.98%、港区35～39歳男性50.14%）、公開ページで選択中の条件の不詳率を表示 |
-
-詳細は [METHOD_V2.md](METHOD_V2.md) の「学歴不詳の扱いと補完モードの仕様」「移植仮定の感度分析」「検証の範囲」を参照してください。
-
-**属性拡張 段階A（Issue #16・#22）**：就業状態（就業・完全失業・非労働力）、従業上の地位・雇用形態（7区分）と産業（大分類20＋該当なし）を、公開中の5属性分布を周辺として固定したまま条件付きで配分する `make build-employment` と `src/persona_v3.py`、Explorer 用の配布 `make export-employment-web`（市区町村はページ内で同じ配分を再計算、都道府県・全国・政令市は集計ブロック）を追加しました（2026-09-07 固定版で本番公開。5属性の公開値は変わりません。世帯パネルは港区・那覇市・遠軽町の3地域で試験公開）。設計・検証・未観測の関連の影響・配布形式の採用基準は [docs/EMPLOYMENT_A.md](docs/EMPLOYMENT_A.md)。
-
-**属性拡張 段階B（Issue #16・#23、試験）**：2020年国勢調査の世帯表から、選択した市区町村の世帯構成（家族類型・世帯人数・続き柄・構成員の性別と年齢）を生成し、推定に使わない表で復元を評価する `make build-household` と、世帯・構成員を整数個票として抽出して15歳以上の構成員に学歴・就業・産業・年収を結びつける `src/household_sample.py`（`make sample-household`、`make export-household-web` で Explorer の世帯パネル）を追加しました。一般世帯のみが対象で、世帯内の所得相関は未観測です。設計・検証は [docs/HOUSEHOLD_B.md](docs/HOUSEHOLD_B.md)。
-
-**属性拡張 段階C（Issue #24、試験）**：2020年国勢調査の従業地・通学地集計から、全市区町村の居住地 × 勤務地 × 産業の就業者数を推定する `make build-workplace`、条件付き API `src/persona_v4.py`（居住する人の勤務地／働きに来る人の居住地）、Explorer の勤務地パネル用の配布 `make export-workplace-web` を追加しました。勤務地は市区町村まで、対象は 15 歳以上就業者（男女計）で、就業者の勤務地を昼間人口とは呼びません。設計・検証・配布は [docs/WORKPLACE_C.md](docs/WORKPLACE_C.md)。
-
-**Explorer の導出表示（Issue #30）**：公開ページの参照チップ M1〜M6 から「この推定結果の作り方」（入力統計 → 加工 → 推定 → 出力の流れ図、現在の条件の値、観測値・仮定・推定値の区別、未収録値の明示、上流 M へのたどりと戻り）を開けます。設計と検証は [docs/EXPLORER_DERIVATIONS.md](docs/EXPLORER_DERIVATIONS.md)。
-
-**モデル改善の比較実験（Issue #12）**：学歴構成で地域の所得分布を再推定する M1 は、86都市の out-of-fold 比較で加重TVを 0.09328 → 0.09000（3.5%）改善し、仮想人口実験では税務指標が弱い条件で一貫して改善しました。産業構成を加える M2 は単独で 2.1% 改善、M1 との併用では M1 に対して 0.14% の上乗せにとどまります。現在の本番は学歴・産業構成を反映する M12 です。比較実験の設計・データ契約・評価設定・結果・採否理由は [docs/EXPERIMENT_M12.md](docs/EXPERIMENT_M12.md) にまとめています（`make experiment`、`make synthetic` で再現）。M2/M12 を含む仮想人口評価、独立統計（令和5年度 市町村税課税状況等の調）による全市区町村の整合確認、同一分母での M0/M1/M2/M12 比較と係数感度は [docs/VALIDATION_M12.md](docs/VALIDATION_M12.md)（`make fetch-tax-status`、`make validate-m12`、`make synthetic-m12`）。
+就業状態・雇用形態・産業、世帯構成、勤務地の試験機能についても、[推定方法の拡張機能一覧](METHOD.md#就業世帯勤務地の拡張)から詳細を参照できます。
 
 ## 元データと再実行
 
-| 場所 | 内容 | コード側のGit管理 |
-|---|---|---|
-| `src/` | 取得・加工・推定・出力・検証・抽出 | 対象 |
-| `catalog/` | 出典・固定版ハッシュ・取得用表定義・入力形式 | 対象 |
-| `site/` | 分布を埋め込まない画面コード | 対象 |
-| `$HINOMOTO_DATA_ROOT/raw/` | 元Excel・所得表レスポンス | 対象外 |
-| `$HINOMOTO_DATA_ROOT/sources/` | 正規化済み入力 | 対象外 |
-| `$HINOMOTO_DATA_ROOT/data/` | 全分布・計算用配列・推定例。`data/stages/` に所得モデルの中間成果物（status / mixture / calibrated、来歴付き。[docs/PIPELINE.md](docs/PIPELINE.md)） | 対象外 |
-| `$HINOMOTO_DATA_ROOT/validation/` | 検証結果・処理品質 | 対象外 |
-| `$HINOMOTO_DATA_ROOT/web/` | 公開ページ用データ | 対象外 |
-
-`make dataset` で固定版の正規化済み入力を別途取得できます。取得後の推定はオフラインで実行できます。`make paths` で実際の参照先を確認してください。入力と出力の置き場所は個別にも変更できます。移行、アーカイブ、設定の詳細は [DATA.md](DATA.md) を参照してください。
+コードとデータは別管理です。固定版の入力統計を取得し、現在の推定を再計算する入口は次のとおりです。
 
 ```sh
-make build          # v1の基礎推定 → v2の性別・学歴追加
-make verify         # v1・v2を検証
-make sample
+export HINOMOTO_DATA_ROOT="../hinomoto-twin-data"
+make install
+make dataset
+make build
+make verify
+make site
 ```
 
-v1の計算済みデータがある場合、追加分だけは `make build-education`、検証は `make verify-education` で実行できます。makeがない場合は対応するPythonプログラムを順に実行してください。
+`make build` は基本の5属性分布とその集約出力を生成します。就業・世帯・勤務地には追加の生成工程があります。保存場所の変更、原表からの再取得、各拡張の生成、画面用データの組み立ては [データと再現手順](DATA.md)を参照してください。
 
-```sh
-python src/build_education.py
-python src/export_education.py
-python src/verify_education.py
-```
+## 開発と互換性
 
-元データからやり直す場合は `make install-source` の後、`make fetch` で取得・加工、保存済み原表なら `make prepare` で加工できます。学歴分だけなら `python src/fetch_education.py` と `python src/parse_education.py` です。e-Statの画面構造・原表更新に影響される可能性があるため、再取得時は出典と検証結果も確認してください。
+開発方針は [CONTRIBUTING](CONTRIBUTING.md)、ライセンスの状況は [LICENSE_STATUS](LICENSE_STATUS.md)を参照してください。
 
-## 互換性と開発
-
-従来のCSV・NPZ・地域別JSONと `src/persona.py` はv1の形式で利用できます。v1の説明書は [README_V1.md](README_V1.md) に残しています。v2の生成結果には `_v2` または `sex_education` を含む名前を付けています。
-
-開発方針：[CONTRIBUTING.md](CONTRIBUTING.md)。ソフトウェアライセンスは所有者による選定前です：[LICENSE_STATUS.md](LICENSE_STATUS.md)。
-
-**勤務地パネル（2026-09-07 試験公開）**：市区町村から「勤務地を見る」で居住者の勤務地／その地域で働く人の居住地を表示します。流入側は産業のみ条件付け可能です。詳細・推定上の限界は [docs/WORKPLACE_C.md](docs/WORKPLACE_C.md)。
+`persona_v2.py` などのプログラム名や `_v2` を含むファイル名は、既存の利用コードとの互換性のため維持しています。文書は現在の公開仕様に統一しており、これらは別々の製品を意味しません。過去の方式・当時の検証値は [開発記録](docs/archive/README.md)に保存しています。
 
 ## 利用しているデータベース・統計と参考論文
 

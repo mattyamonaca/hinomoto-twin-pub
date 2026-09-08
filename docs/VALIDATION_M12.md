@@ -1,6 +1,6 @@
 # 検証記録：M2・M12 の仮想人口評価と独立評価（Issue #21）
 
-作成日：2026-09-07。対象は公開モデル v3.0-M12（γ=1.5、γ₂=1.0、β=0）と比較モデル M0／M0_notax／M1／M2。本文書は Issue #12 の残課題（[EXPERIMENT_M12.md](EXPERIMENT_M12.md)、[METHOD_M12.md](../METHOD_M12.md) の未検証範囲）を補完する。数値は `docs/experiments/validation_m12.json`、`synthetic_recovery_m12.json`、`validation_m12_areas.csv`（データルート `validation/` の複製）に対応する。**本検証で本番モデルは変更しない**。モデルの変更は評価結果に基づく別 PR で扱う。
+作成日：2026-09-07。対象は公開モデル v3.0-M12（γ=1.5、γ₂=1.0、β=0）と比較モデル M0／M0_notax／M1／M2。本文書は Issue #12 の残課題（[EXPERIMENT_M12.md](EXPERIMENT_M12.md)、[現在の推定方法](../METHOD.md) の未検証範囲）を補完する。数値は `docs/experiments/validation_m12.json`、`synthetic_recovery_m12.json`、`validation_m12_areas.csv`（データルート `validation/` の複製）に対応する。**本検証で本番モデルは変更しない**。モデルの変更は評価結果に基づく別 PR で扱う。
 
 ## 1. 独立評価に使える統計の調査
 
