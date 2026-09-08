@@ -1,0 +1,74 @@
+{
+  "13103": {
+    "population": {
+      "version": "household-support-1",
+      "checked_households": 146083,
+      "violations": 0
+    },
+    "seeds": [
+      {
+        "seed": 42,
+        "households": 10000,
+        "violations": 0
+      },
+      {
+        "seed": 1234,
+        "households": 10000,
+        "violations": 0
+      },
+      {
+        "seed": 20260908,
+        "households": 10000,
+        "violations": 0
+      }
+    ]
+  },
+  "47201": {
+    "population": {
+      "version": "household-support-1",
+      "checked_households": 144012,
+      "violations": 0
+    },
+    "seeds": [
+      {
+        "seed": 42,
+        "households": 10000,
+        "violations": 0
+      },
+      {
+        "seed": 1234,
+        "households": 10000,
+        "violations": 0
+      },
+      {
+        "seed": 20260908,
+        "households": 10000,
+        "violations": 0
+      }
+    ]
+  },
+  "01555": {
+    "population": {
+      "version": "household-support-1",
+      "checked_households": 8739,
+      "violations": 0
+    },
+    "seeds": [
+      {
+        "seed": 42,
+        "households": 10000,
+        "violations": 0
+      },
+      {
+        "seed": 1234,
+        "households": 10000,
+        "violations": 0
+      },
+      {
+        "seed": 20260908,
+        "households": 10000,
+        "violations": 0
+      }
+    ]
+  }
+}

@@ -2,14 +2,14 @@
   "code": "01555",
   "name": "遠軽町",
   "prefecture_seed": "01000",
-  "households": 8739.000000000002,
+  "households": 8739.0,
   "published_households": 8739.0,
   "unknown_age_head_share": 0.035015447991761074,
   "final_checks": {
-    "households_per_family_type_max_error": 1.8189894035458565e-12,
-    "members_per_family_type_max_error": 3.1803892852622084e-11,
-    "size_counts_max_error": 1.4203199725670856e-05,
-    "members_total_error": 1.2369127944111824e-10,
+    "households_per_family_type_max_error": 9.094947017729282e-13,
+    "members_per_family_type_max_error": 8.185452315956354e-12,
+    "size_counts_max_error": 1.4203215187080787e-05,
+    "members_total_error": 0.0,
     "nonnegative": true,
     "passed": true
   },
@@ -18,6 +18,13 @@
     "error": 0.0028486185826754056,
     "nonhead_target": 9320.475061103472,
     "nonhead_fitted": 9293.999999996107
+  },
+  "structural_constraints": {
+    "version": "household-support-1",
+    "changed_head_cells": 394,
+    "reallocated_expected_members": 105.97836650054306,
+    "sex_age_margin_l1_change": 175.01697663984845,
+    "note": "Head-cell household and member totals are preserved; role and sex/age margins may change."
   },
   "plan": {
     "size_ipf": {
@@ -36,32 +43,32 @@
     }
   },
   "evaluation": {
-    "persons_vs_target_tv": 0.0029413907789811638,
+    "persons_vs_target_tv": 0.007113233097338371,
     "members_total": {
-      "generated": 18032.999999999884,
+      "generated": 18032.999999999844,
       "published_12_4": 18033.0
     },
-    "size_distribution_tv_vs_6_3": 1.6917595130832583e-09,
+    "size_distribution_tv_vs_6_3": 1.6917602605872402e-09,
     "married_persons_check": {
-      "generated_couple_members": 8782.732694157376,
+      "generated_couple_members": 8783.058733904585,
       "published_married_4_3": 9919.0,
-      "tv_by_sex_age": 0.03328144049575024,
+      "tv_by_sex_age": 0.033285621264204,
       "note": "generated counts couple households (F1,F2) heads+spouses only; published married persons include married members in other roles"
     },
     "_presence_debug": {
-      "elderly_size2": 2096.571236207215,
-      "under6_size3": 198.76797774557556,
-      "elderly_size10p": 0.7952117101174202
+      "elderly_size2": 2096.8786931433747,
+      "under6_size3": 203.67949830346478,
+      "elderly_size10p": 0.7450800062690891
     },
     "heldout_8_1_under6_by_size": {
       "generated": [
         0.0,
-        96.6,
-        198.8,
-        182.0,
-        60.0,
-        16.6,
-        6.5
+        96.0,
+        203.7,
+        187.1,
+        61.4,
+        16.9,
+        6.7
       ],
       "observed": [
         0.0,
@@ -72,19 +79,19 @@
         28.0,
         9.0
       ],
-      "tv": 0.14962970971477701,
-      "total_ratio": 1.0616574487221595,
-      "total_ratio_adjusted_for_unknown_age_heads": 1.024483037541363
+      "tv": 0.14531897741008012,
+      "total_ratio": 1.0829297853164288,
+      "total_ratio_adjusted_for_unknown_age_heads": 1.0450105137399526
     },
     "heldout_26_1_elderly_by_size": {
       "generated": [
         1580.1,
-        2096.6,
-        454.7,
-        310.5,
-        107.7,
-        34.2,
-        15.4
+        2096.9,
+        436.8,
+        290.0,
+        104.5,
+        33.8,
+        14.5
       ],
       "observed": [
         1496.0,
@@ -95,9 +102,9 @@
         17.0,
         12.0
       ],
-      "tv": 0.05135815963686992,
-      "total_ratio": 1.0305001018491726,
-      "total_ratio_adjusted_for_unknown_age_heads": 0.9944166791273685,
+      "tv": 0.05005806416548718,
+      "total_ratio": 1.0209949290387823,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9852443342011732,
       "note": "Published presence counts exclude age-unknown members; generated households allocate unknown-age heads to known ages, so the unadjusted ratio is expected to exceed 1 by about the unknown-age share."
     },
     "heldout_9_1_under15_by_family_type": {
@@ -107,12 +114,12 @@
         "total_households": 2574.0
       },
       "F2": {
-        "generated_households_with_under15": 873.4,
+        "generated_households_with_under15": 894.8,
         "observed": 898.0,
         "total_households": 1663.0
       },
       "F4": {
-        "generated_households_with_under15": 135.9,
+        "generated_households_with_under15": 141.7,
         "observed": 108.0,
         "total_households": 459.0
       },
@@ -128,12 +135,12 @@
       }
     }
   },
-  "elapsed_seconds": 0.7,
+  "elapsed_seconds": 0.9,
   "assumptions": [
     "Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).",
     "Unknown-age heads are spread within sex x family type in proportion to known ages.",
     "Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.",
-    "Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).",
+    "Role counts use shared-offset controlled rounding; ages are independent conditional on roles and the head cell. Hard support rules apply; sibling spacing is not modelled.",
     "No within-household correlation of income or other individual attributes is modelled."
   ]
 }
