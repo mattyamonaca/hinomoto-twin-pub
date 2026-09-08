@@ -81,6 +81,7 @@ python src/household_sample.py --municipality 13103 --households 10 --seed 1
 python src/household_sample.py --municipality 13103 --population --seed 1
 # 3地域とも生成してから画面用の集計を作る
 make export-household-web
+make verify-household-constraints # 全個票と乱数を変えた追加9万世帯を検査
 ```
 
 `--link` は抽出した世帯に、`--link-population` は整数個票全体に個人属性を結びつける。出力は外部データワークスペースの `data/household_b/`、検証結果は `validation/`。期待表に `constraints_version` を記録し、画面用の書き出しでも実際の個票を検査する。古いデータに制約が適用されたとは表示しない。

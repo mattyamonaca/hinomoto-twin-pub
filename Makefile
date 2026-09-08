@@ -132,3 +132,7 @@ check-stages:
 .PHONY: verify-web-household
 verify-web-household: site
 	node tests/web_household_check.cjs dist/site
+
+.PHONY: verify-household-constraints
+verify-household-constraints:
+	$(PYTHON) src/verify_household_constraints.py
