@@ -1,7 +1,7 @@
 {
-  "dataset_version": "2020-2022-3.0-M12-20260907+A+B-trial+C+stages",
-  "archive_url": "https://github.com/mattyamonaca/hinomoto-twin-pub/releases/download/data-v3.0-m12-stages-20260907/hinomoto-stages-dataset.tar.gz",
-  "sha256": "4d0e83618936d4f5d47791d303079b29ecfde2c6cfccd983aa7c7fa54f5b9a7f",
+  "dataset_version": "2020-2022-3.0-M12-20260908+A+B-constrained+C+stages",
+  "archive_url": "https://github.com/mattyamonaca/hinomoto-twin-pub/releases/download/data-v3.0-household-constraints-20260908/hinomoto-household-constraints-dataset.tar.gz",
+  "sha256": "5979ef6ed222340114daacb3c7b96386d6f0836dfe4b3753489797093b6388fa",
   "model": "M12",
   "model_version": "3.0-M12",
   "previous_baseline": "catalog/baseline.json"

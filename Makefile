@@ -128,3 +128,11 @@ verify-web-derivations: site
 .PHONY: check-stages
 check-stages:
 	$(PYTHON) src/build_production.py --check
+
+.PHONY: verify-web-household
+verify-web-household: site
+	node tests/web_household_check.cjs dist/site
+
+.PHONY: verify-household-constraints
+verify-household-constraints:
+	$(PYTHON) src/verify_household_constraints.py

@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 from paths import OUTPUT,WEB,REPORTS
 import household_sample as hs
+import household_constraints as hc
+import provenance as pvn
 
 def summarize(code):
     df=pd.read_csv(OUTPUT/'household_b'/f'{code}_population.csv.gz')
@@ -30,10 +32,14 @@ def summarize(code):
         for a in range(18):
             x=m[(m.sex==s)&(m.age18==a)];n=len(x)
             if not n:rows.append(None);continue
-            rows.append({'n':int(n),'alone':float((x['hsize']==1).mean()),'with_spouse':float(x.has_spouse.mean()),'spouse_known':float(x.spouse_known.mean()),'with_child_u18':float(x.child_u18.mean()),'with_child_any':float(x.has_child_any.mean()),'with_parent':float(x.has_parent.mean()),'with_65':float(x.has_65.mean()),'is_head':float((x.role==0).mean()),'size':[float((x['hsize']==k).mean()) for k in range(1,7)]+[float((x['hsize']>=7).mean())]})
+            rows.append({'n':int(n),'alone':float((x['hsize']==1).mean()),'with_spouse':float(x.has_spouse.mean()),'spouse_known':float(x.spouse_known.mean()),'with_child_u18':float(x.child_u18.mean()),'with_child_any':float(x.has_child_any.mean()),'with_parent':float(x.has_parent.mean()),'with_65':float(x.has_65.mean()),'is_head':float((x.role==0).mean()),'is_child':float((x.role==2).mean()),'size':[float((x['hsize']==k).mean()) for k in range(1,7)]+[float((x['hsize']>=7).mean())]})
     fam=[int((hh.family==f).sum()) for f in range(7)]
     d=np.load(OUTPUT/'household_b'/f'{code}.npz');N=d['households']
-    out={'code':code,'households':int(len(hh)),'members':int(len(df)),'members_15plus':int((df.age18>=3).sum()),'members_under_15':int((df.age18<3).sum()),'expected_households':float(N.sum()),'family_type':fam,'family_codes':hs.F,'family_labels':hs.FL,'age_bands':hs.A18L,'by_sex_age':rows,
+    constraints=None
+    if 'constraints_version' in d and str(d['constraints_version'])==hc.VERSION:
+        checked=hc.validate_population(df)
+        constraints={'version':hc.VERSION,'rules':hc.RULES,'limitation':hc.LIMITATION,'validation':checked,'code_commit':pvn.code_commit()}
+    out={'constraints':constraints,'code':code,'households':int(len(hh)),'members':int(len(df)),'members_15plus':int((df.age18>=3).sum()),'members_under_15':int((df.age18<3).sum()),'expected_households':float(N.sum()),'family_type':fam,'family_codes':hs.F,'family_labels':hs.FL,'age_bands':hs.A18L,'by_sex_age':rows,
          'note':'一般世帯（施設等の世帯を除く）の整数個票（seed 1）から集計。分母は各行の構成員数 n。世帯構成は2020年国勢調査の世帯表から生成した推定で、構成員の所得・学歴とは独立に抽出している。配偶者との同居は本人が世帯主または世帯主の配偶者の場合だけ判定でき（spouse_known）、それ以外の続き柄の夫婦関係は公表表から特定できない。18歳未満は単歳がないため、15〜19歳階級の3/5を18歳未満とみなす仮定で数える。'}
     return out
 
@@ -43,7 +49,8 @@ def main():
     for f in sorted((OUTPUT/'household_b').glob('*_population.csv.gz')):
         code=f.name.split('_')[0];out=summarize(code);p=WEB/'household'/f'{code}.json';p.write_text(json.dumps(out,ensure_ascii=False,separators=(',',':')))
         codes[code]={'file':f'household/{code}.json','sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'households':out['households'],'members':out['members']};print(code,out['households'],out['members'])
-    g['household']={'codes':codes,'stage':'B','seed':1,'note':'selected municipalities only (experimental)'}
+    g['household']={'codes':codes,'stage':'B','seed':1,'note':'selected municipalities only (experimental)','constraints_version':hc.VERSION}
+    payload['code_ref']=pvn.code_commit()
     (WEB/'graph.json').write_text(json.dumps(payload,ensure_ascii=False,separators=(',',':'),allow_nan=False),encoding='utf-8')
     # resident 15+ population of the individual model for the denominators note
     fin=np.load(OUTPUT/'final_arrays.npz');areas=fin['areas'].tolist();rep={}

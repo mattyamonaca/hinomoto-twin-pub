@@ -3,11 +3,9 @@ evaluate it, and link members aged 15+ to the individual attributes (M12 five at
 
 Input: data/household_b/<code>.npz (N[F,s_h,a_h,size] households, T[F,s_h,a_h,size,role,sex,age] expected members).
 Generative model per head cell (identical to presence_prob() in build_household.py, documented in docs/HOUSEHOLD_B.md):
-  for each role r the integer part of the expected count c_r = members_r / households is a fixed slot filled from that
-  role's sex x age distribution; the fractional parts form D = sum_r frac_r mixed slots (floor(D) with probability
-  1 - (D - floor D), ceil(D) otherwise) that draw a role with probability frac_r / D. Sizes 1..9 are exact integers;
-  the open-ended "10+" bin carries a non-integer mean, so its households have floor(mean) or ceil(mean) members
-  (a stated assumption: the size distribution inside 10+ is not published).
+  cumulative expected role counts are rounded with one uniform offset per household.
+  Each role receives floor/ceil of its expected count; its expectation and total size are preserved.
+  In particular, a spouse count at most one can never become two. The 10+ bin has floor/ceil(mean) persons.
 Integer population: households per head cell by stochastic rounding of N with a fixed seed (expected value preserved).
 Linkage: a member aged 15+ (18-band -> 13 model bands, 75+ merged) draws (education, status, industry, income) from the
 stage-A block of its (municipality, sex, age band); the (education, income) margin of that block is the published
@@ -25,6 +23,7 @@ import numpy as np
 import pandas as pd
 from paths import SOURCES,OUTPUT,REPORTS
 from model_math import norm
+import household_constraints as hc
 
 F=['F1','F2','F3','F4','F5','F6','F7'];FL=['夫婦のみ','夫婦と子供','ひとり親と子供','核家族以外の親族','非親族を含む','単独','不詳']
 R=[f'R{i:02}' for i in range(1,14)];RL=['世帯主','配偶者','子','子の配偶者','世帯主の父母','配偶者の父母','孫','祖父母','兄弟姉妹','他の親族','住み込みの雇人','その他','続き柄不詳']
@@ -42,6 +41,7 @@ class HouseholdSampler:
         self.code=str(code).zfill(5);self.dir=Path(data_dir or OUTPUT)
         if arrays is not None:self.N,self.T=arrays
         else:d=np.load(self.dir/'household_b'/f'{self.code}.npz');self.N=d['households'];self.T=d['members']
+        hc.validate(self.N, self.T)
         self.cells=np.argwhere(self.N>1e-9)
         self.mean_size=np.zeros(10)
         for k in range(10):
@@ -57,19 +57,12 @@ class HouseholdSampler:
             self.prep[(f,s,a,k)]=roles
     def _members(self,f,s,a,k,rng):
         """One household: list of (role, sex, age18); the head first."""
-        out=[(0,int(s),int(a))];fl=[];frac_r=[];frac_w=[]
-        for r,c,p in self.prep[(f,s,a,k)]:
-            n_fix=int(np.floor(c+1e-9));fr=c-n_fix
-            for _ in range(n_fix):fl.append((r,p))
-            if fr>1e-9:frac_r.append((r,p));frac_w.append(fr)
-        Dm=float(sum(frac_w));n_mix=int(np.floor(Dm+1e-9));delta=Dm-n_mix
-        if delta>1e-9 and rng.random()<delta:n_mix+=1
-        if n_mix and frac_r:
-            w=np.array(frac_w)/Dm
-            for _ in range(n_mix):
-                r,p=frac_r[rng.choice(len(frac_r),p=w)];fl.append((r,p))
-        for r,p in fl:
-            j=int(rng.choice(36,p=p));out.append((int(r),j//18,j%18))
+        out=[(0,int(s),int(a))]
+        roles=self.prep[(f,s,a,k)]
+        counts=hc.role_counts([c for r,c,p in roles],rng.random())
+        for (r,c,p),count in zip(roles,counts):
+            for _ in range(count):
+                j=int(rng.choice(36,p=p));out.append((int(r),j//18,j%18))
         return out
     def sample_households(self,n,seed=20260907):
         rng=np.random.default_rng(seed);w=np.array([self.N[tuple(c)] for c in self.cells]);w=w/w.sum()
@@ -246,6 +239,7 @@ def main():
         if a.link_population:
             L=Linker(S.code,a.data_dir,a.sources_dir);t2=time.time();df=link_population(L,df,a.seed);rep['linkage']={'seconds':round(time.time()-t2,1),'members_15plus':int(df.education.notna().sum()),'members_under_15':int(df.education.isna().sum()),'by_sex_age':linked_check(L,df),'note':'members 15+ draw (education, status, industry, income) from the stage-A block of their sex x age band; no within-household correlation; 0-14 have no attributes'}
             rep['linkage']['max_tv_education_income']=max(r['tv_education_income'] for r in rep['linkage']['by_sex_age']);rep['linkage']['weighted_tv_education_income']=float(np.average([r['tv_education_income'] for r in rep['linkage']['by_sex_age']],weights=[r['members'] for r in rep['linkage']['by_sex_age']]))
+        rep['structural_constraints']=hc.validate_population(df)
         df.to_csv(out/f'{S.code}_population.csv.gz',index=False)
         (REPORTS/f'household_b_population_{S.code}.json').write_text(json.dumps(rep,ensure_ascii=False,indent=2));print(json.dumps({k:rep[k] for k in ('code','sampling_seconds','mean_size_10plus_assumption')}|{'model':{k:v for k,v in rep['model'].items() if k.startswith('heldout') or k.endswith('tv')}},ensure_ascii=False,indent=1))
     if a.households:

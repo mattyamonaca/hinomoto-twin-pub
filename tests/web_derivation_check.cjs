@@ -116,7 +116,7 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
   const rP = JSON.parse(fs.readFileSync(path.resolve('docs/experiments/household_b_population_13103.json'), 'utf8')).model;
   H.select('muni', '13103'); H.asmOpen('A11', null); const t11 = txt();
   asm.a11_integer_errors_shown = t11.indexOf('抽出後の整数個票') >= 0 && t11.indexOf('±1 世帯') >= 0 && t11.indexOf('0.375') >= 0 && Math.abs(rP.households_per_family_type.max_abs_error - 1) < 1e-6 && Math.abs(rP.households_per_size_bin.max_abs_error - 2) < 1e-6 && Math.abs(rP.members_per_family_type.max_rel_error - 0.375) < 1e-3;
-  asm.a11_heldout_versions_separated = t11.indexOf('抽出した個票から数えると') >= 0 && t11.indexOf('抽出前の期待値からの計算では') >= 0 && Math.abs(rP.heldout_26_1_elderly_by_size.total_ratio - 1.05) < 0.005; H.derBack();
+  asm.a11_heldout_versions_separated = t11.indexOf('抽出した個票から数えると') >= 0 && t11.indexOf('抽出前の期待値からの計算では') >= 0 && t11.indexOf(rP.heldout_26_1_elderly_by_size.total_ratio.toFixed(3) + '倍') >= 0; H.derBack();
   const asmOk2 = asm.tax_rule_ok && asm.futaba_excluded && asm.ward_city_only && asm.designated_city_unit && asm.exp_m12_ok && asm.exp_m1_ok && asm.exp_a_ok && asm.a03_uses_m12_experiment && asm.a06_uses_m1_experiment && asm.a09_uses_stage_a_experiment && asm.a11_integer_errors_shown && asm.a11_heldout_versions_separated;
   // Issue #34: intermediate values link to the pinned reproduction document; the 290 evaluated areas come from the report
   const rp = {};

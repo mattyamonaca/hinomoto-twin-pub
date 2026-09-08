@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 from paths import SOURCES,OUTPUT,REPORTS
 from model_math import norm
+import household_constraints as hc
 
 D=SOURCES/'household'
 F=['F1','F2','F3','F4','F5','F6','F7'];R=[f'R{i:02}' for i in range(1,14)];A18=[f'A{i:02}' for i in range(18)]
@@ -192,7 +193,7 @@ def households(x,X):
    if ri not in links:role_share[ri-2]=0                            # roles without a fitted link cannot receive members
   role_share=norm(role_share+1e-12)                                  # over R03..R13 with links
   spouse_p=min(X[fi,1].sum()/x['H_F'][fi],1.) if x['H_F'][fi]>0 else 0.
-  out.append({'F':f,'heads':heads,'size_mix':norm(SZ[fi]+1e-12),'spouse_link':sp_link,'spouse_p':spouse_p,'links':links,'role_share':role_share})
+  out.append({'F':f,'heads':heads,'size_mix':norm(SZ[fi]),'spouse_link':sp_link,'spouse_p':spouse_p,'links':links,'role_share':role_share})
  notes['spouse_probability']={o['F']:o['spouse_p'] for o in out}
  return out,notes
 
@@ -225,25 +226,20 @@ def materialize(x,X,plan):
 def presence_prob(n,cell,w):
  """P(at least one member in the target set) for households of one head cell, from the expected member table.
 
- `cell` is T[f,s_h,a_h,size] (role x sex x age, persons), n the number of households, w[age] the membership weight of an
- age band in the target set (1, 0, or fractional such as 0.2 for 5-9 when the target is 'under 6'). The head is member
- 0 with weight w[head age]. Generative assumption (documented in docs/HOUSEHOLD_B.md): for each role the integer part of
- the expected count c_r = persons/n is a fixed slot filled from that role's sex x age distribution; the fractional parts
- form D = sum_r frac_r "mixed" slots that draw a role with probability frac_r/D. D itself need not be an integer (the
- 10+ size bin carries a non-integer mean size), so the number of mixed slots is floor(D) with probability 1-(D-floor(D))
- and ceil(D) otherwise, which preserves the expected number of members. Members are drawn independently within a slot.
+ `cell` is T[f,s_h,a_h,size] (role x sex x age, persons). A single uniform
+ offset rounds cumulative role counts. This preserves each role's expected count and
+ limits a role to floor/ceil of its count (so a spouse cannot be repeated).
+ Integrate over all offset intervals, using exactly the sampler's count patterns.
+ Ages are independent conditional on the resulting roles; w can be fractional.
  """
  head=cell[0].sum(0);p_none=1-(head*w).sum()/head.sum() if head.sum()>0 else 1.
- mix_num=0.;mix_den=0.
+ counts=[];none=[]
  for ri in range(1,13):
-  mem=cell[ri].sum(0);c=mem.sum()/n
-  if c<=0:continue
-  q=(mem*w).sum()/mem.sum();fl=int(np.floor(c+1e-9));frac=c-fl
-  p_none*=(1-q)**fl;mix_num+=frac*q;mix_den+=frac
- if mix_den>1e-9:
-  qm=mix_num/mix_den;d0=int(np.floor(mix_den+1e-9));delta=mix_den-d0
-  if delta<1e-9:delta=0.
-  p_none*=(1-delta)*(1-qm)**d0+delta*(1-qm)**(d0+1)
+  mem=cell[ri].sum(0);mass=mem.sum()
+  if mass<=0:continue
+  counts.append(mass/n);none.append(1-(mem*w).sum()/mass)
+ p_none*=sum(prob*float(np.prod(np.power(none,draw))) for prob,draw in hc.count_patterns(counts))
+
  return 1-p_none
 
 def presence_count(N,T,w,size_k=None,family=None):
@@ -321,13 +317,13 @@ def final_checks(x,N,T,tol_persons=0.5):
  return res
 
 def run(code):
- t0=time.time();x=load_area(code);X,agg=aggregate(x);plan,notes=households(x,X);N,T=materialize(x,X,plan);ev=evaluate(x,N,T)
+ t0=time.time();x=load_area(code);X,agg=aggregate(x);plan,notes=households(x,X);N,T=materialize(x,X,plan);T,constraints=hc.constrain(N,T);ev=evaluate(x,N,T)
  checks=final_checks(x,N,T)
  if not checks['passed']:raise RuntimeError(f"Household output violates constraints: {checks}")
  (OUTPUT/'household_b').mkdir(parents=True,exist_ok=True)
  import provenance as pvn
- np.savez_compressed(OUTPUT/'household_b'/f'{code}.npz',households=N,members=T,aggregate=X,family_codes=np.array(F),relationship_codes=np.array(R),age_bands=np.array(A18),code=code,provenance=np.array(pvn.stamp('household_expected',inputs=sorted(D.glob('*.csv.gz')),settings={'code':code,'prefecture_seed':x['pref']},extra={'layout':'households[F,s_h,a_h,size] expected households; members[F,s_h,a_h,size,role,sex,age] expected members; aggregate[F,role,sex,age]'})))
- rep={'code':code,'name':x['name'],'prefecture_seed':x['pref'],'households':float(N.sum()),'published_households':float(x['H_F'].sum()),'unknown_age_head_share':x['unknown_age_head_share'],'final_checks':checks,'aggregate_ipf':agg,'plan':notes,'evaluation':ev,'elapsed_seconds':round(time.time()-t0,1),'assumptions':['Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).','Unknown-age heads are spread within sex x family type in proportion to known ages.','Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.','Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).','No within-household correlation of income or other individual attributes is modelled.']}
+ np.savez_compressed(OUTPUT/'household_b'/f'{code}.npz',households=N,members=T,constraints_version=np.array(hc.VERSION),aggregate=X,family_codes=np.array(F),relationship_codes=np.array(R),age_bands=np.array(A18),code=code,provenance=np.array(pvn.stamp('household_expected',inputs=sorted(D.glob('*.csv.gz')),settings={'code':code,'prefecture_seed':x['pref'],'constraints':hc.VERSION},extra={'layout':'households[F,s_h,a_h,size] expected households; members[F,s_h,a_h,size,role,sex,age] expected members; aggregate[F,role,sex,age]'})))
+ rep={'code':code,'name':x['name'],'prefecture_seed':x['pref'],'households':float(N.sum()),'published_households':float(x['H_F'].sum()),'unknown_age_head_share':x['unknown_age_head_share'],'final_checks':checks,'aggregate_ipf':agg,'structural_constraints':constraints,'plan':notes,'evaluation':ev,'elapsed_seconds':round(time.time()-t0,1),'assumptions':['Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).','Unknown-age heads are spread within sex x family type in proportion to known ages.','Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.','Role counts use shared-offset controlled rounding; ages are independent conditional on roles and the head cell. Hard support rules apply; sibling spacing is not modelled.','No within-household correlation of income or other individual attributes is modelled.']}
  (REPORTS/f'household_b_{code}.json').write_text(json.dumps(rep,ensure_ascii=False,indent=2))
  return rep
 

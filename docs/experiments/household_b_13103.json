@@ -7,9 +7,9 @@
   "unknown_age_head_share": 0.05704252347964185,
   "final_checks": {
     "households_per_family_type_max_error": 2.9103830456733704e-11,
-    "members_per_family_type_max_error": 7.275957614183426e-11,
-    "size_counts_max_error": 2.69497832050547e-07,
-    "members_total_error": 1.4551915228366852e-10,
+    "members_per_family_type_max_error": 8.731149137020111e-11,
+    "size_counts_max_error": 2.695087459869683e-07,
+    "members_total_error": 5.820766091346741e-11,
     "nonnegative": true,
     "passed": true
   },
@@ -18,6 +18,13 @@
     "error": 9.117571170456491e-08,
     "nonhead_target": 112805.99999999996,
     "nonhead_fitted": 112805.99999993549
+  },
+  "structural_constraints": {
+    "version": "household-support-1",
+    "changed_head_cells": 422,
+    "reallocated_expected_members": 1263.0702738321097,
+    "sex_age_margin_l1_change": 2275.6186484530986,
+    "note": "Head-cell household and member totals are preserved; role and sex/age margins may change."
   },
   "plan": {
     "size_ipf": {
@@ -36,22 +43,22 @@
     }
   },
   "evaluation": {
-    "persons_vs_target_tv": 0.0050396580722670194,
+    "persons_vs_target_tv": 0.008867082359457268,
     "members_total": {
-      "generated": 258889.99999999593,
+      "generated": 258889.9999999971,
       "published_12_4": 258889.99999999997
     },
-    "size_distribution_tv_vs_6_3": 1.8448198982274082e-12,
+    "size_distribution_tv_vs_6_3": 1.844841936686362e-12,
     "heldout_13_2_role_sex_age": {
-      "tv_joint": 0.024779068246323987,
-      "tv_role_margin": 0.01639125955055782,
+      "tv_joint": 0.02359597889314905,
+      "tv_role_margin": 0.01494170010854326,
       "tv_age_given_role": {
-        "R01": 0.009165565207435694,
-        "R02": 0.029770360681992604,
-        "R03": 0.013035125632005293,
-        "R05": 0.10434773888347612,
-        "R09": 0.1848658982293884,
-        "R12": 0.1519909091608519
+        "R01": 0.009165565207435679,
+        "R02": 0.029768515594137526,
+        "R03": 0.013152867089987053,
+        "R05": 0.14640563839720996,
+        "R09": 0.17549818057755404,
+        "R12": 0.15199016750305278
       },
       "observed_general_members": 250552.0
     },
@@ -59,25 +66,25 @@
       "tv_pop_scaled_vs_13_2_members": 0.01218830191456109
     },
     "married_persons_check": {
-      "generated_couple_members": 101088.91949084624,
+      "generated_couple_members": 101088.93359477153,
       "published_married_4_3": 109559.0,
-      "tv_by_sex_age": 0.021915507288495614,
+      "tv_by_sex_age": 0.02191551095503867,
       "note": "generated counts couple households (F1,F2) heads+spouses only; published married persons include married members in other roles"
     },
     "_presence_debug": {
-      "elderly_size2": 10956.728884143364,
-      "under6_size3": 4981.244598495132,
-      "elderly_size10p": 3.4117651886024974e-12
+      "elderly_size2": 10956.736380038416,
+      "under6_size3": 5101.915890432512,
+      "elderly_size10p": 0.0
     },
     "heldout_8_1_under6_by_size": {
       "generated": [
         0.0,
-        2008.1,
-        4981.2,
-        4649.2,
-        1044.8,
-        167.8,
-        50.3
+        2008.0,
+        5101.9,
+        4741.2,
+        1059.8,
+        169.6,
+        50.9
       ],
       "observed": [
         0.0,
@@ -88,19 +95,19 @@
         166.0,
         56.0
       ],
-      "tv": 0.10051620547441663,
-      "total_ratio": 1.0083150309385782,
-      "total_ratio_adjusted_for_unknown_age_heads": 0.9507981971113884
+      "tv": 0.09747475345445544,
+      "total_ratio": 1.0262988173271763,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9677561429426622
     },
     "heldout_26_1_elderly_by_size": {
       "generated": [
         15441.1,
         10956.7,
-        3148.5,
-        2265.1,
-        536.2,
-        98.6,
-        34.9
+        2852.3,
+        1876.9,
+        437.7,
+        83.8,
+        29.4
       ],
       "observed": [
         13960.0,
@@ -111,9 +118,9 @@
         105.0,
         39.0
       ],
-      "tv": 0.06483237722593994,
-      "total_ratio": 1.050282703589811,
-      "total_ratio_adjusted_for_unknown_age_heads": 0.9903719278100276,
+      "tv": 0.06370789093411558,
+      "total_ratio": 1.0243165472884073,
+      "total_ratio_adjusted_for_unknown_age_heads": 0.9658869465891224,
       "note": "Published presence counts exclude age-unknown members; generated households allocate unknown-age heads to known ages, so the unadjusted ratio is expected to exceed 1 by about the unknown-age share."
     },
     "heldout_9_1_under15_by_family_type": {
@@ -123,17 +130,17 @@
         "total_households": 21968.0
       },
       "F2": {
-        "generated_households_with_under15": 18451.8,
+        "generated_households_with_under15": 18800.1,
         "observed": 19350.0,
         "total_households": 27953.0
       },
       "F4": {
-        "generated_households_with_under15": 773.6,
+        "generated_households_with_under15": 786.7,
         "observed": 636.0,
         "total_households": 2465.0
       },
       "F5": {
-        "generated_households_with_under15": 183.9,
+        "generated_households_with_under15": 184.2,
         "observed": 158.0,
         "total_households": 1555.0
       },
@@ -144,12 +151,12 @@
       }
     }
   },
-  "elapsed_seconds": 0.8,
+  "elapsed_seconds": 1.0,
   "assumptions": [
     "Persons by sex x age are the imputed population scaled to general-household members (institutional residents and age-unknown removed proportionally).",
     "Unknown-age heads are spread within sex x family type in proportion to known ages.",
     "Relationship structure per family type comes from the prefecture (13-2) and is fitted to local sex x age; member ages are linked to head age through Gaussian age-gap priors fitted by IPF.",
-    "Members within a household are drawn independently given the head cell (sibling spacing, assortative matching beyond age are not modelled).",
+    "Role counts use shared-offset controlled rounding; ages are independent conditional on roles and the head cell. Hard support rules apply; sibling spacing is not modelled.",
     "No within-household correlation of income or other individual attributes is modelled."
   ]
 }
