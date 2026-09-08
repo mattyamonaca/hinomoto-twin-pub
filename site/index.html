@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hinomoto Twin Explorer</title>
+<meta name="description" content="公開統計から市区町村・年齢・性別・学歴・年収の組み合わせを推定するOSS。地域の分布と、推定方法・出典・検証の限界を確認できます。">
+<meta property="og:title" content="Hinomoto Twin Explorer">
+<meta property="og:description" content="公開統計に基づく市区町村別の合成人口分布。属性の組み合わせと推定の根拠を探索できます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mattyamonaca.github.io/hinomoto-twin-pub/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -379,7 +384,7 @@ footer a{color:var(--ink-2)}
 </div>
 <button class="sheetbar" id="sheetbar" type="button" aria-controls="panel" aria-expanded="false"><span class="sbt" id="sheetbar-t">属性パネル</span><span class="sbx" id="sheetbar-x">開く</span></button>
 
-<footer>条件を選ぶと、その条件に当てはまる人の内訳が右隣の列に表示され、右のパネルに数値の意味と求め方が出ます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。就業状態・地位・産業と世帯・勤務地は試験的な推定です。都道府県・全国の値は市区町村（行政区を除く）ごとの推定を人口で合算したものです。2020年の国勢調査、2022年の就業構造基本調査、市区町村のすがた2024 をもとにした推定であり、実際に数えた値ではありません。計算の仕組みや保存形式は「データソース一覧」と各項目の「技術的な詳細」、生成コード・再現手順のリンク先にあります。</footer>
+<footer>条件を選ぶと、その条件に当てはまる人の内訳が右隣の列に表示され、右のパネルに数値の意味と求め方が出ます。性別は公表統計の「男・女」区分で、性自認の分布ではありません。就業状態・地位・産業と世帯・勤務地は試験的な推定です。都道府県・全国の値は市区町村（行政区を除く）ごとの推定を人口で合算したものです。2020年の国勢調査と2022年の就業構造基本調査をもとにした推定であり、実際に数えた値ではありません。計算の仕組みや保存形式は「データソース一覧」と各項目の「技術的な詳細」、生成コード・再現手順のリンク先にあります。<p><a href="https://github.com/mattyamonaca/hinomoto-twin-pub">ソースコード・使い方</a> · <a href="https://github.com/mattyamonaca/hinomoto-twin-pub/blob/main/LICENSE">コード：Apache-2.0</a> · <a href="https://github.com/mattyamonaca/hinomoto-twin-pub/blob/main/DATA_LICENSE.md">統計データの利用条件</a> · <a href="https://github.com/mattyamonaca/hinomoto-twin-pub/issues">不具合・改善の報告</a></p></footer>
 </div>
 
 <script>

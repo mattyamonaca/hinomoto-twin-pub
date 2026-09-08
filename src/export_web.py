@@ -1,5 +1,5 @@
 """Replace web distributions from verified model arrays, retaining only baseline geography/source metadata."""
-import json,base64
+import json,base64,hashlib
 import numpy as np
 from paths import OUTPUT,WEB,REPORTS
 import build_education as be
@@ -7,6 +7,16 @@ import build_education as be
 def norm(x):
     return np.divide(x,x.sum(-1,keepdims=True),out=np.zeros_like(x),where=x.sum(-1,keepdims=True)>0)
 def encode(x):return base64.b64encode(np.asarray(x,dtype='<f8').tobytes()).decode('ascii')
+def set_build_metadata(payload, meta):
+    """A base rebuild must not advertise extensions generated from other arrays."""
+    identity = json.dumps(meta, sort_keys=True, separators=(',', ':')).encode()
+    fingerprint = hashlib.sha256(identity).hexdigest()[:16]
+    payload.setdefault('source_dataset_version', payload.get('dataset_version', 'unknown'))
+    payload.update(dataset_version=f"2020-2022-{meta['model_version']}-build-{fingerprint}",
+                   model=meta, code_ref=meta.get('code_commit', 'unknown'), schema_version=2)
+    for key in ('emp', 'household', 'workplace'):
+        payload['graph'].pop(key, None)
+
 def main():
     payload=json.loads((WEB/'graph.json').read_text());g=payload['graph']
     d=np.load(OUTPUT/'final_arrays.npz');b=np.load(OUTPUT/'model_arrays.npz');ed=np.load(OUTPUT/'education_leaf_arrays.npz')['counts'];inp=be.prepare()
@@ -25,8 +35,7 @@ def main():
         ids=list(range(len(areas))) if p==0 else [i for i,m in enumerate(areas) if m.startswith(f'{p:02}')]
         agg.append(norm(ed[ids].sum(0)).transpose(1,0,2,3))
     g.update(pop=np.asarray(pops).tolist(),xc=encode(bs),xd=encode(xs),e=encode(ers),rs=encode(rs),ag=encode(agg),q=inp['shapes'].tolist(),encoding='float64',sens={},sens_or=None)
-    meta=json.loads((OUTPUT/'model_metadata.json').read_text());payload.update(dataset_version='2020-2022-'+meta['model_version']+'-20260906',model=meta,code_ref=meta.get('code_commit','unknown'))
-    payload['schema_version']=2
+    meta=json.loads((OUTPUT/'model_metadata.json').read_text());set_build_metadata(payload, meta)
     # Verify serialized values directly against the same arrays used by the API exports.
     for key,expected in [('xd',xs),('xc',bs),('e',ers),('rs',rs),('ag',agg)]:
         actual=np.frombuffer(base64.b64decode(g[key]),dtype='<f8').reshape(np.asarray(expected).shape)

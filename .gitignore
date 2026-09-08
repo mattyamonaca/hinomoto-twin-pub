@@ -20,3 +20,6 @@ __pycache__/
 /config.local.json
 *.zip
 .claude/worktrees/
+
+# Browser verification dependencies
+node_modules/

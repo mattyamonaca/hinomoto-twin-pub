@@ -1,6 +1,8 @@
 
 # Hinomoto Twin Pub
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
 公開統計に基づいて、市区町村別の合成人口分布を生成するプロジェクトです。
 
 **「市区町村 × 年齢 × 性別 × 最終学歴 × 個人就業年収」の分布を収録しています。** 最終学歴は国勢調査の学校区分に基づき、在学中・未就学・不詳を別区分にしています。
@@ -193,9 +195,11 @@ CSVの `p_age_sex_education_income_given_municipality` が主出力、`p_income_
 
 ## 条件付き分布とペルソナ抽出
 
-Python 3.11以上で実行します。コードとデータを別々に取得します。既存の計算済みデータがあれば再計算は不要です。初回の配置方法は [データの管理](DATA.md) を参照してください。
+Python 3.11〜3.13とmakeを使用します。以下はmacOS/Linux向けです。WindowsではWSLを使用してください。コードとデータを別々に取得します。既存の計算済みデータがあれば再計算は不要です。初回の配置方法は [データの管理](DATA.md) を参照してください。
 
 ```sh
+git clone https://github.com/mattyamonaca/hinomoto-twin-pub.git
+cd hinomoto-twin-pub
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
@@ -246,9 +250,13 @@ make site
 
 `make build` は基本の5属性分布とその集約出力を生成します。就業・世帯・勤務地には追加の生成工程があります。保存場所の変更、原表からの再取得、各拡張の生成、画面用データの組み立ては [データと再現手順](DATA.md)を参照してください。
 
+## ライセンス
+
+本プロジェクト独自のコード・文書は **Apache License 2.0** です。商用利用・改変・再配布はライセンス条件に従って行えます。統計データ・推定結果の出典表示と利用条件は [DATA_LICENSE](DATA_LICENSE.md) を参照してください。
+
 ## 開発と互換性
 
-開発方針は [CONTRIBUTING](CONTRIBUTING.md)、ライセンスの状況は [LICENSE_STATUS](LICENSE_STATUS.md)を参照してください。
+開発方針は [CONTRIBUTING](CONTRIBUTING.md)、ライセンスは [Apache License 2.0](LICENSE)を参照してください。
 
 `persona_v2.py` などのプログラム名や `_v2` を含むファイル名は、既存の利用コードとの互換性のため維持しています。文書は現在の公開仕様に統一しており、これらは別々の製品を意味しません。過去の文書はGitの変更履歴で確認できます。
 

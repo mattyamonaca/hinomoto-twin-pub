@@ -115,7 +115,7 @@ python -m http.server 8000 --directory dist/site
 | 居住地・勤務地・産業 | `make build-workplace`、`make verify-workplace`、`make export-workplace-web`。[対象・検証](docs/WORKPLACE_C.md) |
 | 画面の組み立て | 各画面用データを生成・確認した後に `make site` |
 
-各拡張は対応する入力統計が必要です。取得方法と生成順はリンク先を参照してください。`make build` だけで全拡張を再計算するわけではありません。
+各拡張は対応する入力統計が必要です。取得方法と生成順はリンク先を参照してください。`make build` だけで全拡張を再計算するわけではありません。基本分布を再生成すると、古い結果との混在を防ぐため就業・世帯・勤務地の配信参照を外します。拡張を表示するには対応する生成・書き出し工程も実行してください。生成結果はモデルの来歴から計算した識別子を持ち、配布元の識別子は `source_dataset_version` に残します。
 
 所得モデルの中間成果物は `data/stages/*.npz` を順に読み書きし、入力の指紋・上流ファイルのSHA-256・係数・コード識別情報を記録します。[工程仕様](docs/PIPELINE.md)に再生成方法をまとめています。
 
